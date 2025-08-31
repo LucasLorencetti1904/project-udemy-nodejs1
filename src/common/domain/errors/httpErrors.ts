@@ -1,4 +1,6 @@
-export default abstract class HttpError extends Error {
+import ApplicationError from "@/common/domain/errors/ApplicationErrors";
+
+export default abstract class HttpError extends ApplicationError {
     public abstract readonly statusCode: number;
 }
 
