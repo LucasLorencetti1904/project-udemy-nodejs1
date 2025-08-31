@@ -5,4 +5,5 @@ const port: number = 3000;
 
 app.listen(port, () => {
     console.log(`[${env.PORT}] Server Running...`);
+    console.log(`API Documentantion available at GET / docs`);
 });
