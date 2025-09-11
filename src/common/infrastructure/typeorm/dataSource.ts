@@ -1,6 +1,5 @@
-import { DataSource } from "typeorm";
-import env from "@/common/infraestructure/env/dotenv";
-import { DataSourceOptions } from "typeorm/browser";
+import { DataSource, DataSourceOptions } from "typeorm";
+import env from "@/common/infrastructure/env/dotenv";
 
 const dbConfig: DataSourceOptions = {
     type: env.DB_TYPE,

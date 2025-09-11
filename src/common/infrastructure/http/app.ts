@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import routes from "@/common/infraestructure/http/routes";
-import ErrorHandler from "@/common/infraestructure/http/middlewares/ErrorHandler";
+import routes from "@/common/infrastructure/http/routes";
+import ErrorHandler from "@/common/infrastructure/http/middlewares/ErrorHandler";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { OpenAPIV3 } from "openapi-types";

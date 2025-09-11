@@ -1,6 +1,6 @@
-import app from "@/common/infraestructure/http/app";
-import env from "@/common/infraestructure/env/dotenv"
-import dataSource from "@/common/infraestructure/typeorm/dataSource";
+import app from "@/common/infrastructure/http/app";
+import env from "@/common/infrastructure/env/dotenv"
+import dataSource from "@/common/infrastructure/typeorm/dataSource";
 
 const port: number = 3000;
 
