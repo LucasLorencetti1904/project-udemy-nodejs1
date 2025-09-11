@@ -26,6 +26,10 @@ export class CreateProducts1757537584621 implements MigrationInterface {
                         scale: 2
                     },
                     {
+                        name: "quantity",
+                        type: "int"
+                    },
+                    {
                         name: "created_at",
                         type: "timestamp",
                         default: "CURRENT_TIMESTAMP"
