@@ -5,5 +5,9 @@ export default abstract class HttpError extends ApplicationError {
 }
 
 export class BadRequestError extends HttpError {
-    public statusCode: number = 400;
+    public readonly statusCode: number = 400;
+}
+
+export class NotFoundError extends HttpError {
+    public readonly statusCode: number = 404;
 }
