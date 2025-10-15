@@ -22,9 +22,9 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
 
         public create(data: CreateDataProps): Model {
             return {
-                id: randomUUID,
-                created_at: new Date(),
-                updated_at: new Date(),
+                id: randomUUID(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
                 ...data
             } as unknown as Model;
         }
@@ -36,9 +36,8 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
 
         public async update(model: Model): Promise<Model> {
             const index: number = await this.checkAndReturnIndexOf(model.id);
-            let toUpdate = this.items[index];
-            toUpdate = model;
-            return toUpdate;
+            this.items[index] = model;
+            return this.items[0];
         }
 
         public async delete(id: string): Promise<void> {
