@@ -102,4 +102,34 @@ describe ("InMemoryRepository Test.", () => {
             expect (filteredModels).toHaveLength(0);
         });
     });
-}); 
+
+    describe ("applySort", () => {
+        const models: StubModelProps[] = [
+            { ...model, name: "c" },
+            { ...model, name: "a" },
+            { ...model, name: "b"}
+        ];
+
+        let sortedModels: StubModelProps[];
+
+        it ("should no sort items when sort and sortDir params is null.", async () => {
+            sortedModels = await sut['applySort'](models);
+            expect (sortedModels).toEqual(models);
+        });
+
+        it ("should no sort items when sort param is not sortable field.", async () => {
+            sortedModels = await sut['applySort'](models, "id", "asc");
+            expect (sortedModels).toEqual(models);
+        });
+
+        it ("should sort items by sortable fields using asc order.", async () => {
+            sortedModels = await sut['applySort'](models, "name", "asc");
+            expect (sortedModels).toEqual([models[1], models[2], models[0]]);
+        });
+
+        it ("should sort items by sortable fields using desc order.", async () => {
+            sortedModels = await sut['applySort'](models, "name", "desc");
+            expect (sortedModels).toEqual([models[0], models[2], models[1]]);
+        });
+    });
+});  

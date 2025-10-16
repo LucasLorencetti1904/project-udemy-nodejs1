@@ -49,7 +49,7 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
             const page: number = config.page ?? 1;
             const perPage: number = config.page ?? 15;
             const sort: string | null = config.sort ?? null;
-            const sortDir: string | null = config.sort ?? null;
+            const sortDir: "asc" | "desc" | null = config.sortDir ?? null;
             const filter: string | null = config.filter ?? null;
 
             const filteredItems: Model[] = await this.applyFilter(this.items, filter);
@@ -69,12 +69,12 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
 
         protected abstract applyFilter(items: Model[], filter?: string): Promise<Model[]>
 
-        protected async applySort(items: Model[], sort?: string, sortDir?: string): Promise<Model[]> {
+        protected async applySort(items: Model[], sort?: string, sortDir?: "asc" | "desc"): Promise<Model[]> {
             if (!sort || !this.sortableFields.includes(sort)) {
                 return items;
             }
 
-            return [...items].sort((a: Model, b: Model): number => {
+            return [...items].sort((a, b) => {
                 if (a[sort] < b[sort]) {
                     return sortDir === "asc" ? -1 : 1;
                 }
