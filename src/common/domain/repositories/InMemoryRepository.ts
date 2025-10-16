@@ -45,9 +45,9 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
             this.items.splice(index, 1);
         }
 
-        public async search(config: SearchInput): Promise<SearchOutput<Model>> {
+        public async search(config?: SearchInput): Promise<SearchOutput<Model>> {
             const page: number = config.page ?? 1;
-            const perPage: number = config.page ?? 15;
+            const perPage: number = config.perPage ?? 15;
             const sort: string | null = config.sort ?? null;
             const sortDir: "asc" | "desc" | null = config.sortDir ?? null;
             const filter: string | null = config.filter ?? null;

@@ -132,4 +132,72 @@ describe ("InMemoryRepository Test.", () => {
             expect (sortedModels).toEqual([models[0], models[2], models[1]]);
         });
     });
+
+    describe ("applyPaginate", () => {
+        const models: StubModelProps[] = [
+            { ...model, name: "a" },
+            { ...model, name: "b" },
+            { ...model, name: "c"},
+            { ...model, name: "d"},
+            { ...model, name: "e"},
+            { ...model, name: "f"}
+        ];
+
+        let paginatedItemsModels: StubModelProps[];
+
+        it ("should paginate the page 1 with 2 items.", async () => {
+            paginatedItemsModels = await sut['applyPaginate'](models, 1, 2);
+            expect (paginatedItemsModels).toEqual([models[0], models[1]]);
+        });
+
+        it ("should return page 2 with 2 items.", async () => {
+            paginatedItemsModels = await sut['applyPaginate'](models, 2, 2);
+            expect (paginatedItemsModels).toEqual([models[2], models[3]]);
+        });
+
+        it ("should return page 2 with 3 items.", async () => {
+            paginatedItemsModels = await sut['applyPaginate'](models, 2, 3);
+            expect (paginatedItemsModels).toEqual([models[3], models[4], models[5]]);
+        });
+
+        it ("should return a partial page when there are no more items left.", async () => {
+            paginatedItemsModels = await sut['applyPaginate'](models, 2, 4);
+            expect (paginatedItemsModels).toEqual([models[4], models[5]]);
+        });
+
+        it ("should paginate an empty array when all items have been paginated.", async () => {
+            paginatedItemsModels = await sut['applyPaginate'](models, 3, 3);
+            expect (paginatedItemsModels).toEqual([]);
+        });
+    });
+
+    describe ("applySort", () => {
+        const models: StubModelProps[] = [
+            { ...model, name: "c" },
+            { ...model, name: "a" },
+            { ...model, name: "b"}
+        ];
+
+        let sortedModels: StubModelProps[];
+
+        it ("should no sort items when sort and sortDir params is null.", async () => {
+            sortedModels = await sut['applySort'](models);
+            expect (sortedModels).toEqual(models);
+        });
+
+        it ("should no sort items when sort param is not sortable field.", async () => {
+            sortedModels = await sut['applySort'](models, "id", "asc");
+            expect (sortedModels).toEqual(models);
+        });
+
+        it ("should sort items by sortable fields using asc order.", async () => {
+            sortedModels = await sut['applySort'](models, "name", "asc");
+            expect (sortedModels).toEqual([models[1], models[2], models[0]]);
+        });
+
+        it ("should sort items by sortable fields using desc order.", async () => {
+            sortedModels = await sut['applySort'](models, "name", "desc");
+            expect (sortedModels).toEqual([models[0], models[2], models[1]]);
+        });
+    });
 });  
