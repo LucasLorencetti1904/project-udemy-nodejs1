@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { StubInMemoryRepository, StubModelProps } from "./stubs";
+import { StubInMemoryRepository, StubModelProps } from "./InMemoryRepository.stub";
 import { NotFoundError } from "@/common/domain/errors/httpErrors";
 
 describe ("InMemoryRepository Test.", () => {
@@ -24,7 +24,7 @@ describe ("InMemoryRepository Test.", () => {
         };
     });
 
-    describe ("'create' Method Test.", () => {
+    describe ("create", () => {
         it ("should create a new model.", () => {
             const result: StubModelProps = sut.create(props);
             expect (result.name).toStrictEqual("test name")
@@ -36,7 +36,7 @@ describe ("InMemoryRepository Test.", () => {
         });
     })
 
-    describe ("'get' Method Test.", () => {
+    describe ("findById", () => {
         it ("should throw an Not Found Error when data is not found by id.", () => {
             expect (sut.findById("some_id")).rejects.toBeInstanceOf(NotFoundError);
         });
@@ -48,7 +48,7 @@ describe ("InMemoryRepository Test.", () => {
         });
     });
 
-    describe ("'update' Method Test.", () => {
+    describe ("update", () => {
         it ("should throw an Not Found Error when data to be updated is not found by id.", () => {
             expect (sut.update(model)).rejects.toBeInstanceOf(NotFoundError);
         });
@@ -64,7 +64,7 @@ describe ("InMemoryRepository Test.", () => {
         });
     });
     
-    describe ("'delete' Method Test.", () => {
+    describe ("delete", () => {
         it ("should throw an Not Found Error when data to be deleted is not found by id.", () => {
             expect (sut.delete(model.id)).rejects.toBeInstanceOf(NotFoundError);
         });
@@ -77,4 +77,29 @@ describe ("InMemoryRepository Test.", () => {
             expect([countBeforeDelete, countAfterDelete]).toEqual([1, 0]);
         });
     });
-});
+
+    describe ("applyFilter", () => {
+        const models: StubModelProps[] = [
+            { ...model, name: "test name" },
+            { ...model, name: "TEST NAME" },
+            { ...model, name: "fake name"}
+        ];
+
+        let filteredModels: StubModelProps[];
+
+        it ("should no filter items when filter param is null.", async () => {
+            filteredModels = await sut['applyFilter'](models);
+            expect (filteredModels).toEqual(models);
+        });
+
+        it ("should filter items using filter param.", async () => {
+            filteredModels = await sut['applyFilter'](models, "TES");
+            expect (filteredModels).toEqual([models[0], models[1]]);
+        });
+
+        it ("should return a empty array when filter does not matches.", async () => {
+            filteredModels = await sut['applyFilter'](models, "truthy name");
+            expect (filteredModels).toHaveLength(0);
+        });
+    });
+}); 

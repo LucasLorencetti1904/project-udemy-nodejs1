@@ -18,8 +18,8 @@ export class StubInMemoryRepository extends InMemoryRepository<StubModelProps> {
             return items;
         }
 
-        return items.filter((item: StubModelProps): void => {
-            item.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
+        return items.filter((item) => {
+            return item.name.toLowerCase().includes(filter.toLowerCase())
         });
     }
 };  
