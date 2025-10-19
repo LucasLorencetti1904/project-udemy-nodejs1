@@ -11,3 +11,7 @@ export class BadRequestError extends HttpError {
 export class NotFoundError extends HttpError {
     public readonly statusCode: number = 404;
 }
+
+export class ConflictError extends HttpError {
+    public readonly statusCode: number = 409;
+}
