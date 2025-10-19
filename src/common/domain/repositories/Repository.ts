@@ -1,14 +1,19 @@
 export type SearchInput = {
     page?: number,
     perPage?: number,
-    sort?: string | null,
-    sortDir?: "asc" | "desc" | null,
-    filter?: string | null
+    sort?: string,
+    sortDir?: "asc" | "desc",
+    filter?: string
 };
 
-export type SearchOutput<Model> = Required<SearchInput> & {
+export type SearchOutput<Model> = {
     items: Model[],
     total: number,
+    currentPage: number,
+    perPage: number,
+    sort: string,
+    sortDir: "asc" | "desc",
+    filter: string
 };
 
 export default interface Repository<Model, CreateData> {

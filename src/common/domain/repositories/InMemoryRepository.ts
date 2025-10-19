@@ -45,7 +45,7 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
             this.items.splice(index, 1);
         }
 
-        public async search(config?: SearchInput): Promise<SearchOutput<Model>> {
+        public async search(config: SearchInput): Promise<SearchOutput<Model>> {
             const page: number = config.page ?? 1;
             const perPage: number = config.perPage ?? 15;
             const sort: string | null = config.sort ?? null;
@@ -60,7 +60,7 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
                 items: paginatedItems,
                 filter,
                 total: filteredItems.length,
-                page,
+                currentPage: page,
                 perPage,
                 sort,
                 sortDir

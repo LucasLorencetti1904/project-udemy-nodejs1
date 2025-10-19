@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { StubInMemoryRepository, StubModelProps } from "./InMemoryRepository.stub";
 import { NotFoundError } from "@/common/domain/errors/httpErrors";
+import { SearchOutput } from "@/common/domain/repositories/Repository";
 
 describe ("InMemoryRepository Test.", () => {
     let sut: StubInMemoryRepository;
@@ -198,6 +199,115 @@ describe ("InMemoryRepository Test.", () => {
         it ("should sort items by sortable fields using desc order.", async () => {
             sortedModels = await sut['applySort'](models, "name", "desc");
             expect (sortedModels).toEqual([models[0], models[2], models[1]]);
+        });
+    });
+
+    describe ("search", () => {
+        let result: SearchOutput<StubModelProps>;
+
+        beforeEach(() => {
+            sut.items = Array(16).fill(model);
+        });
+
+        it ("should return a default pagination with the first unsorted items when params is not specified.", async () => {
+            result = await sut['search']({});
+            expect (result).toEqual<SearchOutput<StubModelProps>>({
+                items: sut.items.slice(0, 15),
+                total: sut.items.length,
+                currentPage: 1,
+                perPage: 15,
+                sort: null,
+                sortDir: null,
+                filter: null
+            });
+        });
+
+        it ("should return pagination with unsorted items when params when only paginate params is received.", async () => {
+            result = await sut['search']({
+                page: 4,
+                perPage: 4
+            });
+            expect (result).toEqual<SearchOutput<StubModelProps>>({
+                items: sut.items.slice(0, 4),
+                total: sut.items.length,
+                currentPage: 4,
+                perPage: 4,
+                sort: null,
+                sortDir: null,
+                filter: null
+            });
+        });
+
+        it ("should return pagination with filtered items when only paginate and filter params is received.", async () => {
+            sut.items = [
+                { ...model, name: "Test 1" },
+                { ...model, name: "b" },
+                { ...model, name: "TEST 2" },
+                { ...model, name: "test 3" }
+            ];
+            result = await sut['search']({
+                page: 2,
+                perPage: 2,
+                filter: "tE"
+            });
+            expect (result).toEqual<SearchOutput<StubModelProps>>({
+                items: [sut.items[3]],
+                total: 3,
+                currentPage: 2,
+                perPage: 2,
+                sort: null,
+                sortDir: null,
+                filter: "tE"
+            });
+        });
+
+        it ("should return pagination with sorted items when only paginate and sort params is received.", async () => {
+            sut.items = [
+                { ...model, name: "c" },
+                { ...model, name: "a" },
+                { ...model, name: "d" },
+                { ...model, name: "b" }
+            ];
+            result = await sut['search']({
+                page: 2,
+                perPage: 2,
+                sort: "name",
+                sortDir: "asc"
+            });
+            expect (result).toEqual<SearchOutput<StubModelProps>>({
+                items: [sut.items[0], sut.items[2]],
+                total: 4,
+                currentPage: 2,
+                perPage: 2,
+                sort: "name",
+                sortDir: "asc",
+                filter: null
+            });
+        });
+    
+        it ("should return a pagination with filtered and sorted items when all params is received.", async () => {
+            sut.items = [
+                { ...model, name: "a2" },
+                { ...model, name: "b1" },
+                { ...model, name: "B2" },
+                { ...model, name: "A1" }
+            ];
+            result = await sut['search']({
+                page: 1,
+                perPage: 2,
+                sort: "name",
+                sortDir: "desc",
+                filter: "2"
+            });
+            expect (result).toEqual<SearchOutput<StubModelProps>>({
+                items: [sut.items[0], sut.items[2]],
+                total: 2,
+                currentPage: 1,
+                perPage: 2,
+                sort: "name",
+                sortDir: "desc",
+                filter: "2"
+            });
         });
     });
 });  
