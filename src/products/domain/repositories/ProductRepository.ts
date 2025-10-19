@@ -7,9 +7,7 @@ export type CreateProductProps = {
     quantity: number
 };
 
-export type ProductId = {
-    id: string
-};
+export type ProductId = string;
 
 export default interface ProductRepository extends Repository<ProductModel, CreateProductProps> {
     findByName(name: string): Promise<ProductModel>;

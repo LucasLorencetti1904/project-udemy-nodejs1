@@ -3,7 +3,7 @@ import InMemoryRepository from "@/common/domain/repositories/InMemoryRepository"
 import ProductModel from "@/products/domain/models/ProductModel";
 import ProductRepository, { ProductId } from "@/products/domain/repositories/ProductRepository";
 
-export default class ProductInMemoryReposity
+export default class ProductInMemoryRepository
 extends InMemoryRepository<ProductModel>
 implements ProductRepository {
     public sortableFields: string[] = ["name", "createdAt"];
@@ -18,31 +18,23 @@ implements ProductRepository {
         }); 
     }
 
+    public async applySort(items: ProductModel[], sort?: string, sortDir?: "asc" | "desc"): Promise<ProductModel[]> {
+        return super.applySort(items, sort ?? "createdAt", sortDir ?? "desc");
+    }
+    
     public async findByName(name: string): Promise<ProductModel> {
         const product: ProductModel = this.items.find(product => product.name === name);
-
+        
         if (!product) {
             throw new NotFoundError("Product not found.");
         }
-
+        
         return product;
     }
 
     public async findAllByIds(productIds: ProductId[]): Promise<ProductModel[]> {
-        const productsSet: Set<ProductId> = new Set(productIds);
-
-        const products: ProductModel[] = this.items.filter(id => {
-            return productsSet.has(id);
+        return this.items.filter(item => {
+            return productIds.includes(item.id);
         });
-
-        if (products.length < 1) {
-            throw new NotFoundError("Products not found.");
-        }
-
-        return products;
-    }
-
-    public async applySort(items: ProductModel[], sort?: string, sortDir?: "asc" | "desc"): Promise<ProductModel[]> {
-        return super.applySort(items, sort ?? "createdAt", sortDir ?? "desc");
     }
 }
