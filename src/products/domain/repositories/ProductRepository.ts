@@ -13,5 +13,5 @@ export type ProductId = {
 
 export default interface ProductRepository extends Repository<ProductModel, CreateProductProps> {
     findByName(name: string): Promise<ProductModel>;
-    findAllByIds(ids: ProductId[]): Promise<ProductModel[]>;
+    findAllByIds(productIds: ProductId[]): Promise<ProductModel[]>;
 }
