@@ -1,5 +1,5 @@
-import ProductRepository, { CreateProductProps } from "@/products/domain/repositories/ProductRepository";
-import { Repository } from "typeorm";
+import ProductRepository, { CreateProductProps, ProductId } from "@/products/domain/repositories/ProductRepository";
+import { In, Repository } from "typeorm";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import { dataSource } from "@/common/infrastructure/typeorm/dataSource";
 import ProductModel from "@/products/domain/models/ProductModel";
@@ -14,6 +14,20 @@ export default class ProductTypeormRepository {
 
     public async findById(id: string): Promise<ProductModel> {
         return await this._getById(id);
+    }
+
+    public async findAllByIds(productIds: ProductId[]): Promise<ProductModel[]> {
+        return await this.productRepository.find({ where: { id: In(productIds) } });
+    }
+
+    public async findByName(name: string): Promise<ProductModel> {
+        const product: ProductModel = await this.productRepository.findOneBy({ name });
+
+        if (!product) {
+            throw new NotFoundError(`Product not found with name: ${name}.`);
+        }
+
+        return product;
     }
 
     public create(data: CreateProductProps): ProductModel {
@@ -38,7 +52,7 @@ export default class ProductTypeormRepository {
         const product: ProductModel = await this.productRepository.findOneBy({ id });
 
         if (!product) {
-            throw new NotFoundError("Product not found.");
+            throw new NotFoundError(`Product not found with ID ${id}.`);
         }
 
         return product;

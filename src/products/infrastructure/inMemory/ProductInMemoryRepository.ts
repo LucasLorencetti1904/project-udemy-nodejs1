@@ -26,7 +26,7 @@ implements ProductRepository {
         const product: ProductModel = this.items.find(product => product.name === name);
         
         if (!product) {
-            throw new NotFoundError("Product not found.");
+            throw new NotFoundError(`Product not found with name ${name}.`);
         }
         
         return product;

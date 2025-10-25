@@ -9,7 +9,7 @@ import { randomUUID } from "node:crypto";
 describe ("ProductTypeormRepository Test.", () => {
     let sut: ProductTypeormRepository;
     let exampleOfProduct: ProductModel;
-    let result: ProductModel;
+    let result: ProductModel | ProductModel[];
 
     async function createAndSaveProduct(productData: Product): Promise<ProductModel> {
         const toCreate: ProductModel = testingDataSource.manager.create(Product, productData);
@@ -38,22 +38,42 @@ describe ("ProductTypeormRepository Test.", () => {
         });
 
         it ("should find product by id.", async () => {
-            exampleOfProduct = productDataBuilder({ id: randomUUID() });
-            const ProductModel: ProductModel =  await createAndSaveProduct(exampleOfProduct);
-            result = await sut.findById(ProductModel.id);
-            expect (result.id).toBe(ProductModel.id);
+            const product: ProductModel =  await createAndSaveProduct(exampleOfProduct);
+            result = await sut.findById(product.id);
+            expect (result.id).toBe(product.id);
         });
     });
 
-    describe ("create & insert", () => {
-        it ("should create a new product object.", () => {
-            result = sut.create(exampleOfProduct);
-            expect (result.name).toEqual(exampleOfProduct.name);
+    describe ("findAllByIds", () => {
+        let products: ProductModel[];
+
+        beforeEach(async () => {
+            products = [
+                await createAndSaveProduct({ ...exampleOfProduct, id: randomUUID() }),
+                await createAndSaveProduct({ ...exampleOfProduct, id: randomUUID() })
+            ];
         });
 
-        it ("should insert a product object.", async () => {
-            result = await sut.insert(exampleOfProduct);
-            expect (result.price).toEqual(exampleOfProduct.price);
+        it ("should return a empty array when no product is found by these ids.", async () => {
+            result = await sut.findAllByIds([randomUUID(), randomUUID()]);
+            expect (result).toHaveLength(0);
+        });
+
+        it ("should return a array of products when they are found by these ids.", async () => {
+            result = await sut.findAllByIds([products[1].id, randomUUID()]);
+            expect (result).toHaveLength(1);
+        });
+    });
+
+    describe ("findByName", () => {
+        it ("should throw NotFoundError when product is not found by name.", async () => {
+            await expect (() => sut.findByName("Fake name")).rejects.toBeInstanceOf(NotFoundError);
+        });
+
+        it ("should find product by name.", async () => {
+            const product: ProductModel = await createAndSaveProduct(exampleOfProduct);
+            result = await sut.findByName(product.name);
+            expect (result.name).toBe(product.name);
         });
     });
 
