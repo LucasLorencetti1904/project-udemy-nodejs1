@@ -24,6 +24,16 @@ export default class ProductTypeormRepository {
         return await this.productRepository.save(model);
     }
 
+    public async update(model: ProductModel): Promise<ProductModel> {
+        const toUpdate: ProductModel = await this._getById(model.id);
+        return await this.productRepository.save(toUpdate);
+    }
+
+    public async delete(id: string): Promise<void> {
+        const toDelete: ProductModel = await this._getById(id);
+        await this.productRepository.delete({ id: toDelete.id });
+    }
+
     protected async _getById(id: string): Promise<ProductModel> {
         const product: ProductModel = await this.productRepository.findOneBy({ id });
 
