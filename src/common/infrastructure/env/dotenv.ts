@@ -2,7 +2,9 @@ import { z, ZodSafeParseResult } from "zod";
 import dotenv from "dotenv";
 import ApplicationError from "@/common/domain/errors/ApplicationErrors";
 
-dotenv.config();
+const envPath: string = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
+
+dotenv.config({ path: envPath });
 
 const db: "postgres" | "mysql" | "sqlite" = "postgres";
 
@@ -17,7 +19,7 @@ const envSchema = z.object({
     DB_NAME: z.string().default(db),
     DB_USER: z.string().default(db),
     DB_DATABASE: z.string().default(db),
-    DB_PASSWORD: z.string().default(db)
+    DB_PASS: z.string().default(db)
 });
 
 type Env = z.infer<typeof envSchema>;

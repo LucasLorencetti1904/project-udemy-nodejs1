@@ -6,7 +6,10 @@
     "test": "dotenv -e .env.test -- vitest",
     "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/common/infraestructure/http/server.ts",
     "lint": "eslint .",
-    "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
+    "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "pretest:int": "docker run --rm --name testdb -e POSTGRES_PASSWORD=postgres -p 5433:5432 -d postgres",
+    "test:int": "sleep 5 && vitest run --mode test --config ./vitest.int.config.ts",
+    "posttest:int": "docker stop testdb"
   },
   "keywords": [],
   "author": "",

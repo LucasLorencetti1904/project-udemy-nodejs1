@@ -1,7 +1,7 @@
 import ProductModel from "@/products/domain/models/ProductModel";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity("product")
+@Entity("products")
 export default class Product implements ProductModel {
     @PrimaryGeneratedColumn("uuid")
     id: string;
