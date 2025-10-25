@@ -8,8 +8,8 @@ import { randomUUID } from "node:crypto";
 
 describe ("ProductTypeormRepository Test.", () => {
     let sut: ProductTypeormRepository;
-    let exampleOfProduct: Product;
-    let result: Product;
+    let exampleOfProduct: ProductModel;
+    let result: ProductModel;
     
     beforeAll(async () => {
         await testingDataSource.initialize();
@@ -23,6 +23,7 @@ describe ("ProductTypeormRepository Test.", () => {
     beforeEach(async () => {
         await testingDataSource.manager.query("DELETE FROM products");
         sut = new ProductTypeormRepository(testingDataSource.getRepository(Product));
+        exampleOfProduct = productDataBuilder({});
     });
 
     describe ("findById", () => {
@@ -36,6 +37,18 @@ describe ("ProductTypeormRepository Test.", () => {
             await testingDataSource.manager.save(product);
             result = await sut.findById(product.id);
             expect (result.id).toBe(product.id);
+        });
+    });
+
+    describe ("create and insert", () => {
+        it ("should create a new product object.", () => {
+            result = sut.create(exampleOfProduct);
+            expect (result.name).toEqual(exampleOfProduct.name);
+        });
+
+        it ("should insert a product object.", async () => {
+            result = await sut.insert(exampleOfProduct);
+            expect (result.price).toEqual(exampleOfProduct.price);
         });
     });
 });
