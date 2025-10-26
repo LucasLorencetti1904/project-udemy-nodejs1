@@ -1,11 +1,12 @@
 import ProductRepository, { CreateProductProps, ProductId } from "@/products/domain/repositories/ProductRepository";
-import { In, Repository } from "typeorm";
+import { ILike, In, Repository } from "typeorm";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import { dataSource } from "@/common/infrastructure/typeorm/dataSource";
 import ProductModel from "@/products/domain/models/ProductModel";
 import { NotFoundError } from "@/common/domain/errors/httpErrors";
+import { SearchInput, SearchOutput } from "@/common/domain/repositories/Repository";
 
-export default class ProductTypeormRepository {
+export default class ProductTypeormRepository implements ProductRepository {
     public sortableFields: string[] = ["name", "createdAt"];
 
     constructor (
@@ -56,5 +57,35 @@ export default class ProductTypeormRepository {
         }
 
         return product;
+    }
+
+    public async search(config: SearchInput): Promise<SearchOutput<ProductModel>> {
+        config.page = config.page ?? 1;
+        config.perPage = config.perPage ?? 15;
+    
+        if (!this.sortableFields.includes(config.sort)) {
+            config.sort = "createdAt";
+        }
+
+        if (!["asc", "desc"].includes(config.sortDir)) {
+            config.sortDir = "desc";
+        }
+
+        const [products, count]: [ProductModel[], number] = await this.productRepository.findAndCount({
+            ...(config.filter && { where: { name: ILike(`%${config.filter}%`) } }),
+            order: { [config.sort]: config.sortDir },
+            skip: (config.page - 1) * config.perPage,
+            take: config.perPage
+        });
+
+        return {
+            items: products,
+            total: count,
+            currentPage: config.page,
+            perPage: config.perPage,
+            filter: config.filter,
+            sort: config.sort,
+            sortDir: config.sortDir
+        }
     }
 }

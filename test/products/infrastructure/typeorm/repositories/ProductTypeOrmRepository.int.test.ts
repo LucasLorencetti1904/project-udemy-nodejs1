@@ -1,4 +1,5 @@
 import { NotFoundError } from "@/common/domain/errors/httpErrors";
+import { SearchOutput } from "@/common/domain/repositories/Repository";
 import { testingDataSource } from "@/common/infrastructure/typeorm/dataSource";
 import ProductModel from "@/products/domain/models/ProductModel";
 import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
@@ -9,7 +10,7 @@ import { randomUUID } from "node:crypto";
 describe ("ProductTypeormRepository Test.", () => {
     let sut: ProductTypeormRepository;
     let exampleOfProduct: ProductModel;
-    let result: ProductModel | ProductModel[];
+    let result: ProductModel | ProductModel[] | SearchOutput<ProductModel>;
 
     async function createAndSaveProduct(productData: Product): Promise<ProductModel> {
         const toCreate: ProductModel = testingDataSource.manager.create(Product, productData);
@@ -115,6 +116,73 @@ describe ("ProductTypeormRepository Test.", () => {
             await sut.delete(existentProduct.id);
             const deletedProduct: ProductModel = await testingDataSource.manager.findOneBy(Product, { id: existentProduct.id });
             expect (deletedProduct).toBeNull();
+        });
+    });
+
+    describe ("search", () => {
+        let products: ProductModel[];
+
+        async function createAndSaveProducts(productsData: Product[]): Promise<ProductModel[]> {
+            const toCreate: ProductModel[] = testingDataSource.manager.create(Product, productsData);
+            await testingDataSource.manager.save(toCreate);
+            return toCreate;
+        }
+        
+        beforeEach (() => {
+            products = [
+                productDataBuilder({ name: "A", createdAt: new Date(2025, 4, 19) }),
+                productDataBuilder({ name: "D", createdAt: new Date(2019, 2, 17) }),
+                productDataBuilder({ name: "C", createdAt: new Date(2024, 7, 23) }),
+                productDataBuilder({ name: "B", createdAt: new Date(2020, 2, 1) })
+            ];
+        });
+
+        afterEach (() => {
+            testingDataSource.manager.clear(Product);
+        });
+
+        it ("should apply a default pagination with the first unsorted items when params is not specified.", async () => {
+            products = Array.from({ length: 20 }, () => productDataBuilder({}));
+            await createAndSaveProducts(products);
+            result = await sut.search({});
+            expect (result.items).toHaveLength(15); 
+        });
+        
+        it ("should apply only paginate when other params is null.", async () => {
+            products = Array.from({ length: 20 }, () => productDataBuilder({}));
+            await createAndSaveProducts(products);
+            result = await sut.search({ page: 3, perPage: 7 });
+            expect (result.items).toHaveLength(6); 
+        });
+
+        it ("should apply only default desc sort by createdAt when params is null.", async () => {
+            await createAndSaveProducts(products);
+            result = await sut.search({});
+            expect (result.items[3].name).toBe("D"); 
+        });
+
+        it ("should apply only asc sort by name when other params is null.", async () => {
+            await createAndSaveProducts(products);
+            result = await sut.search({ sort: "name", sortDir: "asc" });
+            expect (result.items[3].createdAt.getFullYear()).toBe(2019); 
+        });
+        
+        it ("should apply only filter when other params is null.", async () => {
+            products = "AB,BC,CA".split(",").map((e) => productDataBuilder({ name: e }));
+            await createAndSaveProducts(products);
+            result = await sut.search({ filter: "c" });
+            expect (result.items[1].name).toBe("CA");
+        });
+
+        it ("should apply all params.", async () => {
+            products = "TESTE,tst,fake,test,te".split(",").map((e) => {
+                return productDataBuilder({ name: e })
+            });
+            await createAndSaveProducts(products);
+            result = await sut.search({
+                page: 1, perPage: 2, sortDir: "asc", sort: "name", filter: "tes"
+            });
+            expect (result.items[0].name).toBe("test");
         });
     });
 });
