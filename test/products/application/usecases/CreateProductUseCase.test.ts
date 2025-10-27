@@ -1,5 +1,5 @@
 import { BadRequestError, ConflictError } from "@/common/domain/errors/httpErrors";
-import { CreateProductUseCase } from "@/products/application/usecases/CreateProductUseCase";
+import { CreateProductUseCase } from "@/products/application/usecases/impl/CreateProductUseCaseImpl";
 import ProductRepository from "@/products/domain/repositories/ProductRepository";
 import MockProductRepository from "./ProductRepository.mock";
 import { CreateProductInput, CreateProductOutput } from "@/products/application/dto/CreateProductIoDto";
