@@ -22,11 +22,11 @@ implements ProductRepository {
         return super.applySort(items, sort ?? "createdAt", sortDir ?? "desc");
     }
     
-    public async findByName(name: string): Promise<ProductModel> {
+    public async findByName(name: string): Promise<ProductModel | null> {
         const product: ProductModel = this.items.find(product => product.name === name);
         
         if (!product) {
-            throw new NotFoundError(`Product not found with name ${name}.`);
+            return null;
         }
         
         return product;

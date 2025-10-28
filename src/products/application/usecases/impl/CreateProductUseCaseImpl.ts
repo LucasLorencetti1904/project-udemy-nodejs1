@@ -3,7 +3,7 @@ import CreateProductUseCase from "@/products/application/usecases/abstract/Creat
 import ProductModel from "@/products/domain/models/ProductModel";
 import { CreateProductInput, CreateProductOutput } from "@/products/application/dto/CreateProductIoDto";
 
-export class CreateProductUseCaseImpl extends CreateProductUseCase {
+export default class CreateProductUseCaseImpl extends CreateProductUseCase {
     public async execute(input: CreateProductInput): Promise<CreateProductOutput> {
         if (this.someInvalidField(input)) {
             throw new BadRequestError("Input data not provided or invalid.");

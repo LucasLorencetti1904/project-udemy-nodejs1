@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
 
-export default interface ProductController {
+export default interface Controller {
     handle(req: Request, res: Response): Promise<Response>;
 }

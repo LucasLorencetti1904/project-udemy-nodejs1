@@ -1,5 +1,4 @@
 import Repository, { SearchInput, SearchOutput } from "@/common/domain/repositories/Repository";
-import { NotFoundError } from "@/common/domain/errors/httpErrors";
 import { randomUUID } from "node:crypto";
 
 type ModelProps = {
@@ -16,7 +15,7 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
         public items: Model[] = [];
         public sortableFields: string[] = [];
 
-        public async findById(id: string): Promise<Model> {
+        public async findById(id: string): Promise<Model | null> {
             return this._get(id);
         }
 
@@ -40,9 +39,16 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
             return this.items[0];
         }
 
-        public async delete(id: string): Promise<void> {
+        public async delete(id: string): Promise<Model | null> {
             const index: number = await this.checkAndReturnIndexOf(id);
+
+            if (index < 0) {
+                return null;
+            }
+
+            const deleted: Model = this.items[index];
             this.items.splice(index, 1);
+            return deleted;
         }
 
         public async search(config: SearchInput): Promise<SearchOutput<Model>> {
@@ -91,11 +97,11 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
             return items.slice(start, end);
         }
 
-        protected async _get(id: string): Promise<Model> {
+        protected async _get(id: string): Promise<Model | null> {
             const result: Model | undefined = this.items.find(item => item.id === id);
 
             if (!result) {
-                throw new NotFoundError(`Model not found using ID ${id}`);
+                return null;
             }
 
             return result;

@@ -1,4 +1,3 @@
-import { NotFoundError } from "@/common/domain/errors/httpErrors";
 import ProductModel from "@/products/domain/models/ProductModel";
 import ProductInMemoryRepository from "@/products/infrastructure/inMemory/ProductInMemoryRepository";
 import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
@@ -13,8 +12,9 @@ describe ("ProductInMemoryRepository Test.", () => {
     });
 
     describe ("findByName", () => {
-        it ("should throw NotFoundError when product is not found.", async () => {
-            await expect (() => sut.findByName("Fake Name")).rejects.toBeInstanceOf(NotFoundError);
+        it ("should return null when product is not found.", async () => {
+            result = await sut.findByName("Fake Name");
+            expect (result).toBeNull();
         });
 
         it ("should return a product when it is found by name.", async () => {

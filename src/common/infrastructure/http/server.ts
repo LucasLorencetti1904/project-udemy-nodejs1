@@ -1,14 +1,11 @@
 import app from "@/common/infrastructure/http/app";
 import env from "@/common/infrastructure/env/dotenv"
-import { dataSource } from "@/common/infrastructure/typeorm/dataSource";
-
-const port: number = 3000;
+import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
 
 dataSource.initialize()
     .then(() => {
-        app.listen(port, () => {
+        app.listen(env.PORT, () => {
             console.log(`[${env.PORT}] Server Running...`);
-            console.log(`API Documentantion available at GET / docs`);
         });
     })
     .catch((err: Error) => {

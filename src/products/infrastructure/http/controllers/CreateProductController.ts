@@ -1,14 +1,14 @@
 import ApplicationError from "@/common/domain/errors/ApplicationErrors";
 import { CreateProductInput, CreateProductOutput } from "@/products/application/dto/CreateProductIoDto";
 import CreateProductUseCase from "@/products/application/usecases/abstract/CreateProductUseCase";
-import ProductController from "@/products/infrastructure/http/controllers/ProductController";
+import Controller from "@/common/infrastructure/http/controllers/Controller";
 import { Request, Response } from "express";
 import z, { ZodType } from "zod";
 
-export default class CreateProductController implements ProductController {
+export default class CreateProductController implements Controller {
     constructor(private readonly useCase: CreateProductUseCase) {}
 
-    public async handle(req: Request, res: Response): Promise<Response> {
+    public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
             this.validate(req.body);
             const product: CreateProductOutput = await this.useCase.execute(req.body);
@@ -19,7 +19,7 @@ export default class CreateProductController implements ProductController {
         }
     }
 
-    protected validate(data: unknown): void {
+    private validate(data: unknown): void {
         const schema: ZodType<CreateProductInput> = z.object({
             name: z.string(),
             price: z.number(),
@@ -30,7 +30,8 @@ export default class CreateProductController implements ProductController {
 
         if (!result.success) {
             throw new ApplicationError(`${result.error.issues.map((err) => {
-                return `${err.path.join(".")} -> ${err.message}`;}).join(`, `)}`);
+                return `${err.path.join(".")} -> ${err.message}`;
+            }).join(`, `)}`);
         }
-    }
+    }   
 }

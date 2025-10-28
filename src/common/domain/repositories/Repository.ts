@@ -19,8 +19,8 @@ export type SearchOutput<Model> = {
 export default interface Repository<Model, CreateData> {
     create(data: CreateData): Model;
     insert(model: Model): Promise<Model>;
-    findById(id: string): Promise<Model>;
+    findById(id: string): Promise<Model | null>;
     update(model: Model): Promise<Model>;
-    delete(id: string): Promise<void>;
+    delete(id: string): Promise<Model | null>;
     search(config: SearchInput): Promise<SearchOutput<Model>>;
 }

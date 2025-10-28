@@ -1,6 +1,5 @@
-import { NotFoundError } from "@/common/domain/errors/httpErrors";
 import { SearchOutput } from "@/common/domain/repositories/Repository";
-import { testingDataSource } from "@/common/infrastructure/typeorm/dataSource";
+import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
 import ProductModel from "@/products/domain/models/ProductModel";
 import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
@@ -34,8 +33,9 @@ describe ("ProductTypeormRepository Test.", () => {
     });
 
     describe ("findById", () => {
-        it ("should throw NotFoundError when product is not found by id.", async () => {
-            await expect (() => sut.findById(randomUUID())).rejects.toBeInstanceOf(NotFoundError);
+        it ("should return null when product is not found by id.", async () => {
+            result = await sut.findById(randomUUID());
+            expect (result).toBeNull();
         });
 
         it ("should find product by id.", async () => {
@@ -67,8 +67,9 @@ describe ("ProductTypeormRepository Test.", () => {
     });
 
     describe ("findByName", () => {
-        it ("should throw NotFoundError when product is not found by name.", async () => {
-            await expect (() => sut.findByName("Fake name")).rejects.toBeInstanceOf(NotFoundError);
+        it ("should return null when product is not found by name.", async () => {
+            result = await sut.findByName("Fake name");
+            expect (result).toBeNull();
         });
 
         it ("should find product by name.", async () => {
@@ -93,9 +94,9 @@ describe ("ProductTypeormRepository Test.", () => {
     describe ("update", () => {
         const exampleOfUpdatedProduct: ProductModel = { ...exampleOfProduct, name: "New Name "}; 
 
-        it ("should throw NotFoundError when product is not found by id.", async () => {
-            await expect (() => sut.update(exampleOfUpdatedProduct))
-                .rejects.toBeInstanceOf(NotFoundError);
+        it ("should return the same model when product is not found by id.", async () => {
+            result = await sut.update(exampleOfUpdatedProduct);
+            expect (result).toEqual(exampleOfUpdatedProduct);
         });
 
         it ("should update a existent product.", async () => {
@@ -106,16 +107,16 @@ describe ("ProductTypeormRepository Test.", () => {
     });
 
     describe ("delete", () => {
-        it ("should throw NotFoundError when product is not found by id.", async () => {
-            await expect (() => sut.delete(exampleOfProduct.id))
-                .rejects.toBeInstanceOf(NotFoundError);
+        it ("should return null when product is not found by id.", async () => {
+            result = await sut.delete(exampleOfProduct.id);
+            expect (result).toBeNull();
         });
 
-        it ("should delete a existent product.", async () => {
+        it ("should delete a existent product and return it.", async () => {
             const existentProduct: ProductModel = await createAndSaveProduct(exampleOfProduct);
-            await sut.delete(existentProduct.id);
+            result = await sut.delete(existentProduct.id);
             const deletedProduct: ProductModel = await testingDataSource.manager.findOneBy(Product, { id: existentProduct.id });
-            expect (deletedProduct).toBeNull();
+            expect (!deletedProduct && result.name == existentProduct.name).toBe(true);
         });
     });
 

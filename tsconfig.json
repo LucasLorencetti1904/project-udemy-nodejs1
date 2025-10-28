@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "module": "esnext",
+    "module": "nodenext",
 
     "types": ["vitest/globals"],
 
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
 
     "esModuleInterop": true,
     "declaration": true,
@@ -16,7 +16,7 @@
     "sourceMap": true,
     "outDir": "dist",
 
-    "baseUrl": "",
+    "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },

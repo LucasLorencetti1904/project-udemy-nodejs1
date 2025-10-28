@@ -1,9 +1,8 @@
 import ProductRepository, { CreateProductProps, ProductId } from "@/products/domain/repositories/ProductRepository";
 import { ILike, In, Repository } from "typeorm";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
-import { dataSource } from "@/common/infrastructure/typeorm/dataSource";
+import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
 import ProductModel from "@/products/domain/models/ProductModel";
-import { NotFoundError } from "@/common/domain/errors/httpErrors";
 import { SearchInput, SearchOutput } from "@/common/domain/repositories/Repository";
 
 export default class ProductTypeormRepository implements ProductRepository {
@@ -13,7 +12,7 @@ export default class ProductTypeormRepository implements ProductRepository {
         private readonly productRepository: Repository<Product> = dataSource.getRepository(Product)
     ){}
 
-    public async findById(id: string): Promise<ProductModel> {
+    public async findById(id: string): Promise<ProductModel | null> {
         return await this._getById(id);
     }
 
@@ -21,11 +20,11 @@ export default class ProductTypeormRepository implements ProductRepository {
         return await this.productRepository.find({ where: { id: In(productIds) } });
     }
 
-    public async findByName(name: string): Promise<ProductModel> {
+    public async findByName(name: string): Promise<ProductModel | null> {
         const product: ProductModel = await this.productRepository.findOneBy({ name });
 
         if (!product) {
-            throw new NotFoundError(`Product not found with name: ${name}.`);
+            return null;
         }
 
         return product;
@@ -41,19 +40,30 @@ export default class ProductTypeormRepository implements ProductRepository {
 
     public async update(model: ProductModel): Promise<ProductModel> {
         const toUpdate: ProductModel = await this._getById(model.id);
+
+        if (!toUpdate) {
+            return model;
+        }
+
         return await this.productRepository.save(toUpdate);
     }
 
-    public async delete(id: string): Promise<void> {
+    public async delete(id: string): Promise<ProductModel | null> {
         const toDelete: ProductModel = await this._getById(id);
+
+        if (!toDelete) {
+            return null;
+        }
+
         await this.productRepository.delete({ id: toDelete.id });
+        return toDelete;
     }
 
-    protected async _getById(id: string): Promise<ProductModel> {
+    protected async _getById(id: string): Promise<ProductModel | null> {
         const product: ProductModel = await this.productRepository.findOneBy({ id });
 
         if (!product) {
-            throw new NotFoundError(`Product not found with ID ${id}.`);
+            return null;
         }
 
         return product;

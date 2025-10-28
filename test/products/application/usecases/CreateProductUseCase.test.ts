@@ -1,21 +1,21 @@
 import { BadRequestError, ConflictError } from "@/common/domain/errors/httpErrors";
-import { CreateProductUseCase } from "@/products/application/usecases/impl/CreateProductUseCaseImpl";
+import CreateProductUseCaseImpl from "@/products/application/usecases/impl/CreateProductUseCaseImpl";
 import ProductRepository from "@/products/domain/repositories/ProductRepository";
 import MockProductRepository from "./ProductRepository.mock";
 import { CreateProductInput, CreateProductOutput } from "@/products/application/dto/CreateProductIoDto";
 import createProductInputBuilder from "@/products/infrastructure/testing/productInputBuilder";
 import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
 
-let sut: CreateProductUseCase;
+let sut: CreateProductUseCaseImpl;
 let mockRepository: ProductRepository;
 
 let productInputData: CreateProductInput;
 let productOutputData: CreateProductOutput;
 
-describe ("CreateProductUseCase Test.", () => {
+describe ("CreateProductUseCaseImpl Test.", () => {
     beforeEach (() => {
         mockRepository = new MockProductRepository();
-        sut = new CreateProductUseCase(mockRepository);
+        sut = new CreateProductUseCaseImpl(mockRepository);
     });
 
     [

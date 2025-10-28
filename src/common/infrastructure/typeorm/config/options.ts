@@ -1,12 +1,12 @@
-import { DataSource, DataSourceOptions } from "typeorm";
+import { DataSourceOptions } from "typeorm";
 import env from "@/common/infrastructure/env/dotenv";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
-import { CreateProducts1757537584621 } from "./migrations/1757537584621-CreateProducts";
+import { CreateProducts1757537584621 } from "../migrations/1757537584621-CreateProducts";
 
 const dbConfig: DataSourceOptions = {
     type: env.DB_TYPE,
     username: env.DB_USER,
-    database: env.DB_DATABASE,
+    database: env.DB_NAME,
     host: env.DB_HOST,
     port: env.DB_PORT,
     schema: env.DB_SCHEMA,
@@ -19,14 +19,4 @@ const config: DataSourceOptions = {
     migrations: [CreateProducts1757537584621]
 };
 
-export const dataSource: DataSource = new DataSource({
-    ...config,
-    synchronize: false,
-    logging: false
-});
-
-export const testingDataSource: DataSource = new DataSource({
-    ...config,
-    synchronize: true,
-    logging: true
-});
+export default config;
