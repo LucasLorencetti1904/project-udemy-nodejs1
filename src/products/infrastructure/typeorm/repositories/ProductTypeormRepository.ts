@@ -21,13 +21,7 @@ export default class ProductTypeormRepository implements ProductRepository {
     }
 
     public async findByName(name: string): Promise<ProductModel | null> {
-        const product: ProductModel = await this.productRepository.findOneBy({ name });
-
-        if (!product) {
-            return null;
-        }
-
-        return product;
+        return await this.productRepository.findOneBy({ name });
     }
 
     public create(data: CreateProductProps): ProductModel {
