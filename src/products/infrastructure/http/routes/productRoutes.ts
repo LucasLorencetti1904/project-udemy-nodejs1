@@ -1,5 +1,6 @@
-import { createProductController } from "@/main";
 import { Router } from "express";
+import CreateProductController from "../controllers/CreateProductController";
+import { container } from "tsyringe";
 
 const productRouter: Router = Router();
 
@@ -74,6 +75,9 @@ const productRouter: Router = Router();
  *       409:
  *         description: Name already used on another product
  */
+
+const createProductController: CreateProductController = container.resolve(CreateProductController);
+
 productRouter.post("/", createProductController.handle);
 
 export default productRouter;

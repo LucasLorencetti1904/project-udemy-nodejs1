@@ -2,8 +2,15 @@ import { BadRequestError, ConflictError } from "@/common/domain/errors/httpError
 import CreateProductUseCase from "@/products/application/usecases/abstract/CreateProductUseCase";
 import ProductModel from "@/products/domain/models/ProductModel";
 import { CreateProductInput, CreateProductOutput } from "@/products/application/dto/CreateProductIoDto";
+import { inject, injectable } from "tsyringe";
+import ProductRepository from "@/products/domain/repositories/ProductRepository";
 
+@injectable()
 export default class CreateProductUseCaseImpl extends CreateProductUseCase {
+    constructor(@inject("ProductRepository") protected readonly repo: ProductRepository) {
+        super(repo);
+    }
+
     public async execute(input: CreateProductInput): Promise<CreateProductOutput> {
         if (this.someInvalidField(input)) {
             throw new BadRequestError("Input data not provided or invalid.");

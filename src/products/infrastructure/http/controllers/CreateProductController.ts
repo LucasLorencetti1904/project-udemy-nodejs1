@@ -4,9 +4,14 @@ import CreateProductUseCase from "@/products/application/usecases/abstract/Creat
 import Controller from "@/common/infrastructure/http/controllers/Controller";
 import { Request, Response } from "express";
 import z, { ZodType } from "zod";
+import { inject, injectable } from "tsyringe";
 
+@injectable()
 export default class CreateProductController implements Controller {
-    constructor(private readonly useCase: CreateProductUseCase) {}
+    constructor (
+        @inject("CreateProductUseCase") 
+        private readonly useCase: CreateProductUseCase
+    ) {}
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {

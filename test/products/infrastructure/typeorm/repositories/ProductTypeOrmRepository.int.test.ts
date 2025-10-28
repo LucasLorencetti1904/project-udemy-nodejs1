@@ -28,7 +28,8 @@ describe ("ProductTypeormRepository Test.", () => {
 
     beforeEach(async () => {
         await testingDataSource.manager.query("DELETE FROM products");
-        sut = new ProductTypeormRepository(testingDataSource.getRepository(Product));
+        sut = new ProductTypeormRepository();
+        sut["productRepository"] = testingDataSource.getRepository(Product);
         exampleOfProduct = productDataBuilder({});
     });
 

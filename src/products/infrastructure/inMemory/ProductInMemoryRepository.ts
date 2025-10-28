@@ -1,8 +1,9 @@
-import { NotFoundError } from "@/common/domain/errors/httpErrors";
 import InMemoryRepository from "@/common/domain/repositories/InMemoryRepository";
 import ProductModel from "@/products/domain/models/ProductModel";
 import ProductRepository, { ProductId } from "@/products/domain/repositories/ProductRepository";
+import { injectable } from "tsyringe";
 
+@injectable()
 export default class ProductInMemoryRepository
 extends InMemoryRepository<ProductModel>
 implements ProductRepository {

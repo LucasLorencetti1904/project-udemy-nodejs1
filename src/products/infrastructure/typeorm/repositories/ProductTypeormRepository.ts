@@ -4,13 +4,12 @@ import Product from "@/products/infrastructure/typeorm/entities/Product";
 import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
 import ProductModel from "@/products/domain/models/ProductModel";
 import { SearchInput, SearchOutput } from "@/common/domain/repositories/Repository";
+import { injectable } from "tsyringe";
 
+@injectable()
 export default class ProductTypeormRepository implements ProductRepository {
-    public sortableFields: string[] = ["name", "createdAt"];
-
-    constructor (
-        private readonly productRepository: Repository<Product> = dataSource.getRepository(Product)
-    ){}
+    public sortableFields: string[] = ["name", "createdAt"]; 
+    private productRepository: Repository<Product> = dataSource.getRepository(Product);
 
     public async findById(id: string): Promise<ProductModel | null> {
         return await this._getById(id);

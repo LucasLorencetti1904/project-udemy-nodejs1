@@ -1,3 +1,5 @@
+import "reflect-metadata";
+import "@/common/infrastructure/container";
 import express from "express";
 import cors from "cors";
 import routes from "@/common/infrastructure/http/routes";
