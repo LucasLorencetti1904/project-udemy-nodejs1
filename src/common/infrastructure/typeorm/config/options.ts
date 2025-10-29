@@ -1,7 +1,7 @@
+import { CreateProducts1757537584621 } from "../migrations/1757537584621-CreateProducts";
 import { DataSourceOptions } from "typeorm";
 import env from "@/common/infrastructure/env/dotenv";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
-import { CreateProducts1757537584621 } from "../migrations/1757537584621-CreateProducts";
 
 const dbConfig: DataSourceOptions = {
     type: env.DB_TYPE,

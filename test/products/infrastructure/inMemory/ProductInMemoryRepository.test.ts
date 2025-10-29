@@ -1,7 +1,7 @@
-import ProductModel from "@/products/domain/models/ProductModel";
-import ProductInMemoryRepository from "@/products/infrastructure/inMemory/ProductInMemoryRepository";
-import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
 import { randomUUID } from "node:crypto";
+import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
+import ProductInMemoryRepository from "@/products/infrastructure/inMemory/ProductInMemoryRepository";
+import type ProductModel from "@/products/domain/models/ProductModel";
 
 describe ("ProductInMemoryRepository Test.", () => {
     let sut: ProductInMemoryRepository;

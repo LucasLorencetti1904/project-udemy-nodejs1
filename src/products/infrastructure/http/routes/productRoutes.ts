@@ -1,6 +1,6 @@
-import { Router } from "express";
-import CreateProductController from "../controllers/CreateProductController";
 import { container } from "tsyringe";
+import { Router } from "express";
+import CreateProductController from "@/products/infrastructure/http/controllers/CreateProductController";
 
 const productRouter: Router = Router();
 

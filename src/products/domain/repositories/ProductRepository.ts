@@ -1,5 +1,5 @@
-import Repository from "@/common/domain/repositories/Repository";
-import ProductModel from "@/products/domain/models/ProductModel";
+import type Repository from "@/common/domain/repositories/Repository";
+import type ProductModel from "@/products/domain/models/ProductModel";
 
 export type CreateProductProps = {
     name: string,
@@ -7,9 +7,7 @@ export type CreateProductProps = {
     quantity: number
 };
 
-export type ProductId = string;
-
 export default interface ProductRepository extends Repository<ProductModel, CreateProductProps> {
     findByName(name: string): Promise<ProductModel | null>;
-    findAllByIds(productIds: ProductId[]): Promise<ProductModel[]>;
+    findAllByIds(productIds: string[]): Promise<ProductModel[]>;
 }

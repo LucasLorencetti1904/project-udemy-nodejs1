@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { StubInMemoryRepository, StubModelProps } from "./InMemoryRepository.stub";
-import { NotFoundError } from "@/common/domain/errors/httpErrors";
-import { SearchOutput } from "@/common/domain/repositories/Repository";
+import type { SearchOutput } from "@/common/domain/repositories/Repository";
 
 describe ("InMemoryRepository Test.", () => {
     let sut: StubInMemoryRepository;
     let model: StubModelProps;
+    let result: StubModelProps;
     let props: any;
 
     beforeEach(() => {
@@ -27,19 +27,20 @@ describe ("InMemoryRepository Test.", () => {
 
     describe ("create", () => {
         it ("should create a new model.", () => {
-            const result: StubModelProps = sut.create(props);
+            result = sut.create(props);
             expect (result.name).toStrictEqual("test name")
         });
     
         it ("should insert the model.", async () => {
-            const result: StubModelProps = await sut.insert(model);
-            expect (result).toStrictEqual(sut.items[0])
+            result = await sut.insert(model);
+            expect (result).toEqual(sut.items[0])
         });
     })
 
     describe ("findById", () => {
-        it ("should throw an Not Found Error when data is not found by id.", () => {
-            expect (sut.findById("some_id")).rejects.toBeInstanceOf(NotFoundError);
+        it ("should return null when data is not found by id.", async () => {
+            result = await sut.findById("some_id");
+            expect (result).toBeNull();
         });
     
         it ("should return data founded by id.", async () => {
@@ -50,8 +51,9 @@ describe ("InMemoryRepository Test.", () => {
     });
 
     describe ("update", () => {
-        it ("should throw an Not Found Error when data to be updated is not found by id.", () => {
-            expect (sut.update(model)).rejects.toBeInstanceOf(NotFoundError);
+        it ("should return null when data to be updated is not found by id.", async () => {
+            result = await sut.update(model)
+            expect (result).toBeNull();
         });
     
         it ("should update data founded by id.", async () => {
@@ -66,8 +68,9 @@ describe ("InMemoryRepository Test.", () => {
     });
     
     describe ("delete", () => {
-        it ("should throw an Not Found Error when data to be deleted is not found by id.", () => {
-            expect (sut.delete(model.id)).rejects.toBeInstanceOf(NotFoundError);
+        it ("should return null when data to be deleted is not found by id.", async () => {
+            result = await sut.delete(model.id);
+            expect (result).toBeNull();
         });
     
         it ("should delete data founded by id.", async () => {

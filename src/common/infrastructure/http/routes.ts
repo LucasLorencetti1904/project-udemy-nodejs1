@@ -1,5 +1,6 @@
 import productRouter from "@/products/infrastructure/http/routes/productRoutes";
-import { Request, Response, Router } from "express";
+import { Router } from "express";
+import type { Request, Response } from "express";
 
 const routes = Router();
 

@@ -1,7 +1,7 @@
-import InMemoryRepository from "@/common/domain/repositories/InMemoryRepository";
-import ProductModel from "@/products/domain/models/ProductModel";
-import ProductRepository, { ProductId } from "@/products/domain/repositories/ProductRepository";
 import { injectable } from "tsyringe";
+import InMemoryRepository from "@/common/domain/repositories/InMemoryRepository";
+import type ProductModel from "@/products/domain/models/ProductModel";
+import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 
 @injectable()
 export default class ProductInMemoryRepository
@@ -33,7 +33,7 @@ implements ProductRepository {
         return product;
     }
 
-    public async findAllByIds(productIds: ProductId[]): Promise<ProductModel[]> {
+    public async findAllByIds(productIds: string[]): Promise<ProductModel[]> {
         return this.items.filter(item => {
             return productIds.includes(item.id);
         });

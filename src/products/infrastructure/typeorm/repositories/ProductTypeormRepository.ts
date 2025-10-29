@@ -1,21 +1,24 @@
-import ProductRepository, { CreateProductProps, ProductId } from "@/products/domain/repositories/ProductRepository";
+import { inject, injectable } from "tsyringe";
 import { ILike, In, Repository } from "typeorm";
-import Product from "@/products/infrastructure/typeorm/entities/Product";
-import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
-import ProductModel from "@/products/domain/models/ProductModel";
-import { SearchInput, SearchOutput } from "@/common/domain/repositories/Repository";
-import { injectable } from "tsyringe";
+import type ProductRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository"
+import type { CreateProductProps } from "@/products/domain/repositories/ProductRepository";
+import type { SearchInput, SearchOutput } from "@/common/domain/repositories/Repository";
+import type Product from "@/products/infrastructure/typeorm/entities/Product";
+import type ProductModel from "@/products/domain/models/ProductModel";
 
 @injectable()
 export default class ProductTypeormRepository implements ProductRepository {
     public sortableFields: string[] = ["name", "createdAt"]; 
-    private productRepository: Repository<Product> = dataSource.getRepository(Product);
+    constructor (
+        @inject("ProductDefaultTypeormRepository")
+        private productRepository: Repository<Product>
+    ) {}
 
     public async findById(id: string): Promise<ProductModel | null> {
         return await this._getById(id);
     }
 
-    public async findAllByIds(productIds: ProductId[]): Promise<ProductModel[]> {
+    public async findAllByIds(productIds: string[]): Promise<ProductModel[]> {
         return await this.productRepository.find({ where: { id: In(productIds) } });
     }
 

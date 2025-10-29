@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import ProductModel from "@/products/domain/models/ProductModel";
 import createProductInputBuilder from "@/products/infrastructure/testing/productInputBuilder";
+import type ProductModel from "@/products/domain/models/ProductModel";
 
 export default function productDataBuilder(props: Partial<ProductModel>): ProductModel {
     return {

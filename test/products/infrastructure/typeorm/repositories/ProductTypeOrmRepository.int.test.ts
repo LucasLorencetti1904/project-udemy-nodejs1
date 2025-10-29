@@ -1,10 +1,10 @@
-import { SearchOutput } from "@/common/domain/repositories/Repository";
+import { randomUUID } from "node:crypto";
+import ProductTypeormRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository";
 import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
-import ProductModel from "@/products/domain/models/ProductModel";
 import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
-import ProductTypeormRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository";
-import { randomUUID } from "node:crypto";
+import type ProductModel from "@/products/domain/models/ProductModel";
+import type { SearchOutput } from "@/common/domain/repositories/Repository";
 
 describe ("ProductTypeormRepository Test.", () => {
     let sut: ProductTypeormRepository;
@@ -28,8 +28,7 @@ describe ("ProductTypeormRepository Test.", () => {
 
     beforeEach(async () => {
         await testingDataSource.manager.query("DELETE FROM products");
-        sut = new ProductTypeormRepository();
-        sut["productRepository"] = testingDataSource.getRepository(Product);
+        sut = new ProductTypeormRepository(testingDataSource.getRepository(Product));
         exampleOfProduct = productDataBuilder({});
     });
 

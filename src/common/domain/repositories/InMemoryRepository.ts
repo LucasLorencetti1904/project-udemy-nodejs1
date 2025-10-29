@@ -1,5 +1,6 @@
-import Repository, { SearchInput, SearchOutput } from "@/common/domain/repositories/Repository";
 import { randomUUID } from "node:crypto";
+import type Repository from "@/common/domain/repositories/Repository"
+import type { SearchInput, SearchOutput } from "@/common/domain/repositories/Repository";
 
 type ModelProps = {
     id: string,
@@ -33,10 +34,15 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
             return model;
         }
 
-        public async update(model: Model): Promise<Model> {
+        public async update(model: Model): Promise<Model | null> {
             const index: number = await this.checkAndReturnIndexOf(model.id);
+
+            if (index < 0) {
+                return null;
+            }
+
             this.items[index] = model;
-            return this.items[0];
+            return this.items[index];
         }
 
         public async delete(id: string): Promise<Model | null> {
