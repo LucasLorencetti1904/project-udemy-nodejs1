@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { BadRequestError, ConflictError } from "@/common/domain/errors/httpErrors";
+import HttpError, { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 import type CreateProductUseCase from "@/products/application/usecases/createProduct/CreateProductUseCase";
 import type CreateProductInput from "@/products/application/usecases/createProduct/CreateProductIoDto";
 import type ProductOutput from "@/products/application/ProductOutput";
@@ -18,14 +18,22 @@ export default class CreateProductUseCaseImpl implements CreateProductUseCase {
             throw new BadRequestError("Input data not provided or invalid.");
         }
 
-        if (await this.nameAlreadyExists(input.name)) {
-            throw new ConflictError(`Product name ${input.name} already exists.`);
+        try {
+            if (await this.nameAlreadyExists(input.name)) {
+                throw new ConflictError(`Product name ${input.name} already exists.`);
+            }
+
+            const product: ProductModel = this.repo.create(input);
+            await this.repo.insert(product);
+
+            return product;
         }
-
-        const product: ProductModel = this.repo.create(input);
-        await this.repo.insert(product);
-
-        return product;
+        catch (e: unknown) {
+            if (e instanceof HttpError) {
+                throw e;
+            }
+            throw new InternalError(e instanceof Error ? e.message : String(e));
+        }
     }
 
     private async nameAlreadyExists(name: string): Promise<boolean> {

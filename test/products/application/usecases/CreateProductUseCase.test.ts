@@ -1,4 +1,4 @@
-import { BadRequestError, ConflictError } from "@/common/domain/errors/httpErrors";
+import { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 import CreateProductUseCaseImpl from "@/products/application/usecases/createProduct/CreateProductUseCaseImpl";
 import MockProductRepository from "./ProductRepository.mock";
 import createProductInputBuilder from "@/products/infrastructure/testing/productInputBuilder";
@@ -34,6 +34,11 @@ describe ("CreateProductUseCaseImpl Test.", () => {
         productInputData = createProductInputBuilder({ name: "Existent Product" });
         mockRepository.findByName = vi.fn().mockResolvedValue(productInputData.name);
         await expect ((sut.execute(productInputData))).rejects.toBeInstanceOf(ConflictError);
+    });
+
+    it ("should throw an InternalError when repository throws an unexpected error.", async () => {
+        mockRepository.insert = vi.fn().mockRejectedValue(new Error());
+        await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
     });
 
     it ("should return a new product when input data is valid.", async () => {

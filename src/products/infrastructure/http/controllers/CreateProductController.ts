@@ -7,6 +7,7 @@ import type CreateProductUseCase from "@/products/application/usecases/createPro
 import type CreateProductInput from "@/products/application/usecases/createProduct/CreateProductIoDto";
 import type ProductOutput from "@/products/application/ProductOutput";
 import type Controller from "@/common/infrastructure/http/controllers/Controller";
+import HttpError from "@/common/domain/errors/httpErrors";
 
 @injectable()
 export default class CreateProductController implements Controller {
@@ -22,7 +23,7 @@ export default class CreateProductController implements Controller {
             return res.status(201).json({ data: product });
         }
         catch(e: unknown) {
-            throw e;
+            return res.status((e as HttpError).statusCode);
         }
     }
 

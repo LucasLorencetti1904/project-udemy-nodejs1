@@ -1,4 +1,4 @@
-import { NotFoundError } from "@/common/domain/errors/httpErrors";
+import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import { randomUUID } from "node:crypto";
 import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProductById/GetProductByIdUseCaseImpl";
 import MockProductRepository from "./ProductRepository.mock";
@@ -22,7 +22,13 @@ describe ("GetProductByIdUseCaseImpl Test.", () => {
     it ("should throw an NotFoundError when product is not found by id.", async () => {
         productInputData = { id: "fake-id" };
         mockRepository.findById = vi.fn().mockResolvedValue(null);
-        await expect (() => sut.execute(productInputData)).rejects.toBeInstanceOf(NotFoundError);
+        await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(NotFoundError);
+    });
+
+    it ("should throw an InternalError when repository throws an unexpected error.", async () => {
+        productInputData = { id: "fake-id" };
+        mockRepository.findById = vi.fn().mockRejectedValue(new Error());
+        await expect (() => sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
     });
 
     it ("should return a product found by id.", async () => {

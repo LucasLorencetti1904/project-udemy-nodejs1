@@ -15,3 +15,7 @@ export class NotFoundError extends HttpError {
 export class ConflictError extends HttpError {
     public readonly statusCode: number = 409;
 }
+
+export class InternalError extends HttpError {
+    public readonly statusCode: number = 500;
+}

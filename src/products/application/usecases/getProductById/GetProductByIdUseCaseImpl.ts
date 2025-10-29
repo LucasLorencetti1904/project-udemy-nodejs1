@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { NotFoundError } from "@/common/domain/errors/httpErrors";
+import HttpError, { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import type GetProductByIdUseCase from "@/products/application/usecases/getProductById/GetProductByIdUseCase";
 import type ProductOutput from "@/products/application/ProductOutput";
 import type GetProductByIdProductInput from "@/products/application/usecases/getProductById/GetProductByIdInput";
@@ -14,13 +14,21 @@ export default class GetProductByIdUseCaseImpl implements GetProductByIdUseCase 
     ) {}
 
     public async execute(input: GetProductByIdProductInput): Promise<ProductOutput> {
-        const product: ProductModel = await this.getById(input.id);
+        try {
+            const product: ProductModel = await this.getById(input.id);
 
-        if (!product) {
-            throw new NotFoundError("Product not found by ID.");
+            if (!product) {
+                throw new NotFoundError("Product not found by ID.");
+            }
+
+            return product;
         }
-
-        return product;
+        catch (e: unknown) {
+            if (e instanceof HttpError) {
+                throw e;
+            }
+            throw new InternalError(e instanceof Error ? e.message : String(e));
+        }
     }
 
     private async getById(id: string): Promise<ProductModel> {
