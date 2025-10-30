@@ -5,6 +5,9 @@ import GetProductByIdController from "@/products/infrastructure/http/controllers
 
 const productRouter: Router = Router();
 
+const createProductController: CreateProductController = container.resolve(CreateProductController);
+const getProductByIdController: GetProductByIdController = container.resolve(GetProductByIdController);
+
 /**
  * @swagger
  * components:
@@ -53,7 +56,7 @@ const productRouter: Router = Router();
  */
 
 /**
- * @swagger
+* @swagger
  * /products:
  *   post:
  *     summary: Create a new product
@@ -76,11 +79,31 @@ const productRouter: Router = Router();
  *       409:
  *         description: Name already used on another product
  */
-
-const createProductController: CreateProductController = container.resolve(CreateProductController);
-const getProductByIdController: GetProductByIdController = container.resolve(GetProductByIdController);
-
 productRouter.post("/", createProductController.handle);
+
+/**
+ * @swagger
+ * /products/{id}:
+ *   get:
+ *     summary: Get a product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The product ID
+ *     responses:
+ *       200:
+ *         description: The product
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: The product was not found
+ */
 productRouter.get("/:id", getProductByIdController.handle);
 
 export default productRouter;
