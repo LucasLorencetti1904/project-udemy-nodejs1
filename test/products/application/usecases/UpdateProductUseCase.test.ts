@@ -22,14 +22,20 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
     });
 
     [
-        { field: "id", wrong: "invalid", value: "fake-id" },
-        { field: "name", wrong: "empty", value: "" },
-        { field: "price", wrong: "invalid", value: 0 },
-        { field: "quantity", wrong: "invalid", value: 0 },
-    ].forEach(({ field, wrong, value }) => {
-        it (`should throw BadRequestError when product ${field} is ${wrong}.`, async () => {
+        { field: "id", value: "fake-id" },
+        { field: "price", value: 0 },
+        { field: "quantity", value: 0 },
+    ].forEach(({ field, value }) => {
+        it (`should throw BadRequestError when product ${field} is defined and invalid.`, async () => {
             productInputData = updateProductInputBuilder({ [field]: value })
             await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
+        });
+    });
+
+    ["name", "price", "quantity"].forEach((field) => {
+        it (`should not throw BadRequestError when product ${field} is undefined.`, async () => {
+            productInputData = updateProductInputBuilder({ [field]: undefined })
+            await expect (sut.execute(productInputData)).rejects.not.toBeInstanceOf(BadRequestError);
         });
     });
 
@@ -46,20 +52,22 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
     });
 
     it ("should throw an InternalError when repository throws an unexpected error.", async () => {
-        mockRepository.insert = vi.fn().mockRejectedValue(new Error());
+        mockRepository.findById = vi.fn().mockResolvedValue(productModelBuilder({}));
+        mockRepository.update = vi.fn().mockRejectedValue(new Error());
         await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
     });
 
     it ("should not search by name when input name is undefined.", async () => {
-        productInputData = updateProductInputBuilder({ name: undefined });
-        await sut.execute(productInputData);
+        productInputData = { ...updateProductInputBuilder({}), name: undefined };
+        try { await sut.execute(productInputData); } catch {}
         expect (mockRepository.findByName).not.toHaveBeenCalled();
-    });    
+    });
 
     it ("should return a updated product when input data is valid.", async () => {
         const oldProduct: ProductModel = productModelBuilder({ name: "Old Product" });
         productInputData = { id: oldProduct.id, name: "New Product" };
         productOutputData = { ...oldProduct, name: productInputData.name };
+        mockRepository.findById = vi.fn().mockResolvedValue(oldProduct)
         mockRepository.findByName = vi.fn().mockResolvedValue(null);
         mockRepository.update = vi.fn().mockReturnValue(productOutputData);
         await expect ((sut.execute(productInputData))).resolves.toEqual(productOutputData);

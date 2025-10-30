@@ -20,9 +20,7 @@ export default class CreateProductUseCaseImpl extends WriteProductUseCase implem
         }
 
         try {
-            if (await this.nameAlreadyExists(input.name)) {
-                throw new ConflictError(`Product name ${input.name} already exists.`);
-            }
+            await this.checkIfNameAlreadyExists(input.name);
 
             const product: ProductModel = this.repo.create(input);
             await this.repo.insert(product);

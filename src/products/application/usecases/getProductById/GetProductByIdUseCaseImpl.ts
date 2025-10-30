@@ -16,17 +16,9 @@ export default class GetProductByIdUseCaseImpl extends ReadProductUseCase implem
 
     public async execute(input: GetProductByIdInput): Promise<ProductOutput> {
         try {
-            if (this.isInvalidId(input)) {
-                throw new BadRequestError("Input data not provided or invalid.");
-            }
+            this.checkId(input);
 
-            const product: ProductModel = await this.getById(input);
-
-            if (!product) {
-                throw new NotFoundError("Product not found by ID.");
-            }
-
-            return product;
+            return await this.tryGetById(input);
         }
         catch (e: unknown) {
             this.handleApplicationErrors(e);
