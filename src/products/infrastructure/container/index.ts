@@ -5,6 +5,7 @@ import { container } from "tsyringe";
 import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProductById/GetProductByIdUseCaseImpl";
+import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
 
 container.registerSingleton("ProductRepository", ProductTypeormRepository);
 container.registerInstance("ProductDefaultTypeormRepository", dataSource.getRepository(Product));
@@ -13,3 +14,4 @@ container.registerSingleton("CreateProductUseCase", CreateProductUseCaseImpl);
 container.registerSingleton("CreateProductController", CreateProductController);
 
 container.registerSingleton("GetProductByIdUseCase", GetProductByIdUseCaseImpl);
+container.registerSingleton("GetProductByIdController", GetProductByIdController)

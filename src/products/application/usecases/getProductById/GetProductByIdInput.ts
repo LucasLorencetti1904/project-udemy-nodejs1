@@ -1,5 +1,3 @@
-type GetProductByIdProductInput = {
-    id: string;
-};
+type GetProductByIdInput = string;
 
-export default GetProductByIdProductInput;
+export default GetProductByIdInput;

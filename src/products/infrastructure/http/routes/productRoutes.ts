@@ -1,6 +1,7 @@
 import { container } from "tsyringe";
 import { Router } from "express";
 import CreateProductController from "@/products/infrastructure/http/controllers/CreateProductController";
+import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
 
 const productRouter: Router = Router();
 
@@ -77,7 +78,9 @@ const productRouter: Router = Router();
  */
 
 const createProductController: CreateProductController = container.resolve(CreateProductController);
+const getProductByIdController: GetProductByIdController = container.resolve(GetProductByIdController);
 
 productRouter.post("/", createProductController.handle);
+productRouter.get("/:id", getProductByIdController.handle);
 
 export default productRouter;

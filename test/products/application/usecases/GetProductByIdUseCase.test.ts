@@ -20,20 +20,20 @@ describe ("GetProductByIdUseCaseImpl Test.", () => {
     });
 
     it ("should throw an NotFoundError when product is not found by id.", async () => {
-        productInputData = { id: "fake-id" };
+        productInputData = "fake-id";
         mockRepository.findById = vi.fn().mockResolvedValue(null);
         await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(NotFoundError);
     });
 
     it ("should throw an InternalError when repository throws an unexpected error.", async () => {
-        productInputData = { id: "fake-id" };
+        productInputData = "fake-id";
         mockRepository.findById = vi.fn().mockRejectedValue(new Error());
         await expect (() => sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
     });
 
     it ("should return a product found by id.", async () => {
-        productInputData = { id: randomUUID() };
-        productOutputData = productDataBuilder({ ...productInputData });
+        productInputData = randomUUID();
+        productOutputData = productDataBuilder({ id: productInputData });
         mockRepository.findById = vi.fn().mockResolvedValue(productOutputData);
         const result: ProductOutputDTO = await sut.execute(productInputData);
         expect (result).toEqual(productOutputData);
