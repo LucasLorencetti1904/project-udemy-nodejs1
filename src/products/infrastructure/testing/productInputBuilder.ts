@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import type CreateProductInput from "@/products/application/usecases/createProduct/CreateProductIoDto";
+import type CreateProductInput from "@/products/application/usecases/createProduct/CreateProductInput";
 import type ProductModel from "@/products/domain/models/ProductModel";
 
 export default function createProductInputBuilder(props: Partial<ProductModel>): CreateProductInput {

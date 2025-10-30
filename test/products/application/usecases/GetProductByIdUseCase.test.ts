@@ -1,11 +1,11 @@
-import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
+import { BadRequestError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import { randomUUID } from "node:crypto";
 import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProductById/GetProductByIdUseCaseImpl";
 import MockProductRepository from "./ProductRepository.mock";
 import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type GetProductByIdProductInput from "@/products/application/usecases/getProductById/GetProductByIdInput";
-import type ProductOutputDTO from "@/products/application/ProductOutput";
+import type ProductOutputDTO from "@/products/application/usecases/default/ProductOutput";
 
 let sut: GetProductByIdUseCaseImpl;
 let mockRepository: ProductRepository;
@@ -19,14 +19,19 @@ describe ("GetProductByIdUseCaseImpl Test.", () => {
          sut = new GetProductByIdUseCaseImpl(mockRepository);
     });
 
-    it ("should throw an NotFoundError when product is not found by id.", async () => {
+    it ("should throw an BadRequestError when id is invalid.", async () => {
         productInputData = "fake-id";
+        await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
+    });
+
+    it ("should throw an NotFoundError when product is not found by id.", async () => {
+        productInputData = randomUUID();
         mockRepository.findById = vi.fn().mockResolvedValue(null);
         await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(NotFoundError);
     });
 
     it ("should throw an InternalError when repository throws an unexpected error.", async () => {
-        productInputData = "fake-id";
+        productInputData = randomUUID();
         mockRepository.findById = vi.fn().mockRejectedValue(new Error());
         await expect (() => sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
     });

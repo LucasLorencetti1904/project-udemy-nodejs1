@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
 import createProductInputBuilder from "@/products/infrastructure/testing/productInputBuilder";
-import type ProductOutput from "@/products/application/ProductOutput";
+import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
 
 let sut: CreateProductController;
 let mockUseCase: MockCreateProductUseCase;
