@@ -1,7 +1,7 @@
 import { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
-import ProductOutput from "@/products/application/usecases/default/ProductOutput";
+import ProductModel from "@/products/domain/models/ProductModel";
 
-export default function productOutputBuilder(props: Partial<ProductOutput>): ProductOutput {
+export default function productModelBuilder(props: Partial<ProductModel>): ProductModel {
     return {
         ...updateProductInputBuilder({ ...props }),
         createdAt: props.createdAt ?? new Date(),

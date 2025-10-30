@@ -33,4 +33,8 @@ export default class CreateProductUseCaseImpl extends WriteProductUseCase implem
             this.handleApplicationErrors(e);
         }
     }
+
+    protected someInvalidField(input: CreateProductInput): boolean {
+        return !input.name || input.price <= 0 || input.quantity <= 0;
+    }
 }

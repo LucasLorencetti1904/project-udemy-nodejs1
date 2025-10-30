@@ -1,8 +1,6 @@
 import HttpError, { InternalError } from "@/common/domain/errors/httpErrors";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
-import type ProductInput from "@/products/application/usecases/default/ProductInput";
-import uuidValidate from "uuid";
 
 export default abstract class ProductUseCase {
     constructor(
@@ -18,10 +16,6 @@ export default abstract class ProductUseCase {
 
     protected async getById(id: string): Promise<ProductModel> {
         return await this.repo.findById(id);
-    }
-
-    protected someInvalidField(input: ProductInput): boolean {
-        return !input.name || input.price <= 0 || input.quantity <= 0;
     }
 
     protected isInvalidId(id: string) {

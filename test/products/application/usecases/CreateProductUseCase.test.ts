@@ -42,7 +42,7 @@ describe ("CreateProductUseCaseImpl Test.", () => {
     });
 
     it ("should return a new product when input data is valid.", async () => {
-        productInputData = createProductInputBuilder({ name: "Existent Product" });
+        productInputData = createProductInputBuilder({ name: "New Product" });
         productOutputData = productOutputBuilder({ ...productInputData });
         mockRepository.findByName = vi.fn().mockResolvedValue(null);
         mockRepository.create = vi.fn().mockReturnValue(productOutputData);

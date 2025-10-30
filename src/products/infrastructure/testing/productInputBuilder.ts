@@ -11,7 +11,7 @@ export function createProductInputBuilder(props: Partial<CreateProductInput>): C
     };
 }
 
-export function updateProductInputBuilder(props: Partial<UpdateProductInput>): UpdateProductInput {
+export function updateProductInputBuilder(props: Partial<UpdateProductInput>): Required<UpdateProductInput> {
     return {
         id: props.id ?? randomUUID(),
         ...createProductInputBuilder({ ...props })
