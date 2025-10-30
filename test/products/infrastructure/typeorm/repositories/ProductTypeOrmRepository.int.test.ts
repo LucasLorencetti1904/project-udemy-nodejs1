@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import ProductTypeormRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository";
 import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
-import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
+import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type { SearchOutput } from "@/common/domain/repositories/Repository";
@@ -29,7 +29,7 @@ describe ("ProductTypeormRepository Test.", () => {
     beforeEach(async () => {
         await testingDataSource.manager.query("DELETE FROM products");
         sut = new ProductTypeormRepository(testingDataSource.getRepository(Product));
-        exampleOfProduct = productDataBuilder({});
+        exampleOfProduct = productOutputBuilder({});
     });
 
     describe ("findById", () => {
@@ -131,10 +131,10 @@ describe ("ProductTypeormRepository Test.", () => {
         
         beforeEach (() => {
             products = [
-                productDataBuilder({ name: "A", createdAt: new Date(2025, 4, 19) }),
-                productDataBuilder({ name: "D", createdAt: new Date(2019, 2, 17) }),
-                productDataBuilder({ name: "C", createdAt: new Date(2024, 7, 23) }),
-                productDataBuilder({ name: "B", createdAt: new Date(2020, 2, 1) })
+                productOutputBuilder({ name: "A", createdAt: new Date(2025, 4, 19) }),
+                productOutputBuilder({ name: "D", createdAt: new Date(2019, 2, 17) }),
+                productOutputBuilder({ name: "C", createdAt: new Date(2024, 7, 23) }),
+                productOutputBuilder({ name: "B", createdAt: new Date(2020, 2, 1) })
             ];
         });
 
@@ -143,14 +143,14 @@ describe ("ProductTypeormRepository Test.", () => {
         });
 
         it ("should apply a default pagination with the first unsorted items when params is not specified.", async () => {
-            products = Array.from({ length: 20 }, () => productDataBuilder({}));
+            products = Array.from({ length: 20 }, () => productOutputBuilder({}));
             await createAndSaveProducts(products);
             result = await sut.search({});
             expect (result.items).toHaveLength(15); 
         });
         
         it ("should apply only paginate when other params is null.", async () => {
-            products = Array.from({ length: 20 }, () => productDataBuilder({}));
+            products = Array.from({ length: 20 }, () => productOutputBuilder({}));
             await createAndSaveProducts(products);
             result = await sut.search({ page: 3, perPage: 7 });
             expect (result.items).toHaveLength(6); 
@@ -169,7 +169,7 @@ describe ("ProductTypeormRepository Test.", () => {
         });
         
         it ("should apply only filter when other params is null.", async () => {
-            products = "AB,BC,CA".split(",").map((e) => productDataBuilder({ name: e }));
+            products = "AB,BC,CA".split(",").map((e) => productOutputBuilder({ name: e }));
             await createAndSaveProducts(products);
             result = await sut.search({ filter: "c" });
             expect (result.items[1].name).toBe("CA");
@@ -177,7 +177,7 @@ describe ("ProductTypeormRepository Test.", () => {
 
         it ("should apply all params.", async () => {
             products = "TESTE,tst,fake,test,te".split(",").map((e) => {
-                return productDataBuilder({ name: e })
+                return productOutputBuilder({ name: e })
             });
             await createAndSaveProducts(products);
             result = await sut.search({

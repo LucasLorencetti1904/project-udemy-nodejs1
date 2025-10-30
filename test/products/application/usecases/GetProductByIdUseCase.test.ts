@@ -2,7 +2,7 @@ import { BadRequestError, InternalError, NotFoundError } from "@/common/domain/e
 import { randomUUID } from "node:crypto";
 import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProductById/GetProductByIdUseCaseImpl";
 import MockProductRepository from "./ProductRepository.mock";
-import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
+import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type GetProductByIdProductInput from "@/products/application/usecases/getProductById/GetProductByIdInput";
 import type ProductOutputDTO from "@/products/application/usecases/default/ProductOutput";
@@ -38,7 +38,7 @@ describe ("GetProductByIdUseCaseImpl Test.", () => {
 
     it ("should return a product found by id.", async () => {
         productInputData = randomUUID();
-        productOutputData = productDataBuilder({ id: productInputData });
+        productOutputData = productOutputBuilder({ id: productInputData });
         mockRepository.findById = vi.fn().mockResolvedValue(productOutputData);
         const result: ProductOutputDTO = await sut.execute(productInputData);
         expect (result).toEqual(productOutputData);

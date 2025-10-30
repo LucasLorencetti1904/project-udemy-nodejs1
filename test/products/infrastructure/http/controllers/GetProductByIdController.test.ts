@@ -1,7 +1,7 @@
 import { MockGetProductByIdUseCase } from "./ProductUseCase.mock";
 import { Request, Response } from "express";
 import { NotFoundError } from "@/common/domain/errors/httpErrors";
-import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
+import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import { randomUUID } from "node:crypto";
 import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
 import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
@@ -44,7 +44,7 @@ describe ("CreateProductController Test.", () => {
     });
 
     it (`should return a response product json object with code 200 when product is found by id.`, async () => {
-        const useCaseOutput: ProductOutput = productDataBuilder({ id: req.params.id });
+        const useCaseOutput: ProductOutput = productOutputBuilder({ id: req.params.id });
         mockUseCase.execute.mockResolvedValue(useCaseOutput);
         await sut.handle(req as Request, res as Response);
         expect (mockUseCase.execute).toHaveBeenCalledWith(req.params.id);

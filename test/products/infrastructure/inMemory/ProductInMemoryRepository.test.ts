@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
+import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import ProductInMemoryRepository from "@/products/infrastructure/inMemory/ProductInMemoryRepository";
 import type ProductModel from "@/products/domain/models/ProductModel";
 
@@ -18,7 +18,7 @@ describe ("ProductInMemoryRepository Test.", () => {
         });
 
         it ("should return a product when it is found by name.", async () => {
-            const exampleOfProduct: ProductModel = productDataBuilder({ name: "Valid Name Example" });
+            const exampleOfProduct: ProductModel = productOutputBuilder({ name: "Valid Name Example" });
             sut.items.push(exampleOfProduct);
             result = await sut.findByName("Valid Name Example");
             expect (result).toEqual(exampleOfProduct);
@@ -34,8 +34,8 @@ describe ("ProductInMemoryRepository Test.", () => {
         it ("should return an array of products when it is found by id.", async () => {
             const randomIds: string[] = [randomUUID(), randomUUID()];
             sut.items = [
-                productDataBuilder({ id: randomIds[0] }),
-                productDataBuilder({ id: randomIds[1] })
+                productOutputBuilder({ id: randomIds[0] }),
+                productOutputBuilder({ id: randomIds[1] })
             ];
             result = await sut.findAllByIds([randomIds[1], randomUUID()]);
             expect (result).toEqual([sut.items[1]]);
@@ -45,9 +45,9 @@ describe ("ProductInMemoryRepository Test.", () => {
     describe ("applySort", () => {
         beforeEach (() => {    
             sut.items = [
-                productDataBuilder({ name: "b", createdAt: new Date(2024, 8, 12) }),
-                productDataBuilder({ name: "a", createdAt: new Date(2025, 10, 19) }),
-                productDataBuilder({ name: "c", createdAt: new Date(2025, 2, 29) })
+                productOutputBuilder({ name: "b", createdAt: new Date(2024, 8, 12) }),
+                productOutputBuilder({ name: "a", createdAt: new Date(2025, 10, 19) }),
+                productOutputBuilder({ name: "c", createdAt: new Date(2025, 2, 29) })
             ];
         });
 
@@ -77,9 +77,9 @@ describe ("ProductInMemoryRepository Test.", () => {
     describe ("applyFilter", () => {
         beforeEach (() => {
             sut.items = [
-                productDataBuilder({ name: "test name" }),
-                productDataBuilder({ name: "TEST NAME" }),
-                productDataBuilder({ name: "fake name"})
+                productOutputBuilder({ name: "test name" }),
+                productOutputBuilder({ name: "TEST NAME" }),
+                productOutputBuilder({ name: "fake name"})
             ];
         });
 

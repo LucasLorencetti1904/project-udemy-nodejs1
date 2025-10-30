@@ -1,8 +1,8 @@
 import { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 import CreateProductUseCaseImpl from "@/products/application/usecases/createProduct/CreateProductUseCaseImpl";
 import MockProductRepository from "./ProductRepository.mock";
-import createProductInputBuilder from "@/products/infrastructure/testing/productInputBuilder";
-import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
+import { createProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
+import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import type CreateProductInput from "@/products/application/usecases/createProduct/CreateProductInput";
 import type ProductOutputDTO from "@/products/application/usecases/default/ProductOutput";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
@@ -43,7 +43,7 @@ describe ("CreateProductUseCaseImpl Test.", () => {
 
     it ("should return a new product when input data is valid.", async () => {
         productInputData = createProductInputBuilder({ name: "Existent Product" });
-        productOutputData = productDataBuilder({ ...productInputData });
+        productOutputData = productOutputBuilder({ ...productInputData });
         mockRepository.findByName = vi.fn().mockResolvedValue(null);
         mockRepository.create = vi.fn().mockReturnValue(productOutputData);
         await expect ((sut.execute(productInputData))).resolves.toEqual(productOutputData);

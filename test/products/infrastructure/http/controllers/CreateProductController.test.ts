@@ -2,8 +2,8 @@ import CreateProductController from "@/products/infrastructure/http/controllers/
 import { MockCreateProductUseCase } from "./ProductUseCase.mock";
 import { Request, Response } from "express";
 import { ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
-import productDataBuilder from "@/products/infrastructure/testing/productDataBuilder";
-import createProductInputBuilder from "@/products/infrastructure/testing/productInputBuilder";
+import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
+import { createProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
 import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
 
 let sut: CreateProductController;
@@ -51,7 +51,7 @@ describe ("CreateProductController Test.", () => {
 
     it (`should return a response product json object with code 201 when product registered successfully.`, async () => {
         req.body = createProductInputBuilder({});
-        const useCaseOutput: ProductOutput = productDataBuilder({ ...req.body });
+        const useCaseOutput: ProductOutput = productOutputBuilder({ ...req.body });
         mockUseCase.execute.mockResolvedValue(useCaseOutput);
         await sut.handle(req as Request, res as Response);
         expect (mockUseCase.execute).toHaveBeenCalledWith(req.body);
