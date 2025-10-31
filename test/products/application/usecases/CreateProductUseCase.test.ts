@@ -23,10 +23,15 @@ describe ("CreateProductUseCaseImpl Test.", () => {
         { field: "name", wrong: "empty", value: "" },
         { field: "price", wrong: "invalid", value: 0 },
         { field: "quantity", wrong: "invalid", value: 0 },
-    ].forEach(({ field, wrong, value }) => {
+    ]
+    .forEach(({ field, wrong, value }) => {
         it (`should throw BadRequestError when product ${field} is ${wrong}.`, async () => {
             productInputData = createProductInputBuilder({ [field]: value })
             await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
+            
+            ["findByName", "create", "insert"].forEach((method) => {
+                expect (mockRepository[method]).not.toHaveBeenCalled();
+            })
         });
     });
 
@@ -34,11 +39,22 @@ describe ("CreateProductUseCaseImpl Test.", () => {
         productInputData = createProductInputBuilder({ name: "Existent Product" });
         mockRepository.findByName = vi.fn().mockResolvedValue(productInputData.name);
         await expect ((sut.execute(productInputData))).rejects.toBeInstanceOf(ConflictError);
+        
+        expect (mockRepository.findByName).toHaveBeenCalledExactlyOnceWith(productInputData.name);
+        expect (mockRepository.create).not.toHaveBeenCalled();
+        expect (mockRepository.insert).not.toHaveBeenCalled();
     });
 
-    it ("should throw an InternalError when repository throws an unexpected error.", async () => {
-        mockRepository.insert = vi.fn().mockRejectedValue(new Error());
-        await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
+    [
+        { method: "findByName", mockResult: vi.fn().mockRejectedValue(new Error()) },
+        { method: "create", mockResult: vi.fn(() => { throw new Error() }) },
+        { method: "insert", mockResult: vi.fn().mockRejectedValue(new Error()) }
+    ]
+    .forEach(({ method, mockResult }) => {
+        it (`should throw an InternalError when method '${method}' of repository throws an unexpected error.`, async () => {
+            mockRepository[method as any] = mockResult;
+            await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
+        });
     });
 
     it ("should return a new product when input data is valid.", async () => {
@@ -47,5 +63,15 @@ describe ("CreateProductUseCaseImpl Test.", () => {
         mockRepository.findByName = vi.fn().mockResolvedValue(null);
         mockRepository.create = vi.fn().mockReturnValue(productOutputData);
         await expect ((sut.execute(productInputData))).resolves.toEqual(productOutputData);
+
+        [
+            { method: "findByName", expectedValue: productInputData.name },
+            { method: "create", expectedValue: productInputData },
+            { method: "insert", expectedValue: productOutputData }
+        ]
+        .forEach(({method, expectedValue}) => {
+            expect (mockRepository[method as keyof MockProductRepository])
+                .toHaveBeenCalledExactlyOnceWith(expectedValue);
+        });
     });
 });

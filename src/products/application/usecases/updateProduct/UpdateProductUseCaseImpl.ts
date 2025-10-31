@@ -24,7 +24,9 @@ export default class UpdateProductUseCaseImpl extends WriteProductUseCase implem
             
             await this.checkIfNameAlreadyExists(input.name);
 
-            const toUpdate: ProductModel = await this.tryGetById(input.id);
+            const oldProduct: ProductModel = await this.tryGetById(input.id);
+
+            const toUpdate: ProductModel = { ...oldProduct, ...input };
 
             return await this.repo.update(toUpdate);
         }

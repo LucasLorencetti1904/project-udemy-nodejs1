@@ -8,6 +8,7 @@ import type UpdateProductInput from "@/products/application/usecases/updateProdu
 import { randomUUID } from "node:crypto";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
+import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 
 let sut: UpdateProductUseCaseImpl;
 let mockRepository: ProductRepository;
@@ -29,6 +30,10 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
         it (`should throw BadRequestError when product ${field} is defined and invalid.`, async () => {
             productInputData = updateProductInputBuilder({ [field]: value })
             await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
+
+            ["findByName", "findById", "update"].forEach((method) => {
+                expect (mockRepository[method]).not.toHaveBeenCalled();
+            });
         });
     });
 
@@ -39,22 +44,32 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
         });
     });
 
-    it ("should throw an NotFoundError when product is not found by id.", async () => {
-        productInputData = updateProductInputBuilder({ id: randomUUID() });
-        mockRepository.findById = vi.fn().mockResolvedValue(null);
-        await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(NotFoundError);
-    });
-
     it ("should throw ConflictError when product name already exists.", async () => {
         productInputData = updateProductInputBuilder({ name: "Existent Product" });
         mockRepository.findByName = vi.fn().mockResolvedValue(productInputData.name);
         await expect ((sut.execute(productInputData))).rejects.toBeInstanceOf(ConflictError);
+
+        expect (mockRepository.findByName).toHaveBeenCalledExactlyOnceWith(productInputData.name);
+        expect (mockRepository.findById).not.toHaveBeenCalled();
+        expect (mockRepository.update).not.toHaveBeenCalled();
     });
 
-    it ("should throw an InternalError when repository throws an unexpected error.", async () => {
-        mockRepository.findById = vi.fn().mockResolvedValue(productModelBuilder({}));
-        mockRepository.update = vi.fn().mockRejectedValue(new Error());
-        await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
+    it ("should throw an NotFoundError when product is not found by id.", async () => {
+        productInputData = updateProductInputBuilder({ id: randomUUID() });
+        mockRepository.findById = vi.fn().mockResolvedValue(null);
+        await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(NotFoundError);
+
+        expect (mockRepository.findByName).toHaveBeenCalledExactlyOnceWith(productInputData.name);
+        expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData.id);
+        expect (mockRepository.update).not.toHaveBeenCalled();
+    });
+
+    ["findByName", "findById", "update"].forEach((method) => {
+        it ("should throw an InternalError when repository throws an unexpected error.", async () => {
+            mockRepository.findById = vi.fn().mockResolvedValue(productOutputBuilder({}));
+            mockRepository[method] = vi.fn().mockRejectedValue(new Error());
+            await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
+        });
     });
 
     it ("should not search by name when input name is undefined.", async () => {
@@ -71,5 +86,14 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
         mockRepository.findByName = vi.fn().mockResolvedValue(null);
         mockRepository.update = vi.fn().mockReturnValue(productOutputData);
         await expect ((sut.execute(productInputData))).resolves.toEqual(productOutputData);
+
+        [
+            { method: "findByName", expectedValue: productInputData.name },
+            { method: "findById", expectedValue: productInputData.id },
+            { method: "update", expectedValue: { ...oldProduct, ...productInputData } }
+        ]
+        .forEach(({ method, expectedValue }) => {
+            expect (mockRepository[method]).toHaveBeenCalledExactlyOnceWith(expectedValue);
+        });
     });
 });

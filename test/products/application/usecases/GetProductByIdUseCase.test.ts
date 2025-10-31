@@ -22,18 +22,21 @@ describe ("GetProductByIdUseCaseImpl Test.", () => {
     it ("should throw an BadRequestError when id is invalid.", async () => {
         productInputData = "fake-id";
         await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
+        expect (mockRepository.findById).not.toHaveBeenCalled();
     });
 
     it ("should throw an NotFoundError when product is not found by id.", async () => {
         productInputData = randomUUID();
         mockRepository.findById = vi.fn().mockResolvedValue(null);
         await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(NotFoundError);
+        expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData);
     });
 
     it ("should throw an InternalError when repository throws an unexpected error.", async () => {
         productInputData = randomUUID();
         mockRepository.findById = vi.fn().mockRejectedValue(new Error());
         await expect (() => sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
+        expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData);
     });
 
     it ("should return a product found by id.", async () => {
@@ -42,5 +45,6 @@ describe ("GetProductByIdUseCaseImpl Test.", () => {
         mockRepository.findById = vi.fn().mockResolvedValue(productOutputData);
         const result: ProductOutputDTO = await sut.execute(productInputData);
         expect (result).toEqual(productOutputData);
+        expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData);
     });
 });
