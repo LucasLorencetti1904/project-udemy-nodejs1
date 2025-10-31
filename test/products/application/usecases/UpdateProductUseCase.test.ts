@@ -78,22 +78,64 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
         expect (mockRepository.findByName).not.toHaveBeenCalled();
     });
 
-    it ("should return a updated product when input data is valid.", async () => {
-        const oldProduct: ProductModel = productModelBuilder({ name: "Old Product" });
-        productInputData = { id: oldProduct.id, name: "New Product" };
-        productOutputData = { ...oldProduct, name: productInputData.name };
-        mockRepository.findById = vi.fn().mockResolvedValue(oldProduct)
-        mockRepository.findByName = vi.fn().mockResolvedValue(null);
-        mockRepository.update = vi.fn().mockReturnValue(productOutputData);
-        await expect ((sut.execute(productInputData))).resolves.toEqual(productOutputData);
+    const updateTestingCases: Record<string, any>[] = [
+        { field: "name", oldValue: "Old Name", newValue: "New Name" },
+        { field: "name", oldValue: "Name", newValue: "Nameee" },
+        { field: "price", oldValue: 1, newValue: 2.32 },
+        { field: "price", oldValue: 92.43, newValue: 84 },
+        { field: "quantity", oldValue: 1, newValue: 3 },
+        { field: "quantity", oldValue: 932, newValue: 927 },
+    ];
+    
+    updateTestingCases.forEach(({ field, oldValue, newValue }) => {
+        it ("should return a updated product when input data is defined and valid.", async () => {
+            productInputData = updateProductInputBuilder({ [field]: newValue });
+            const oldProduct: ProductModel = productModelBuilder({
+                ...productInputData, [field]: oldValue
+            });
+            productOutputData = { ...oldProduct, [field]: productInputData[field] };
+            mockRepository.findById = vi.fn().mockResolvedValue(oldProduct)
+            mockRepository.findByName = vi.fn().mockResolvedValue(null);
+            mockRepository.update = vi.fn().mockReturnValue(productOutputData);
+            await expect ((sut.execute(productInputData))).resolves.toEqual(productOutputData);
+    
+            [
+                { method: "findByName" , expectedValue: productInputData.name },
+                { method: "findById" , expectedValue: productInputData.id },
+                { method: "update" , expectedValue: { ...oldProduct, ...productInputData } }
+            ]
+            .forEach(({ method, expectedValue }) => {
+                expect (mockRepository[method]).toHaveBeenCalledExactlyOnceWith(expectedValue);
+            });
+        });
+    });
 
-        [
-            { method: "findByName", expectedValue: productInputData.name },
-            { method: "findById", expectedValue: productInputData.id },
-            { method: "update", expectedValue: { ...oldProduct, ...productInputData } }
-        ]
-        .forEach(({ method, expectedValue }) => {
-            expect (mockRepository[method]).toHaveBeenCalledExactlyOnceWith(expectedValue);
+    updateTestingCases.forEach(({ field, oldValue, newValue }) => {
+        it ("should return a updated product even when most input values are undefined.", async () => {
+            productInputData = {
+                id: randomUUID(), quantity: undefined, price: undefined, name: undefined
+            };
+            productInputData[field] = newValue;
+            const oldProduct: ProductModel = productModelBuilder({
+                id: productInputData.id, [field]: oldValue
+            });
+            productOutputData = { ...oldProduct, [field]: productInputData[field] };
+            mockRepository.findById = vi.fn().mockResolvedValue(oldProduct)
+            mockRepository.findByName = vi.fn().mockResolvedValue(null);
+            mockRepository.update = vi.fn().mockReturnValue(productOutputData);
+            await expect ((sut.execute(productInputData))).resolves.toEqual(productOutputData);
+            
+            if (productInputData.name != undefined) {
+                expect (mockRepository.findByName)
+                    .toHaveBeenCalledExactlyOnceWith(productInputData.name);
+            } else {
+                expect (mockRepository.findByName).not.toHaveBeenCalled();
+            }
+
+            expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData.id);
+            expect (mockRepository.update).toHaveBeenCalledExactlyOnceWith({
+                ...oldProduct, [field]: productInputData[field]
+            });
         });
     });
 });

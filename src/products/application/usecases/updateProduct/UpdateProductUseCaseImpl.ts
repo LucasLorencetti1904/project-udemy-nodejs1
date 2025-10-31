@@ -6,6 +6,7 @@ import type ProductModel from "@/products/domain/models/ProductModel";
 import type UpdateProductInput from "@/products/application/usecases/updateProduct/UpdateProductInput";
 import type UpdateProductUseCase from "@/products/application/usecases/updateProduct/UpdateProductUseCase";
 import WriteProductUseCase from "@/products/application/usecases/default/WriteProductUseCase";
+import filterToTruthyObject from "@/common/domain/helpers/filterToTruthyObject";
 
 @injectable()
 export default class UpdateProductUseCaseImpl extends WriteProductUseCase implements UpdateProductUseCase {
@@ -22,9 +23,11 @@ export default class UpdateProductUseCaseImpl extends WriteProductUseCase implem
                 throw new BadRequestError("Input data not provided or invalid.");
             }
             
-            await this.checkIfNameAlreadyExists(input.name);
+            input.name && await this.checkIfNameAlreadyExists(input.name);
 
             const oldProduct: ProductModel = await this.tryGetById(input.id);
+
+            input = filterToTruthyObject(input);
 
             const toUpdate: ProductModel = { ...oldProduct, ...input };
 
