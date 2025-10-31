@@ -57,21 +57,28 @@ describe ("CreateProductUseCaseImpl Test.", () => {
         });
     });
 
-    it ("should return a new product when input data is valid.", async () => {
-        productInputData = createProductInputBuilder({ name: "New Product" });
-        productOutputData = productOutputBuilder({ ...productInputData });
-        mockRepository.findByName = vi.fn().mockResolvedValue(null);
-        mockRepository.create = vi.fn().mockReturnValue(productOutputData);
-        await expect ((sut.execute(productInputData))).resolves.toEqual(productOutputData);
-
-        [
-            { method: "findByName", expectedValue: productInputData.name },
-            { method: "create", expectedValue: productInputData },
-            { method: "insert", expectedValue: productOutputData }
-        ]
-        .forEach(({method, expectedValue}) => {
-            expect (mockRepository[method as keyof MockProductRepository])
-                .toHaveBeenCalledExactlyOnceWith(expectedValue);
+    [
+        { name: "Product" }, { name: "New Product" },
+        { price: 1 }, { price: 322.99 },
+        { quantity: 1 }, { quantity: 812 }
+    ]
+    .forEach((specificInput) => {
+        it ("should return a new product when input data is valid.", async () => {
+            productInputData = createProductInputBuilder({ ...specificInput });
+            productOutputData = productOutputBuilder({ ...productInputData });
+            mockRepository.findByName = vi.fn().mockResolvedValue(null);
+            mockRepository.create = vi.fn().mockReturnValue(productOutputData);
+            await expect ((sut.execute(productInputData))).resolves.toEqual(productOutputData);
+    
+            [
+                { method: "findByName", expectedValue: productInputData.name },
+                { method: "create", expectedValue: productInputData },
+                { method: "insert", expectedValue: productOutputData }
+            ]
+            .forEach(({method, expectedValue}) => {
+                expect (mockRepository[method as keyof MockProductRepository])
+                    .toHaveBeenCalledExactlyOnceWith(expectedValue);
+            });
         });
     });
 });

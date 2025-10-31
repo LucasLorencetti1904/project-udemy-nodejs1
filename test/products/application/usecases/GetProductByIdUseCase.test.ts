@@ -25,18 +25,25 @@ describe ("GetProductByIdUseCaseImpl Test.", () => {
         expect (mockRepository.findById).not.toHaveBeenCalled();
     });
 
-    it ("should throw an NotFoundError when product is not found by id.", async () => {
-        productInputData = randomUUID();
-        mockRepository.findById = vi.fn().mockResolvedValue(null);
-        await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(NotFoundError);
-        expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData);
-    });
-
-    it ("should throw an InternalError when repository throws an unexpected error.", async () => {
-        productInputData = randomUUID();
-        mockRepository.findById = vi.fn().mockRejectedValue(new Error());
-        await expect (() => sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
-        expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData);
+    [
+        {
+            mockResult: vi.fn().mockResolvedValue(null),
+            expectedErrorInstance: NotFoundError,
+            occasion: "repository throws an unexpected error"
+        },
+        {
+            mockResult: vi.fn().mockRejectedValue(new Error()),
+            expectedErrorInstance: InternalError,
+            occasion: "product is not found by id"
+        },        
+    ]
+    .forEach(({ mockResult, expectedErrorInstance, occasion }) => {
+        it (`should throw an ${expectedErrorInstance.name} when ${occasion}.`, async () => {
+            productInputData = randomUUID();
+            mockRepository.findById = mockResult;
+            await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(expectedErrorInstance);
+            expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData);
+        });
     });
 
     it ("should return a product found by id.", async () => {
