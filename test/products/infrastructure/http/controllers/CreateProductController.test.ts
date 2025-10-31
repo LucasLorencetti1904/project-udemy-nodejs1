@@ -25,7 +25,7 @@ describe ("CreateProductController Test.", () => {
         };
     });
     
-    [["name", ""], ["quantity", -2], ["price", 0.0]].forEach(([field, value]) => {
+    [["quantity", -2], ["quantity", 3.9], ["quantity", 0], ["price", -7.89], ["price", 0.0]].forEach(([field, value]) => {
         it (`should return a response error with code 400 when product ${field} is invalid.`, async () => {
             req.body = createProductInputBuilder({ [field]: value });
             await sut.handle(req as Request, res as Response);
@@ -40,7 +40,6 @@ describe ("CreateProductController Test.", () => {
         { useCaseError: new ConflictError("Example"), statusCode: 409, occasion: "product name already exists" }
     ].forEach(({ useCaseError, statusCode, occasion }) => {
         it (`should return a response error with code ${statusCode} when ${occasion}.`, async () => {
-            req.body = createProductInputBuilder({});
             mockUseCase.execute.mockRejectedValue(useCaseError);
             await sut.handle(req as Request, res as Response);
             expect (mockUseCase.execute).toHaveBeenCalledExactlyOnceWith(req.body);
@@ -49,15 +48,23 @@ describe ("CreateProductController Test.", () => {
         });
     });
 
-    it (`should return a response product json object with code 201 when product registered successfully.`, async () => {
-        req.body = createProductInputBuilder({});
-        const useCaseOutput: ProductOutput = productOutputBuilder({ ...req.body });
-        mockUseCase.execute.mockResolvedValue(useCaseOutput);
-        await sut.handle(req as Request, res as Response);
-        expect (mockUseCase.execute).toHaveBeenCalledExactlyOnceWith(req.body);
-        expect (res.status).toHaveBeenCalledExactlyOnceWith(201);
-        expect (res.json).toHaveBeenCalledExactlyOnceWith({
-            message: expect.stringContaining(""), data: useCaseOutput
+
+    [
+        { name: "name" }, { name: "New Name" },
+        { price: 1 }, { price: 499.93 },
+        { quantity: 1 }, { quantity: 523 }
+    ]
+    .forEach((specificInput) => {
+        it (`should return a response product json object with code 201 when product registered successfully.`, async () => {
+            req.body = createProductInputBuilder({ ...specificInput });
+            const useCaseOutput: ProductOutput = productOutputBuilder({ ...req.body });
+            mockUseCase.execute.mockResolvedValue(useCaseOutput);
+            await sut.handle(req as Request, res as Response);
+            expect (mockUseCase.execute).toHaveBeenCalledExactlyOnceWith(req.body);
+            expect (res.status).toHaveBeenCalledExactlyOnceWith(201);
+            expect (res.json).toHaveBeenCalledExactlyOnceWith({
+                message: expect.stringContaining(""), data: useCaseOutput
+            });
         });
     });
 });
