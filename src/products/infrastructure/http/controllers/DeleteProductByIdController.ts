@@ -2,15 +2,15 @@ import { inject, injectable } from "tsyringe";
 import z from "zod";
 import Controller from "@/common/infrastructure/http/controllers/Controller";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
-import GetProductByIdUseCase from "@/products/application/usecases/getProductById/GetProductByIdUseCase";
 import type { Request, Response } from "express";
 import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
+import type DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
 
 @injectable()
-export default class GetProductByIdController extends Controller {
+export default class DeleteProductByIdController extends Controller {
     constructor (
-        @inject("GetProductByIdUseCase") 
-        private readonly useCase: GetProductByIdUseCase
+        @inject("DeleteProductByIdUseCase") 
+        private readonly useCase: DeleteProductByIdUseCase
     ) { super () }
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
