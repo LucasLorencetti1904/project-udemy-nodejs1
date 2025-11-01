@@ -3,12 +3,14 @@ import { Router } from "express";
 import CreateProductController from "@/products/infrastructure/http/controllers/CreateProductController";
 import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
 import UpdateProductController from "@/products/infrastructure/http/controllers/UpdateProductController";
+import DeleteProductByIdController from "@/products/infrastructure/http/controllers/DeleteProductByIdController";
 
 const productRouter: Router = Router();
 
 const createProductController: CreateProductController = container.resolve(CreateProductController);
 const getProductByIdController: GetProductByIdController = container.resolve(GetProductByIdController);
 const updateProductController: UpdateProductController = container.resolve(UpdateProductController);
+const deleteProductByIdController: DeleteProductByIdController = container.resolve(DeleteProductByIdController);
 
 /**
  * @swagger
@@ -142,5 +144,26 @@ productRouter.get("/:id", getProductByIdController.handle);
  *         description: Name already used on another product
  */
 productRouter.put("/:id", updateProductController.handle);
+
+/**
+ * @swagger
+ * /products/{id}:
+ *   delete:
+ *     summary: Delete a product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The product ID
+ *     responses:
+ *       204:
+ *         description: The product was successfully deleted
+ *       404:
+ *         description: The product was not found
+ */
+productRouter.delete("/:id", deleteProductByIdController.handle);
 
 export default productRouter;

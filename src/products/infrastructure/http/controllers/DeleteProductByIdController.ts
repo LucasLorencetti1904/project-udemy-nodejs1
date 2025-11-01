@@ -17,7 +17,7 @@ export default class DeleteProductByIdController extends Controller {
         try {
             this.validate(req.params.id);
             const product: ProductOutput = await this.useCase.execute(req.params.id);
-            return res.status(200).json({ message: "Product found.", data: product });
+            return res.status(200).json({ message: "Product deleted.", data: product });
         }
         catch(e: unknown) {
             return this.handleResponseErr(res, e as ApplicationError);
