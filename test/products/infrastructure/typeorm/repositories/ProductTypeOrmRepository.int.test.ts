@@ -5,6 +5,9 @@ import productOutputBuilder from "@/products/infrastructure/testing/productOutpu
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type { SearchOutput } from "@/common/domain/repositories/Repository";
+import UpdateProductInput from "@/products/application/usecases/updateProduct/UpdateProductInput";
+import { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
+import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
 
 describe ("ProductTypeormRepository Test.", () => {
     let sut: ProductTypeormRepository;
@@ -92,17 +95,17 @@ describe ("ProductTypeormRepository Test.", () => {
     });
 
     describe ("update", () => {
-        const exampleOfUpdatedProduct: ProductModel = { ...exampleOfProduct, name: "New Name "}; 
-
         it ("should return the same model when product is not found by id.", async () => {
-            result = await sut.update(exampleOfUpdatedProduct);
-            expect (result).toEqual(exampleOfUpdatedProduct);
+            result = await sut.update(exampleOfProduct);
+            expect (result).toEqual(exampleOfProduct);
         });
 
         it ("should update a existent product.", async () => {
-            const existentProduct: ProductModel = await createAndSaveProduct(exampleOfProduct);
-            result = await sut.update(exampleOfUpdatedProduct);
-            expect (result.name).toBe(existentProduct.name);
+            const input: UpdateProductInput = updateProductInputBuilder({ name: "New Name" });
+            exampleOfProduct = productModelBuilder({ ...input, name: "Old Name" });
+            const oldProduct: ProductModel = await createAndSaveProduct(exampleOfProduct);
+            result = await sut.update({ ...oldProduct, ...input });
+            expect (result.name).not.toBe(oldProduct.name);
         });
     });
 

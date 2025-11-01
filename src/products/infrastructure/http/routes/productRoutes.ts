@@ -2,11 +2,13 @@ import { container } from "tsyringe";
 import { Router } from "express";
 import CreateProductController from "@/products/infrastructure/http/controllers/CreateProductController";
 import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
+import UpdateProductController from "@/products/infrastructure/http/controllers/UpdateProductController";
 
 const productRouter: Router = Router();
 
 const createProductController: CreateProductController = container.resolve(CreateProductController);
 const getProductByIdController: GetProductByIdController = container.resolve(GetProductByIdController);
+const updateProductController: UpdateProductController = container.resolve(UpdateProductController);
 
 /**
  * @swagger
@@ -105,5 +107,40 @@ productRouter.post("/", createProductController.handle);
  *         description: The product was not found
  */
 productRouter.get("/:id", getProductByIdController.handle);
+
+/**
+ * @swagger
+ * /products/{id}:
+ *   put:
+ *     summary: Update a product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The product ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Product'
+ *     responses:
+ *       200:
+ *         description: The product was successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Input data not provided or invalid
+ *       404:
+ *         description: The product was not found
+ *       409:
+ *         description: Name already used on another product
+ */
+productRouter.put("/:id", updateProductController.handle);
 
 export default productRouter;

@@ -41,7 +41,7 @@ export default class ProductTypeormRepository implements ProductRepository {
             return model;
         }
 
-        return await this.productRepository.save(toUpdate);
+        return await this.productRepository.save({ ...toUpdate, ...model });
     }
 
     public async delete(id: string): Promise<ProductModel | null> {

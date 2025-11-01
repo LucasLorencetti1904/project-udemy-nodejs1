@@ -7,6 +7,7 @@ import Product from "@/products/infrastructure/typeorm/entities/Product";
 import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProductById/GetProductByIdUseCaseImpl";
 import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
 import UpdateProductUseCaseImpl from "@/products/application/usecases/updateProduct/UpdateProductUseCaseImpl";
+import UpdateProductController from "@/products/infrastructure/http/controllers/UpdateProductController";
 
 container.registerSingleton("ProductRepository", ProductTypeormRepository);
 container.registerInstance("ProductDefaultTypeormRepository", dataSource.getRepository(Product));
@@ -18,3 +19,4 @@ container.registerSingleton("GetProductByIdUseCase", GetProductByIdUseCaseImpl);
 container.registerSingleton("GetProductByIdController", GetProductByIdController);
 
 container.registerSingleton("UpdateProductUseCase", UpdateProductUseCaseImpl);
+container.registerSingleton("UpdateProductController", UpdateProductController);
