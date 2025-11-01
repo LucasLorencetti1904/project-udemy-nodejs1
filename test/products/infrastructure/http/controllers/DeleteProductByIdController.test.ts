@@ -1,21 +1,20 @@
-import { MockGetProductByIdUseCase } from "./ProductUseCase.mock";
+import { MockDeleteProductByIdUseCase, } from "./ProductUseCase.mock";
 import { Request, Response } from "express";
 import { NotFoundError } from "@/common/domain/errors/httpErrors";
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import { randomUUID } from "node:crypto";
-import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
 import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
 
-let sut: GetProductByIdController;
-let mockUseCase: MockGetProductByIdUseCase;
+let sut: DeleteProductByIdController;
+let mockUseCase: MockDeleteProductByIdUseCase;
 
 let req: Partial<Request>;
 let res: Partial<Response>;
 
-describe ("CreateProductController Test.", () => {
+describe ("DeleteProductByIdController Test.", () => {
     beforeEach (() => {
-        mockUseCase = new MockGetProductByIdUseCase();
-        sut = new GetProductByIdController(mockUseCase);
+        mockUseCase = new MockDeleteProductByIdUseCase();
+        sut = new DeleteProductByIdController(mockUseCase);
         req = {
             params: {
                 id: randomUUID()
@@ -43,7 +42,7 @@ describe ("CreateProductController Test.", () => {
         expect (res.json).toHaveBeenCalledWith({ message: expect.stringContaining("") });
     });
 
-    it (`should return a response product json object with code 200 when product is found by id.`, async () => {
+    it (`should return a response product json object with code 200 when product is deleted by id.`, async () => {
         const useCaseOutput: ProductOutput = productOutputBuilder({ id: req.params.id });
         mockUseCase.execute.mockResolvedValue(useCaseOutput);
         await sut.handle(req as Request, res as Response);
