@@ -19,7 +19,7 @@ implements ProductRepository {
         }); 
     }
 
-    public async applySort(items: ProductModel[], sort?: string, sortDir?: "asc" | "desc"): Promise<ProductModel[]> {
+    public async applySort(items: ProductModel[], sort?: keyof ProductModel, sortDir?: "asc" | "desc"): Promise<ProductModel[]> {
         return super.applySort(items, sort ?? "createdAt", sortDir ?? "desc");
     }
     

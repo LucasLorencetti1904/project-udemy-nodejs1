@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type Repository from "@/common/domain/repositories/Repository"
-import type { SearchInput, SearchOutput } from "@/common/domain/repositories/Repository";
+import type { RepositorySearchInput, RepostitorySearchOutput } from "@/common/domain/repositories/Repository";
 
 type ModelProps = {
     id: string,
@@ -57,10 +57,10 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
             return deleted;
         }
 
-        public async search(config: SearchInput): Promise<SearchOutput<Model>> {
+        public async search(config: RepositorySearchInput<Model>): Promise<RepostitorySearchOutput<Model>> {
             const page: number = config.page ?? 1;
             const perPage: number = config.perPage ?? 15;
-            const sort: string | null = config.sort ?? null;
+            const sort: keyof Model | null = config.sort ?? null;
             const sortDir: "asc" | "desc" | null = config.sortDir ?? null;
             const filter: string | null = config.filter ?? null;
 
@@ -81,8 +81,8 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
 
         protected abstract applyFilter(items: Model[], filter?: string): Promise<Model[]>
 
-        protected async applySort(items: Model[], sort?: string, sortDir?: "asc" | "desc"): Promise<Model[]> {
-            if (!sort || !this.sortableFields.includes(sort)) {
+        protected async applySort(items: Model[], sort?: keyof Model, sortDir?: "asc" | "desc"): Promise<Model[]> {
+            if (!sort || !this.sortableFields.includes(sort as string)) {
                 return items;
             }
 

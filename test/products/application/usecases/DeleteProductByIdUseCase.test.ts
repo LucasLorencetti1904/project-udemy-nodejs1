@@ -16,7 +16,7 @@ let productInputData: DeleteProductByIdInput;
 describe ("DeleteProductByIdUseCaseImpl Test.", () => {
     beforeEach (() => {
         mockRepository = new MockProductRepository();
-         sut = new DeleteProductByIdUseCaseImpl(mockRepository);
+        sut = new DeleteProductByIdUseCaseImpl(mockRepository);
     });
 
     it ("should throw an BadRequestError when id is invalid.", async () => {

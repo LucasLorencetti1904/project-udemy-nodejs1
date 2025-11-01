@@ -4,7 +4,7 @@ import testingDataSource from "@/common/infrastructure/typeorm/config/testingDat
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import type ProductModel from "@/products/domain/models/ProductModel";
-import type { SearchOutput } from "@/common/domain/repositories/Repository";
+import type { RepostitorySearchOutput } from "@/common/domain/repositories/Repository";
 import UpdateProductInput from "@/products/application/usecases/updateProduct/UpdateProductInput";
 import { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
 import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
@@ -12,7 +12,7 @@ import productModelBuilder from "@/products/infrastructure/testing/productModelB
 describe ("ProductTypeormRepository Test.", () => {
     let sut: ProductTypeormRepository;
     let exampleOfProduct: ProductModel;
-    let result: ProductModel | ProductModel[] | SearchOutput<ProductModel>;
+    let result: ProductModel | ProductModel[] | RepostitorySearchOutput<ProductModel>;
 
     async function createAndSaveProduct(productData: Product): Promise<ProductModel> {
         const toCreate: ProductModel = testingDataSource.manager.create(Product, productData);

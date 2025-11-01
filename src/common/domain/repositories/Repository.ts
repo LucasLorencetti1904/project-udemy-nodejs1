@@ -1,26 +1,26 @@
-export type SearchInput = {
+export type RepositorySearchInput<TModel> = {
     page?: number,
     perPage?: number,
-    sort?: string,
+    sort?: keyof TModel,
     sortDir?: "asc" | "desc",
     filter?: string
 };
 
-export type SearchOutput<Model> = {
-    items: Model[],
+export type RepostitorySearchOutput<TModel> = {
+    items: TModel[],
     total: number,
     currentPage: number,
     perPage: number,
-    sort: string,
+    sort: keyof TModel,
     sortDir: "asc" | "desc",
     filter: string
 };
 
-export default interface Repository<Model, CreateData> {
-    create(data: CreateData): Model;
-    insert(model: Model): Promise<Model>;
-    findById(id: string): Promise<Model | null>;
-    update(model: Model): Promise<Model>;
-    delete(id: string): Promise<Model | null>;
-    search(config: SearchInput): Promise<SearchOutput<Model>>;
+export default interface Repository<TModel, CreateData> {
+    create(data: CreateData): TModel;
+    insert(model: TModel): Promise<TModel>;
+    findById(id: string): Promise<TModel | null>;
+    update(model: TModel): Promise<TModel>;
+    delete(id: string): Promise<TModel | null>;
+    search(config: RepositorySearchInput<TModel>): Promise<RepostitorySearchOutput<TModel>>;
 }

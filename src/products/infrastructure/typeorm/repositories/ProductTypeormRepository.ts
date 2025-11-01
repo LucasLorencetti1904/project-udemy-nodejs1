@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { ILike, In, Repository } from "typeorm";
 import type ProductRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository"
 import type { CreateProductProps } from "@/products/domain/repositories/ProductRepository";
-import type { SearchInput, SearchOutput } from "@/common/domain/repositories/Repository";
+import type { RepositorySearchInput, RepostitorySearchOutput } from "@/common/domain/repositories/Repository";
 import type Product from "@/products/infrastructure/typeorm/entities/Product";
 import type ProductModel from "@/products/domain/models/ProductModel";
 
@@ -65,7 +65,7 @@ export default class ProductTypeormRepository implements ProductRepository {
         return product;
     }
 
-    public async search(config: SearchInput): Promise<SearchOutput<ProductModel>> {
+    public async search(config: RepositorySearchInput<ProductModel>): Promise<RepostitorySearchOutput<ProductModel>> {
         config.page = config.page ?? 1;
         config.perPage = config.perPage ?? 15;
     
