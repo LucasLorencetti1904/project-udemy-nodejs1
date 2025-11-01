@@ -8,6 +8,7 @@ import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProduc
 import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
 import UpdateProductUseCaseImpl from "@/products/application/usecases/updateProduct/UpdateProductUseCaseImpl";
 import UpdateProductController from "@/products/infrastructure/http/controllers/UpdateProductController";
+import DeleteProductByIdUseCaseImpl from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCaseImpl";
 
 container.registerSingleton("ProductRepository", ProductTypeormRepository);
 container.registerInstance("ProductDefaultTypeormRepository", dataSource.getRepository(Product));
@@ -20,3 +21,5 @@ container.registerSingleton("GetProductByIdController", GetProductByIdController
 
 container.registerSingleton("UpdateProductUseCase", UpdateProductUseCaseImpl);
 container.registerSingleton("UpdateProductController", UpdateProductController);
+
+container.registerSingleton("DeleteProductByIdUseCase", DeleteProductByIdUseCaseImpl);

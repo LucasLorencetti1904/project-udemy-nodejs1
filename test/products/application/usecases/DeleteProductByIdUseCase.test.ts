@@ -1,15 +1,17 @@
 import { BadRequestError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import { randomUUID } from "node:crypto";
 import MockProductRepository from "./ProductRepository.mock";
-import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
-import type ProductOutputDTO from "@/products/application/usecases/default/ProductOutput";
+import DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
+import DeleteProductByIdUseCaseImpl from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCaseImpl";
+import type DeleteProductByIdInput from "@/products/application/usecases/deleteProductById/DeleteProductByIdInput";
+import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
+import type ProductModel from "@/products/domain/models/ProductModel";
 
 let sut: DeleteProductByIdUseCase;
 let mockRepository: ProductRepository;
 
-let productInputData: DeleteProductByIdUseCase;
-let productOutputData: ProductOutputDTO;
+let productInputData: DeleteProductByIdInput;
 
 describe ("DeleteProductByIdUseCaseImpl Test.", () => {
     beforeEach (() => {
@@ -20,35 +22,35 @@ describe ("DeleteProductByIdUseCaseImpl Test.", () => {
     it ("should throw an BadRequestError when id is invalid.", async () => {
         productInputData = "fake-id";
         await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
-        expect (mockRepository.findById).not.toHaveBeenCalled();
+        expect (mockRepository.delete).not.toHaveBeenCalled();
     });
 
     [
         {
             mockResult: vi.fn().mockResolvedValue(null),
             expectedErrorInstance: NotFoundError,
-            occasion: "repository throws an unexpected error"
+            occasion: "product is not found by id"
         },
         {
             mockResult: vi.fn().mockRejectedValue(new Error()),
             expectedErrorInstance: InternalError,
-            occasion: "product is not found by id"
+            occasion: "repository throws an unexpected error"
         },        
     ]
     .forEach(({ mockResult, expectedErrorInstance, occasion }) => {
         it (`should throw an ${expectedErrorInstance.name} when ${occasion}.`, async () => {
             productInputData = randomUUID();
-            mockRepository.findById = mockResult;
+            mockRepository.delete = mockResult;
             await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(expectedErrorInstance);
-            expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData);
+            expect (mockRepository.delete).toHaveBeenCalledExactlyOnceWith(productInputData);
         });
     });
 
     it ("should delete product found by id.", async () => {
         productInputData = randomUUID();
-        productOutputData = productOutputBuilder({ id: productInputData });
-        mockRepository.findById = vi.fn().mockResolvedValue(productOutputData);
-        await expect(sut.execute(productInputData)).resolves.not.toThrowError();
-        expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData);
+        const deletedProduct: ProductModel = productModelBuilder({ id: productInputData })
+        mockRepository.delete = vi.fn().mockResolvedValue(deletedProduct);
+        await expect(sut.execute(productInputData)).resolves.toEqual(deletedProduct);
+        expect (mockRepository.delete).toHaveBeenCalledExactlyOnceWith(productInputData);
     });
 });
