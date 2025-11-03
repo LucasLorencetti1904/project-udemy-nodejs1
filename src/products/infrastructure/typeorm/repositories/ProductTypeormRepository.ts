@@ -68,7 +68,8 @@ export default class ProductTypeormRepository implements ProductRepository {
     public async search(config: RepositorySearchInput<ProductModel>): Promise<RepostitorySearchOutput<ProductModel>> {
         config.page = config.page ?? 1;
         config.perPage = config.perPage ?? 15;
-    
+        config.filter = config.filter ?? "";
+
         if (!this.sortableFields.includes(config.sort)) {
             config.sort = "createdAt";
         }
