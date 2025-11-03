@@ -5,6 +5,7 @@ import productModelBuilder from "@/products/infrastructure/testing/productModelB
 import type { RepositorySearchOutput } from "@/common/domain/repositories/Repository";
 import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 import SearchProductUseCaseImpl from "@/products/application/usecases/searchProduct/SeachProductUseCaseImpl";
+import { InternalError } from "@/common/domain/errors/httpErrors";
 
 describe ("SearchProductUseCase Test", () => {  
     let sut: SearchProductUseCase;
@@ -131,5 +132,10 @@ describe ("SearchProductUseCase Test", () => {
             expect (result).toEqual(expect.objectContaining(expected));
             expect (mockRepository.search).toHaveBeenCalledExactlyOnceWith(input);
         });
+    });
+
+    it ("should throw an InternalError repository throws an unexpected error.", async () => {
+        await expect (sut.execute({})).rejects.toBeInstanceOf(InternalError);
+        expect (mockRepository.search).toHaveBeenCalledExactlyOnceWith({});
     });
 });
