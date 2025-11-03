@@ -2,84 +2,133 @@ import type { SearchProductInput, SearchProductOutput } from "@/products/applica
 import MockProductRepository from "./ProductRepository.mock";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
-import type { RepostitorySearchOutput } from "@/common/domain/repositories/Repository";
+import type { RepositorySearchOutput } from "@/common/domain/repositories/Repository";
 import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 import SearchProductUseCaseImpl from "@/products/application/usecases/searchProduct/SeachProductUseCaseImpl";
-
-function randomInt(n: number): number {
-    return Math.floor(Math.random() * n) + 1;
-}
 
 describe ("SearchProductUseCase Test", () => {  
     let sut: SearchProductUseCase;
     let mockRepository: MockProductRepository;
 
-    let models: ProductModel[];
+    let models: ProductModel[] = Array(50).fill(productModelBuilder({}));
+    let exampleOfModel: ProductModel = productModelBuilder({});
 
-    let repoOutput: RepostitorySearchOutput<ProductModel>;
-    let useCaseOutput: SearchProductOutput;
+    let defaultRepoOutput: RepositorySearchOutput<ProductModel>;
+    let repoOutput: RepositorySearchOutput<ProductModel>;
 
     let result: SearchProductOutput;
 
     beforeEach (() => {
         mockRepository = new MockProductRepository();
         sut = new SearchProductUseCaseImpl(mockRepository);
+        
+        models = Array(50).fill(productModelBuilder({ name: "Non" }));
+
+        defaultRepoOutput = {
+            currentPage: 1,
+            perPage: 15,
+            sort: "createdAt",
+            sortDir: "desc",
+            items: models.slice(24, 32),
+            total: models.length,
+            filter: ""
+        };
     });
 
-    const defaultInputProps: SearchProductInput = {
-        page: 1,
-        perPage: 15,
-        sort: "createdAt",
-        sortDir: "desc",
-        filter: ""
+    type Case = {
+        description: string,
+        input: SearchProductInput,
+        output: Partial<RepositorySearchOutput<ProductModel>>,
+        expected: Partial<SearchProductOutput>
     };
 
-    const inputs: SearchProductInput[] = [
-        { ...defaultInputProps },
-        { ...defaultInputProps, page: randomInt(15), perPage: randomInt(15) },
-        { ...defaultInputProps, sort: "name" },
-        { ...defaultInputProps, sortDir: "asc" },
-        { ...defaultInputProps, filter: "am" },
-        { page: randomInt(15), perPage: randomInt(15), sort: "name", sortDir: "asc", filter: "am" }
+    const specificCases: Case[] = [
+        {
+            description: "should return default pagination values.",
+            input: {},
+            output: { currentPage: 1, perPage: 15 },
+            expected: { currentPage: 1, perPage: 15 }
+        },
+        {
+            description: "should handle with default pagination values when invalid.",
+            input: { page: -6, perPage: 9.22 },
+            output: { currentPage: 1, perPage: 15 },
+            expected: { currentPage: 1, perPage: 15 }
+        },
+        {
+            description: "should return pagination values.",
+            input: { page: 4, perPage: 8 },
+            output: { currentPage: 4, perPage: 8 },
+            expected: { currentPage: 4, perPage: 8 }
+        },
+        {
+            description: "should return the number of last page.",
+            input: { perPage: 5 },
+            output: { total: 50, perPage: 5 },
+            expected: { lastPage: 10 }
+        },
+        {
+            description: "should return the first 15 items by default.",
+            input: {},
+            output: { items: models.slice(0, 15) },
+            expected: { items: models.slice(0, 15) }
+        },
+        {
+            description: "should return 6 items of page 2.",
+            input: { page: 2, perPage: 6 },
+            output: { items: models.slice(6, 12) },
+            expected: { items: models.slice(6, 12) }
+        },
+        {
+            description: "should return the count of all items.",
+            input: {},
+            output: { total: 50 },
+            expected: { total: 50 }
+        },
+        {
+            description: "should return the count of filtered items.",
+            input: { filter: "es" },
+            output: { total: 2 },
+            expected: { total: 2 }
+        },
+        {
+            description: "should return the complex search result.",
+            input: {
+                page: 2,
+                perPage: 25,
+                sort: "name",
+                sortDir: "asc",
+                filter: "am"
+            },
+            output: {
+                currentPage: 2,
+                perPage: 25,
+                sort: "name",
+                sortDir: "asc",
+                filter: "am", 
+                total: 50,
+                items: Array(3).fill(productModelBuilder({ ...exampleOfModel, name: "example" }))
+            },
+            expected: {
+                currentPage: 2,
+                perPage: 25,
+                lastPage: 2,
+                total: 50,
+                items: Array(3).fill(productModelBuilder({ ...exampleOfModel, name: "example" }))
+            }
+        }
     ];
 
-    inputs.forEach((input) => {
-        it (`should apply only paginate ${input.page} with ${input.perPage} per page, sorted by ${input.sortDir} '${input.sort}' items (${input.filter ? "with" : "no"} filter).`, async () => {
-            if (input.filter) {
-                models = [
-                    productModelBuilder({ name: "EXAMPLE" }),
-                    productModelBuilder({ name: "Test" }),
-                    productModelBuilder({ name: "example" })
-                ];
-            }
-            else {
-                models = Array(50).fill(productModelBuilder({}));
-            }
-            
-            const firstIndex: number = (input.page - 1) * input.perPage;
-            const lastIndex: number = firstIndex + input.perPage
-    
+    specificCases.forEach(({ description, input, output, expected }) => {
+        it (description, async () => {    
             repoOutput = {
-                currentPage: input.page,
-                perPage: input.perPage,
-                sort: input.sort,
-                sortDir: input.sortDir,
-                filter: input.filter,
-                total: models.length,
-                items: models.slice(firstIndex, lastIndex),
+                ...defaultRepoOutput,
+                ...output
             };
-
-            useCaseOutput = {
-                currentPage: repoOutput.currentPage,
-                perPage: repoOutput.perPage,
-                lastPage: Math.ceil(repoOutput.total / repoOutput.perPage),
-                total: repoOutput.total,
-                items: repoOutput.items
-            };            
     
             mockRepository.search.mockResolvedValue(repoOutput);
             result = await sut.execute(input);
-            expect (result).toEqual(useCaseOutput);
+            expect (result).toEqual(expect.objectContaining(expected));
             expect (mockRepository.search).toHaveBeenCalledExactlyOnceWith(input);
         });
     });

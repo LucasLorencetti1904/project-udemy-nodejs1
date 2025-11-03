@@ -2,7 +2,7 @@ import type { SearchProductInput, SearchProductOutput } from "@/products/applica
 import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 import { inject } from "tsyringe";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
-import type { RepostitorySearchOutput } from "@/common/domain/repositories/Repository";
+import type { RepositorySearchOutput } from "@/common/domain/repositories/Repository";
 import type ProductModel from "@/products/domain/models/ProductModel";
 
 export default class SearchProductUseCaseImpl implements SearchProductUseCase {
@@ -12,11 +12,11 @@ export default class SearchProductUseCaseImpl implements SearchProductUseCase {
     ) {}
 
     public async execute(input: SearchProductInput): Promise<SearchProductOutput> {
-        const output: RepostitorySearchOutput<ProductModel> = await this.repo.search(input);
+        const output: RepositorySearchOutput<ProductModel> = await this.repo.search(input);
         return this.toUseCaseOutput(output);
     }
 
-    private toUseCaseOutput(repoOutput: RepostitorySearchOutput<ProductModel>): SearchProductOutput {
+    private toUseCaseOutput(repoOutput: RepositorySearchOutput<ProductModel>): SearchProductOutput {
         return {
             items: repoOutput.items,
             total: repoOutput.total,

@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { ILike, In, Repository } from "typeorm";
 import type ProductRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository"
 import type { CreateProductProps } from "@/products/domain/repositories/ProductRepository";
-import type { RepositorySearchInput, RepostitorySearchOutput } from "@/common/domain/repositories/Repository";
+import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/Repository";
 import type Product from "@/products/infrastructure/typeorm/entities/Product";
 import type ProductModel from "@/products/domain/models/ProductModel";
 
@@ -65,9 +65,13 @@ export default class ProductTypeormRepository implements ProductRepository {
         return product;
     }
 
-    public async search(config: RepositorySearchInput<ProductModel>): Promise<RepostitorySearchOutput<ProductModel>> {
-        config.page = config.page ?? 1;
-        config.perPage = config.perPage ?? 15;
+    public async search(config: RepositorySearchInput<ProductModel>): Promise<RepositorySearchOutput<ProductModel>> {
+        const setDefaultIfInvalid = (n: number, def: number): number => {
+            return !n || n < 1|| !Number.isInteger(n) ? def : n;
+        };
+
+        config.page = setDefaultIfInvalid(config.page, 1);
+        config.perPage = setDefaultIfInvalid(config.perPage, 15);
         config.filter = config.filter ?? "";
 
         if (!this.sortableFields.includes(config.sort)) {

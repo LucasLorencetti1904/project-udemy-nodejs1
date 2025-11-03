@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { StubInMemoryRepository, StubModelProps } from "./InMemoryRepository.stub";
-import type { RepostitorySearchOutput } from "@/common/domain/repositories/Repository";
+import type { RepositorySearchOutput } from "@/common/domain/repositories/Repository";
 
 describe ("InMemoryRepository Test.", () => {
     let sut: StubInMemoryRepository;
@@ -206,7 +206,7 @@ describe ("InMemoryRepository Test.", () => {
     });
 
     describe ("search", () => {
-        let result: RepostitorySearchOutput<StubModelProps>;
+        let result: RepositorySearchOutput<StubModelProps>;
 
         beforeEach(() => {
             sut.items = Array(16).fill(model);
@@ -214,7 +214,7 @@ describe ("InMemoryRepository Test.", () => {
 
         it ("should return a default pagination with the first unsorted items when params is not specified.", async () => {
             result = await sut['search']({});
-            expect (result).toEqual<RepostitorySearchOutput<StubModelProps>>({
+            expect (result).toEqual<RepositorySearchOutput<StubModelProps>>({
                 items: sut.items.slice(0, 15),
                 total: sut.items.length,
                 currentPage: 1,
@@ -230,7 +230,7 @@ describe ("InMemoryRepository Test.", () => {
                 page: 4,
                 perPage: 4
             });
-            expect (result).toEqual<RepostitorySearchOutput<StubModelProps>>({
+            expect (result).toEqual<RepositorySearchOutput<StubModelProps>>({
                 items: sut.items.slice(0, 4),
                 total: sut.items.length,
                 currentPage: 4,
@@ -253,7 +253,7 @@ describe ("InMemoryRepository Test.", () => {
                 perPage: 2,
                 filter: "tE"
             });
-            expect (result).toEqual<RepostitorySearchOutput<StubModelProps>>({
+            expect (result).toEqual<RepositorySearchOutput<StubModelProps>>({
                 items: [sut.items[3]],
                 total: 3,
                 currentPage: 2,
@@ -277,7 +277,7 @@ describe ("InMemoryRepository Test.", () => {
                 sort: "name",
                 sortDir: "asc"
             });
-            expect (result).toEqual<RepostitorySearchOutput<StubModelProps>>({
+            expect (result).toEqual<RepositorySearchOutput<StubModelProps>>({
                 items: [sut.items[0], sut.items[2]],
                 total: 4,
                 currentPage: 2,
@@ -302,7 +302,7 @@ describe ("InMemoryRepository Test.", () => {
                 sortDir: "desc",
                 filter: "2"
             });
-            expect (result).toEqual<RepostitorySearchOutput<StubModelProps>>({
+            expect (result).toEqual<RepositorySearchOutput<StubModelProps>>({
                 items: [sut.items[0], sut.items[2]],
                 total: 2,
                 currentPage: 1,

@@ -6,7 +6,7 @@ export type RepositorySearchInput<TModel> = {
     filter?: string
 };
 
-export type RepostitorySearchOutput<TModel> = {
+export type RepositorySearchOutput<TModel> = {
     items: TModel[],
     total: number,
     currentPage: number,
@@ -22,5 +22,5 @@ export default interface Repository<TModel, CreateData> {
     findById(id: string): Promise<TModel | null>;
     update(model: TModel): Promise<TModel>;
     delete(id: string): Promise<TModel | null>;
-    search(config: RepositorySearchInput<TModel>): Promise<RepostitorySearchOutput<TModel>>;
+    search(config: RepositorySearchInput<TModel>): Promise<RepositorySearchOutput<TModel>>;
 }

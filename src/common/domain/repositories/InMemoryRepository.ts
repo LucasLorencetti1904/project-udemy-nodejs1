@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type Repository from "@/common/domain/repositories/Repository"
-import type { RepositorySearchInput, RepostitorySearchOutput } from "@/common/domain/repositories/Repository";
+import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/Repository";
 
 type ModelProps = {
     id: string,
@@ -57,7 +57,7 @@ export default abstract class InMemoryRepository<Model extends ModelProps>
             return deleted;
         }
 
-        public async search(config: RepositorySearchInput<Model>): Promise<RepostitorySearchOutput<Model>> {
+        public async search(config: RepositorySearchInput<Model>): Promise<RepositorySearchOutput<Model>> {
             const page: number = config.page ?? 1;
             const perPage: number = config.perPage ?? 15;
             const sort: keyof Model | null = config.sort ?? null;
