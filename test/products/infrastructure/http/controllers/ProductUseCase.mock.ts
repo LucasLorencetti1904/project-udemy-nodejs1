@@ -1,6 +1,7 @@
 import CreateProductUseCase from "@/products/application/usecases/createProduct/CreateProductUseCase";
 import DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
 import GetProductByIdUseCase from "@/products/application/usecases/getProductById/GetProductByIdUseCase";
+import SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 import UpdateProductUseCase from "@/products/application/usecases/updateProduct/UpdateProductUseCase";
 
 export class MockCreateProductUseCase implements CreateProductUseCase {
@@ -16,5 +17,9 @@ export class MockUpdateProductUseCase implements UpdateProductUseCase {
 }
 
 export class MockDeleteProductByIdUseCase implements DeleteProductByIdUseCase {
+    public execute = vi.fn();
+}
+
+export class MockSearchProductUseCase implements SearchProductUseCase {
     public execute = vi.fn();
 }
