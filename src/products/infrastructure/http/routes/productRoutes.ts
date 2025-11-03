@@ -4,6 +4,7 @@ import CreateProductController from "@/products/infrastructure/http/controllers/
 import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
 import UpdateProductController from "@/products/infrastructure/http/controllers/UpdateProductController";
 import DeleteProductByIdController from "@/products/infrastructure/http/controllers/DeleteProductByIdController";
+import SearchProductController from "@/products/infrastructure/http/controllers/SearchProductController";
 
 const productRouter: Router = Router();
 
@@ -11,6 +12,7 @@ const createProductController: CreateProductController = container.resolve(Creat
 const getProductByIdController: GetProductByIdController = container.resolve(GetProductByIdController);
 const updateProductController: UpdateProductController = container.resolve(UpdateProductController);
 const deleteProductByIdController: DeleteProductByIdController = container.resolve(DeleteProductByIdController);
+const searchProductController: SearchProductController = container.resolve(SearchProductController);
 
 /**
  * @swagger
@@ -165,5 +167,52 @@ productRouter.put("/:id", updateProductController.handle);
  *         description: The product was not found
  */
 productRouter.delete("/:id", deleteProductByIdController.handle);
+
+/**
+ * @swagger
+ * /products:
+ *   get:
+ *     summary: Returns a paginated list of products
+ *     tags: [Products]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: The page number to retrieve
+ *       - in: query
+ *         name: per_page
+ *         schema:
+ *           type: integer
+ *           default: 15
+ *         description: Number of items per page
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *           default: null
+ *         description: Field to sort by
+ *       - in: query
+ *         name: sort_dir
+ *         schema:
+ *           type: string
+ *           default: null
+ *         description: Sort direction (asc or desc)
+ *       - in: query
+ *         name: filter
+ *         schema:
+ *           type: string
+ *           default: null
+ *         description: Filter string to search for specific products
+ *     responses:
+ *       200:
+ *         description: A paginated list of products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ProductListResponse'
+ */
+productRouter.get("/", searchProductController.handle);
 
 export default productRouter;

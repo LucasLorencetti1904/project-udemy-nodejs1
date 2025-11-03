@@ -1,11 +1,12 @@
 import type { SearchProductInput, SearchProductOutput } from "@/products/application/usecases/searchProduct/SearchProdutIo";
 import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
-import { inject } from "tsyringe";
+import { inject, injectable } from "tsyringe";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/Repository";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import ReadProductUseCase from "@/products/application/usecases/default/ReadProductUseCase";
 
+@injectable()
 export default class SearchProductUseCaseImpl extends ReadProductUseCase implements SearchProductUseCase {
     constructor(
         @inject("ProductRepository")
