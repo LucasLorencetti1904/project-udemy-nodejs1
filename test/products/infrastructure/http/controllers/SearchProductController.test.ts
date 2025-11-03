@@ -27,12 +27,13 @@ describe ("SearchProductController Test.", () => {
         };
     });
 
-    const invalidSearchInput: SearchProductInput = {
+    const invalidSearchInput: SearchProductInput & Record<"unexpectedField", any> = {
         page: "page" as any,
         perPage: false as any,
         sort: 12 as any,
         sortDir: true as any,
-        filter: -579 as any
+        filter: -579 as any,
+        unexpectedField: "Unexpected Value"
     };
 
     for (let field in invalidSearchInput) {

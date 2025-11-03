@@ -33,7 +33,7 @@ export default class UpdateProductController extends Controller {
             name: z.string().optional(),
             price: z.number().gt(0).optional(),
             quantity: z.number().int().gt(0).optional()
-        });
+        }).strict();
 
         const result = schema.safeParse(data);
 

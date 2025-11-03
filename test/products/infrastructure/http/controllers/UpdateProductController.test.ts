@@ -2,7 +2,7 @@ import { MockUpdateProductUseCase } from "./ProductUseCase.mock";
 import { Request, Response } from "express";
 import { ConflictError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
-import productInputBuilder from "@/products/infrastructure/testing/productInputBuilder";
+import productInputBuilder, { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
 import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
 import UpdateProductController from "@/products/infrastructure/http/controllers/UpdateProductController";
 import { randomUUID } from "node:crypto";
@@ -47,6 +47,14 @@ describe ("UpdateProductController Test.", () => {
             expect (res.status).toHaveBeenCalledExactlyOnceWith(400);
             expect (res.json).toHaveBeenCalledExactlyOnceWith({ message: expect.stringContaining("") });
         });
+    });
+
+    it ("should return a response error with code 400 when product contains invalid fields.", async () => {
+        req.body = { unexpectedField: "Unexpected Value" };
+        await sut.handle(req as Request, res as Response);
+        expect (mockUseCase.execute).not.toHaveBeenCalled();
+        expect (res.status).toHaveBeenCalledExactlyOnceWith(400);
+        expect (res.json).toHaveBeenCalledExactlyOnceWith({ message: expect.stringContaining("") });
     });
 
     ["name", "quantity", "price"].forEach((field) => {

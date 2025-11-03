@@ -32,7 +32,7 @@ export default class SearchProductController extends Controller {
             sort: z.string().optional(),
             sortDir: z.string().optional(),
             filter: z.string().optional()
-        });
+        }).strict();
 
         const result = schema.safeParse(data);
 

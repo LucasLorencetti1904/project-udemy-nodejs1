@@ -35,6 +35,14 @@ describe ("CreateProductController Test.", () => {
         });
     });
 
+    it ("should return a response error with code 400 when product contains invalid fields.", async () => {
+        req.body = { ...createProductInputBuilder({}), unexpectedField: "Unexpected Value" };
+        await sut.handle(req as Request, res as Response);
+        expect (mockUseCase.execute).not.toHaveBeenCalled();
+        expect (res.status).toHaveBeenCalledExactlyOnceWith(400);
+        expect (res.json).toHaveBeenCalledExactlyOnceWith({ message: expect.stringContaining("") });
+    });
+
     [
         { useCaseError: new InternalError("Example"), statusCode: 500, occasion: "usecase throws an unexpected error" },
         { useCaseError: new ConflictError("Example"), statusCode: 409, occasion: "product name already exists" }

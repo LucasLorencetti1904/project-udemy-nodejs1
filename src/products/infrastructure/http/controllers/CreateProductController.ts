@@ -31,7 +31,7 @@ export default class CreateProductController extends Controller {
             name: z.string().nonempty(),
             price: z.number().gt(0),
             quantity: z.number().int().gt(0)
-        });
+        }).strict();
 
         const result = schema.safeParse(data);
 
