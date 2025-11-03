@@ -1,6 +1,6 @@
 import { MockGetProductByIdUseCase } from "./ProductUseCase.mock";
 import { Request, Response } from "express";
-import { NotFoundError } from "@/common/domain/errors/httpErrors";
+import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import { randomUUID } from "node:crypto";
 import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
@@ -35,12 +35,17 @@ describe ("GetProductByIdController Test.", () => {
         expect (res.json).toHaveBeenCalledWith({ message: expect.stringContaining("") });
     });
 
-    it (`should return a response error with code 404 when product is not found by id.`, async () => {
-        mockUseCase.execute.mockRejectedValue(new NotFoundError("Example"));
-        await sut.handle(req as Request, res as Response);
-        expect (mockUseCase.execute).toHaveBeenCalledWith(req.params.id);
-        expect (res.status).toHaveBeenCalledWith(404);
-        expect (res.json).toHaveBeenCalledWith({ message: expect.stringContaining("") });
+    [
+        { useCaseError: new InternalError("Example"), statusCode: 500, occasion: "usecase throws an unexpected error" },
+        { useCaseError: new NotFoundError("Example"), statusCode: 404, occasion: "product is not found by id" },
+    ].forEach(({ useCaseError, statusCode, occasion }) => {
+        it (`should return a response error with code ${statusCode} when ${occasion}.`, async () => {
+            mockUseCase.execute.mockRejectedValue(useCaseError);
+            await sut.handle(req as Request, res as Response);
+            expect (mockUseCase.execute).toHaveBeenCalledWith(req.params.id);
+            expect (res.status).toHaveBeenCalledWith(statusCode);
+            expect (res.json).toHaveBeenCalledWith({ message: expect.stringContaining("") });
+        });
     });
 
     it (`should return a response product json object with code 200 when product is found by id.`, async () => {
