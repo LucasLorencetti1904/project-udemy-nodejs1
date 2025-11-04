@@ -1,4 +1,5 @@
 import type UserModel from "@/users/domain/models/UserModel";
+import UserInMemoryRepository from "@/users/infrastructure/inMemory/UserInMemoryRepository";
 import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
 
 describe ("UserInMemoryRepository Test.", () => {
@@ -19,7 +20,7 @@ describe ("UserInMemoryRepository Test.", () => {
             it ("should return a array of users when found by name.", async () => {
                 const exampleOfUsers: UserModel[] = Array(i)
                     .fill(userModelBuilder({ name: "Valid Name Example" }));
-                sut.items.push(exampleOfUsers);
+                sut.items.push(...exampleOfUsers);
                 result = await sut.findByName("Valid Name Example");
                 expect (result).toHaveLength(i);
             });
@@ -28,7 +29,7 @@ describe ("UserInMemoryRepository Test.", () => {
 
     describe ("findByEmail", () => {
         it ("should return null when user is not found by email.", async () => {
-            result = await sut.findByName("Fake Name");
+            result = await sut.findByEmail("Fake Name");
             expect (result).toEqual(null);
         });
 
@@ -52,24 +53,24 @@ describe ("UserInMemoryRepository Test.", () => {
         type Case = {
             description: string,
             filterInput?: string,
-            expected: UserModel[]
+            expected: () => UserModel[]
         };
 
         const cases: Case[] = [
             {
                 description: "should no filter items when filter param is undefined.",
                 filterInput: undefined,
-                expected: sut.items
+                expected: () => sut.items
             },
             {
                 description: "should filter items using filter param.",
-                filterInput: "TES", expected:
-                [sut.items[0], sut.items[1]]
+                filterInput: "TES",
+                expected: () => [sut.items[0], sut.items[1]]
             },
             {
                 description: "should return a empty array when filter does not matches.",
                 filterInput: "truthy name",
-                expected: []
+                expected: () => []
             }
         ]
 
@@ -78,7 +79,7 @@ describe ("UserInMemoryRepository Test.", () => {
                 const filteredModels: UserModel[] = await sut['applyFilter'] ( 
                     sut.items, filterInput
                 );
-                expect (filteredModels).toEqual(expected);
+                expect (filteredModels).toEqual(expected());
             });
         });
     });
