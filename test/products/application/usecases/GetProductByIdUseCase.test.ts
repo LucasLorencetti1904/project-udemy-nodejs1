@@ -4,8 +4,8 @@ import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProduc
 import MockProductRepository from "./ProductRepository.mock";
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
-import type GetProductByIdProductInput from "@/products/application/usecases/getProductById/GetProductByIdInput";
-import type { ProductOutput } from "@/products/application/usecases/default/productIo";
+import type GetProductByIdProductInput from "@/products/application/dto/GetProductByIdInput";
+import type { ProductOutput } from "@/products/application/dto/productIo";
 
 let sut: GetProductByIdUseCaseImpl;
 let mockRepository: ProductRepository;

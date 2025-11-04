@@ -4,7 +4,7 @@ import Controller from "@/common/infrastructure/http/controllers/Controller";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
 import GetProductByIdUseCase from "@/products/application/usecases/getProductById/GetProductByIdUseCase";
 import type { Request, Response } from "express";
-import type { ProductOutput } from "@/products/application/usecases/default/productIo";
+import type { ProductOutput } from "@/products/application/dto/productIo";
 
 @injectable()
 export default class GetProductByIdController extends Controller {

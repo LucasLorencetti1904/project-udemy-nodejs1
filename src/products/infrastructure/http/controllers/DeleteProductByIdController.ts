@@ -3,7 +3,7 @@ import z from "zod";
 import Controller from "@/common/infrastructure/http/controllers/Controller";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
 import type { Request, Response } from "express";
-import type { ProductOutput } from "@/products/application/usecases/default/productIo";
+import type { ProductOutput } from "@/products/application/dto/productIo";
 import type DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
 
 @injectable()

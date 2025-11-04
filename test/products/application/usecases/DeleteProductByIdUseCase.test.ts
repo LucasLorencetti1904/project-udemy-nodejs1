@@ -4,7 +4,7 @@ import MockProductRepository from "./ProductRepository.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
 import DeleteProductByIdUseCaseImpl from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCaseImpl";
-import type DeleteProductByIdInput from "@/products/application/usecases/deleteProductById/DeleteProductByIdInput";
+import type DeleteProductByIdInput from "@/products/application/dto/DeleteProductByIdInput";
 import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
 import type ProductModel from "@/products/domain/models/ProductModel";
 

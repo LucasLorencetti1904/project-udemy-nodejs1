@@ -1,6 +1,6 @@
 import ProductUseCase from "@/products/application/usecases/default/ProductUseCase";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
-import type { ProductInput } from "@/products/application/usecases/default/productIo";
+import type { ProductInput } from "@/products/application/dto/productIo";
 import { ConflictError } from "@/common/domain/errors/httpErrors";
 
 export default abstract class WriteProductUseCase extends ProductUseCase {

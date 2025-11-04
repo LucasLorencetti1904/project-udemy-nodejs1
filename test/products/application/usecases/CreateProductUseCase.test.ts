@@ -3,8 +3,8 @@ import CreateProductUseCaseImpl from "@/products/application/usecases/createProd
 import MockProductRepository from "./ProductRepository.mock";
 import { createProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
-import type CreateProductInput from "@/products/application/usecases/createProduct/CreateProductInput";
-import type { ProductOutput } from "@/products/application/usecases/default/productIo";
+import type CreateProductInput from "@/products/application/dto/CreateProductInput";
+import type { ProductOutput } from "@/products/application/dto/productIo";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 
 let sut: CreateProductUseCaseImpl;

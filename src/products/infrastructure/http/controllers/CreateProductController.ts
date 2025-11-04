@@ -5,8 +5,8 @@ import Controller from "@/common/infrastructure/http/controllers/Controller";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
 import type { ZodType } from "zod";
 import type CreateProductUseCase from "@/products/application/usecases/createProduct/CreateProductUseCase";
-import type CreateProductInput from "@/products/application/usecases/createProduct/CreateProductInput";
-import type { ProductOutput } from "@/products/application/usecases/default/productIo";
+import type CreateProductInput from "@/products/application/dto/CreateProductInput";
+import type { ProductOutput } from "@/products/application/dto/productIo";
 
 @injectable()
 export default class CreateProductController extends Controller {

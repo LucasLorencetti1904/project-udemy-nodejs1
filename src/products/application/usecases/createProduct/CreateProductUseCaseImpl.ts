@@ -2,8 +2,8 @@ import { inject, injectable } from "tsyringe";
 import { BadRequestError } from "@/common/domain/errors/httpErrors";
 import type CreateProductUseCase from "@/products/application/usecases/createProduct/CreateProductUseCase";
 import WriteProductUseCase from "@/products/application/usecases/default/WriteProductUseCase";
-import type CreateProductInput from "@/products/application/usecases/createProduct/CreateProductInput";
-import type { ProductOutput } from "@/products/application/usecases/default/productIo";
+import type CreateProductInput from "@/products/application/dto/CreateProductInput";
+import type { ProductOutput } from "@/products/application/dto/productIo";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type ProductModel from "@/products/domain/models/ProductModel";
 

@@ -1,4 +1,4 @@
-import type { SearchProductInput, SearchProductOutput } from "@/products/application/usecases/searchProduct/SearchProdutIo";
+import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
 
 export default interface SearchProductUseCase {
     execute(input: SearchProductInput): Promise<SearchProductOutput>;

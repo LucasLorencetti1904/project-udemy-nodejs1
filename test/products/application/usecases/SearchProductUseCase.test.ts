@@ -1,4 +1,4 @@
-import type { SearchProductInput, SearchProductOutput } from "@/products/application/usecases/searchProduct/SearchProdutIo";
+import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
 import MockProductRepository from "./ProductRepository.mock";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";

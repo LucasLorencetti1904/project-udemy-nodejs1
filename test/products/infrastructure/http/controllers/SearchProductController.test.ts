@@ -2,7 +2,7 @@ import { MockSearchProductUseCase } from "./ProductUseCase.mock";
 import { Request, Response } from "express";
 import { InternalError } from "@/common/domain/errors/httpErrors";
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
-import { SearchProductInput, SearchProductOutput } from "@/products/application/usecases/searchProduct/SearchProdutIo";
+import { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
 import SearchProductController from "@/products/infrastructure/http/controllers/SearchProductController";
 
 let sut: SearchProductController;

@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { ConflictError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import productInputBuilder from "@/products/infrastructure/testing/productInputBuilder";
-import type { ProductOutput } from "@/products/application/usecases/default/productIo";
+import type { ProductOutput } from "@/products/application/dto/productIo";
 import UpdateProductController from "@/products/infrastructure/http/controllers/UpdateProductController";
 import { randomUUID } from "node:crypto";
 

@@ -5,7 +5,7 @@ import productOutputBuilder from "@/products/infrastructure/testing/productOutpu
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/repositoryIo";
-import type UpdateProductInput from "@/products/application/usecases/updateProduct/UpdateProductInput";
+import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
 import { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
 import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
 

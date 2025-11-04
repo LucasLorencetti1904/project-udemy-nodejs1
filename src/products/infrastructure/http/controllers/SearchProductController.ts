@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import Controller from "@/common/infrastructure/http/controllers/Controller";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
 import type { Request, Response } from "express";
-import { SearchProductOutput } from "@/products/application/usecases/searchProduct/SearchProdutIo";
+import { SearchProductOutput } from "@/products/application/dto/searchProdutIo";
 import z from "zod";
 import SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 

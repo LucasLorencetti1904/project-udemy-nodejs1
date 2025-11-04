@@ -1,5 +1,5 @@
-import type GetProductByIdInput from "@/products/application/usecases/getProductById/GetProductByIdInput";
-import type { ProductOutput } from "@/products/application/usecases/default/productIo";
+import type GetProductByIdInput from "@/products/application/dto/GetProductByIdInput";
+import type { ProductOutput } from "@/products/application/dto/productIo";
 
 export default interface GetProductByIdUseCase {
     execute(input: GetProductByIdInput): Promise<ProductOutput>;

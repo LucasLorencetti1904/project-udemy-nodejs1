@@ -1,4 +1,4 @@
-import type { SearchProductInput, SearchProductOutput } from "@/products/application/usecases/searchProduct/SearchProdutIo";
+import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
 import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 import { inject, injectable } from "tsyringe";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
