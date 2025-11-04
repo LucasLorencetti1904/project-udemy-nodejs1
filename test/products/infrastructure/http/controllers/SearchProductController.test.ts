@@ -52,21 +52,59 @@ describe ("SearchProductController Test.", () => {
         expect (res.json).toHaveBeenCalledWith({ message: expect.stringContaining("") });
     });
 
-    it (`should return a response search output json object with code 200 when search is successful.`, async () => {
-        const useCaseSearchOutput: SearchProductOutput = {
-            currentPage: 1,
-            perPage: 15,
-            lastPage: 3,
-            total: 45,
-            items: Array(15).fill(productOutputBuilder({}))
-        };
-        mockUseCase.execute.mockResolvedValue(useCaseSearchOutput);
-        req.query = {};
-        await sut.handle(req as Request, res as Response);
-        expect (mockUseCase.execute).toHaveBeenCalledWith({});
-        expect (res.status).toHaveBeenCalledWith(200);
-        expect (res.json).toHaveBeenCalledWith({
-            message: expect.stringContaining(""), data: useCaseSearchOutput
+    type Case = {
+        input: Partial<Record<keyof SearchProductInput, string>>,
+        output: SearchProductOutput
+        expectedCall: SearchProductInput 
+    }
+
+    const cases: Case[] = [
+        {
+            input: {},
+            output: {     
+                currentPage: 1,
+                perPage: 15,
+                lastPage: 2,
+                total: 28,
+                items: Array(15).fill(productOutputBuilder({}))
+            },
+            expectedCall: {}
+        },
+        {
+            input: {
+                page: "3",
+                perPage: "12",
+                sort: "name",
+                sortDir: "asc",
+                filter: "example"
+            },
+            output: {     
+                currentPage: 3,
+                perPage: 12,
+                lastPage: 4,
+                total: 45,
+                items: Array(12).fill(productOutputBuilder({}))
+            },
+            expectedCall: {
+                page: 3,
+                perPage: 12,
+                sort: "name",
+                sortDir: "asc",
+                filter: "example"
+            }
+        }
+    ];
+
+    cases.forEach(({ input, output, expectedCall }) => {
+        it (`should return a response search output json object with code 200 when search is successful.`, async () => {
+            mockUseCase.execute.mockResolvedValue(output);
+            req.query = input;
+            await sut.handle(req as Request, res as Response);
+            expect (mockUseCase.execute).toHaveBeenCalledWith(expectedCall);
+            expect (res.status).toHaveBeenCalledWith(200);
+            expect (res.json).toHaveBeenCalledWith({
+                message: expect.stringContaining(""), data: output
+            });
         });
     });
 });
