@@ -28,8 +28,13 @@ export default class SearchProductUseCaseImpl extends ReadProductUseCase impleme
             items: repoOutput.items,
             total: repoOutput.total,
             perPage: repoOutput.perPage,
-            lastPage: Math.ceil(repoOutput.total / repoOutput.perPage),
+            lastPage: this.calcLastPage(repoOutput.total, repoOutput.perPage),
             currentPage: repoOutput.currentPage
         }
+    }
+
+    private calcLastPage(total: number, perPage: number) {
+        const result: number = Math.ceil(total / perPage);
+        return result < 1 ? 1 : result;
     }
 }

@@ -2,9 +2,8 @@ import { inject, injectable } from "tsyringe";
 import Controller from "@/common/infrastructure/http/controllers/Controller";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
 import type { Request, Response } from "express";
-import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
-import { SearchProductInput, SearchProductOutput } from "@/products/application/usecases/searchProduct/SearchProdutIo";
-import z, { ZodType } from "zod";
+import { SearchProductOutput } from "@/products/application/usecases/searchProduct/SearchProdutIo";
+import z from "zod";
 import SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 
 @injectable()
@@ -16,8 +15,8 @@ export default class SearchProductController extends Controller {
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
-            this.validate(req.body);
-            const searchResult: SearchProductOutput = await this.useCase.execute(req.body);
+            const input = this.handleRequest(req.query);
+            const searchResult: SearchProductOutput = await this.useCase.execute(input);
             return res.status(200).json({ message: "Successful search.", data: searchResult });
         }
         catch(e: unknown) {
@@ -25,10 +24,10 @@ export default class SearchProductController extends Controller {
         }
     }
 
-    protected validate(data: unknown): void {
+    protected handleRequest(data: unknown): any {
         const schema = z.object({
-            page: z.number().optional(),
-            perPage: z.number().optional(),
+            page: z.coerce.number().optional(),
+            perPage: z.coerce.number().optional(),
             sort: z.string().optional(),
             sortDir: z.string().optional(),
             filter: z.string().optional()
@@ -36,6 +35,10 @@ export default class SearchProductController extends Controller {
 
         const result = schema.safeParse(data);
 
-        this.handleZodResult(result);
+        if (result.success) {
+            return result.data;
+        }
+
+        this.ThrowZodError(result.error);
     }  
 }

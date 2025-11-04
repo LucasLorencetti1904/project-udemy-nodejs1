@@ -17,8 +17,8 @@ export default class UpdateProductController extends Controller {
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const input: UpdateProductInput = { id: req.params.id, ...req.body }
-            this.validate(input);
+            const rawData: UpdateProductInput = { id: req.params.id, ...req.body }
+            const input = this.handleRequest(rawData);
             const updatedProduct: ProductOutput = await this.useCase.execute(input);
             return res.status(200).json({ message: "Product updated successfully.", data: updatedProduct });
         }
@@ -27,7 +27,7 @@ export default class UpdateProductController extends Controller {
         }
     }
 
-    protected validate(data: unknown): void {
+    protected handleRequest(data: unknown): any {
         const schema: ZodType<UpdateProductInput> = z.object({
             id: z.string().uuid(),
             name: z.string().optional(),
@@ -37,6 +37,10 @@ export default class UpdateProductController extends Controller {
 
         const result = schema.safeParse(data);
 
-        this.handleZodResult(result);
+        if (result.success) {
+            return result.data;
+        }
+
+        this.ThrowZodError(result.error);
     }   
 }

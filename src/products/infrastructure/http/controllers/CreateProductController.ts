@@ -17,8 +17,8 @@ export default class CreateProductController extends Controller {
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
-            this.validate(req.body);
-            const product: ProductOutput = await this.useCase.execute(req.body);
+            const input = this.handleRequest(req.body);
+            const product: ProductOutput = await this.useCase.execute(input);
             return res.status(201).json({ message: "Product registered successfully.", data: product });
         }
         catch(e: unknown) {
@@ -26,7 +26,7 @@ export default class CreateProductController extends Controller {
         }
     }
 
-    protected validate(data: unknown): void {
+    protected handleRequest(data: unknown): any {
         const schema: ZodType<CreateProductInput> = z.object({
             name: z.string().nonempty(),
             price: z.number().gt(0),
@@ -35,6 +35,10 @@ export default class CreateProductController extends Controller {
 
         const result = schema.safeParse(data);
 
-        this.handleZodResult(result);
+        if (result.success) {
+            return result.data;
+        }
+
+        this.ThrowZodError(result.error);
     }   
 }

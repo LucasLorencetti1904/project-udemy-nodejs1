@@ -69,6 +69,12 @@ describe ("SearchProductUseCase Test", () => {
             expected: { lastPage: 10 }
         },
         {
+            description: "should always return last page 1 when it is 0.",
+            input: {},
+            output: { total: 0, perPage: 15 },
+            expected: { lastPage: 1 }
+        },
+        {
             description: "should return the first 15 items by default.",
             input: {},
             output: { items: models.slice(0, 15) },
