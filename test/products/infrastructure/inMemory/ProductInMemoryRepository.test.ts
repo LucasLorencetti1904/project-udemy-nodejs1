@@ -53,7 +53,7 @@ describe ("ProductInMemoryRepository Test.", () => {
 
         let sortedModels: ProductModel[];
 
-        it ("should sort items by createdAt using desc order when sort and sortDir params is null.", async () => {
+        it ("should sort items by createdAt using desc order when sort and sortDir params is undefined.", async () => {
             sortedModels = await sut['applySort'](sut.items);
             expect (sortedModels).toEqual([sut.items[1], sut.items[2], sut.items[0]]);
         });
@@ -64,7 +64,7 @@ describe ("ProductInMemoryRepository Test.", () => {
         });
 
         it ("should sort items by createdAt using asc order.", async () => {
-            sortedModels = await sut['applySort'](sut.items, null, "asc");
+            sortedModels = await sut['applySort'](sut.items, undefined, "asc");
             expect (sortedModels).toEqual([sut.items[0], sut.items[2], sut.items[1]]);
         });
 

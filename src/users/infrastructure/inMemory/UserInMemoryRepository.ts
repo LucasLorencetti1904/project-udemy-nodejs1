@@ -18,6 +18,10 @@ implements UserRepository {
             return item.name.toLowerCase().includes(filter.toLowerCase())
         }); 
     }
+
+    public async applySort(items: UserModel[], sort?: keyof UserModel, sortDir?: "asc" | "desc"): Promise<UserModel[]> {
+        return super.applySort(items, sort ?? "createdAt", sortDir ?? "desc");
+    }
     
     public async findByName(name: string): Promise<UserModel[]> {
         return this.items.filter(user => user.name === name);
