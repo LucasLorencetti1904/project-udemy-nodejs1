@@ -1,13 +1,13 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 import commonFields from "@/common/infrastructure/typeorm/migrations/commonFields";
 
-export class CreateProducts1757537584621 implements MigrationInterface {
+export class CreateUsers1762263461611 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
         await queryRunner.createTable(
             new Table({
-                name: "products",
+                name: "users",
                 columns: [
                     ...commonFields,
                     {
@@ -15,21 +15,26 @@ export class CreateProducts1757537584621 implements MigrationInterface {
                         type: "varchar"
                     },
                     {
-                        name: "price",
-                        type: "decimal",
-                        precision: 10,
-                        scale: 2
+                        name: "email",
+                        type: "varchar",
+                        isUnique: true
                     },
                     {
-                        name: "quantity",
-                        type: "int"
-                    },  
+                        name: "password",
+                        type: "varchar"
+                    },
+                    {
+                        name: "avatar",
+                        type: "varchar",
+                        isNullable: true
+                    },
                 ]
             })
         )
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable("products");
+        queryRunner.dropTable("users");
     }
+
 }

@@ -1,4 +1,5 @@
-import { CreateProducts1757537584621 } from "../migrations/1757537584621-CreateProducts";
+import { CreateProducts1757537584621 } from "@/common/infrastructure/typeorm/migrations/1757537584621-CreateProducts";
+import { CreateUsers1762263461611 } from "@/common/infrastructure/typeorm/migrations/1762263461611-CreateUsers";
 import { DataSourceOptions } from "typeorm";
 import env from "@/common/infrastructure/env/dotenv";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
@@ -16,7 +17,7 @@ const dbConfig: DataSourceOptions = {
 const config: DataSourceOptions = {
     ...dbConfig,
     entities: [Product],
-    migrations: [CreateProducts1757537584621]
+    migrations: [CreateProducts1757537584621, CreateUsers1762263461611]
 };
 
 export default config;
