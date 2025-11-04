@@ -4,7 +4,7 @@ import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors"
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import { randomUUID } from "node:crypto";
 import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
-import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
+import type { ProductOutput } from "@/products/application/usecases/default/productIo";
 
 let sut: GetProductByIdController;
 let mockUseCase: MockGetProductByIdUseCase;

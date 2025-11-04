@@ -6,7 +6,7 @@ import ApplicationError from "@/common/domain/errors/ApplicationError";
 import type { ZodType } from "zod";
 import type CreateProductUseCase from "@/products/application/usecases/createProduct/CreateProductUseCase";
 import type CreateProductInput from "@/products/application/usecases/createProduct/CreateProductInput";
-import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
+import type { ProductOutput } from "@/products/application/usecases/default/productIo";
 
 @injectable()
 export default class CreateProductController extends Controller {

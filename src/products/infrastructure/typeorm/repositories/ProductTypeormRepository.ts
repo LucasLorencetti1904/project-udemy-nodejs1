@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { ILike, In, Repository } from "typeorm";
 import type ProductRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository"
 import type { CreateProductProps } from "@/products/domain/repositories/ProductRepository";
-import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/Repository";
+import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/repositoryIo";
 import type Product from "@/products/infrastructure/typeorm/entities/Product";
 import type ProductModel from "@/products/domain/models/ProductModel";
 

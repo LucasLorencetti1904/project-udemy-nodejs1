@@ -2,7 +2,7 @@ import type { SearchProductInput, SearchProductOutput } from "@/products/applica
 import MockProductRepository from "./ProductRepository.mock";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
-import type { RepositorySearchOutput } from "@/common/domain/repositories/Repository";
+import type { RepositorySearchOutput } from "@/common/domain/repositories/repositoryIo";
 import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 import SearchProductUseCaseImpl from "@/products/application/usecases/searchProduct/SeachProductUseCaseImpl";
 import { InternalError } from "@/common/domain/errors/httpErrors";

@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import type GetProductByIdUseCase from "@/products/application/usecases/getProductById/GetProductByIdUseCase";
-import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
+import type { ProductOutput } from "@/products/application/usecases/default/productIo";
 import type GetProductByIdInput from "@/products/application/usecases/getProductById/GetProductByIdInput";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import ReadProductUseCase from "@/products/application/usecases/default/ReadProductUseCase";

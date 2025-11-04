@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import type CreateProductInput from "@/products/application/usecases/createProduct/CreateProductInput";
 import type UpdateProductInput from "@/products/application/usecases/updateProduct/UpdateProductInput";
 import { randomUUID } from "node:crypto";
-import ProductInput from "@/products/application/usecases/default/ProductInput";
+import { ProductInput } from "@/products/application/usecases/default/productIo";
 
 export default function productInputBuilder(props: Partial<ProductInput>): Required<ProductInput> {
     return {

@@ -1,5 +1,5 @@
 import { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
-import ProductOutput from "@/products/application/usecases/default/ProductOutput";
+import type { ProductOutput } from "@/products/application/usecases/default/productIo";
 
 export default function productOutputBuilder(props: Partial<ProductOutput>): ProductOutput {
     return {

@@ -1,7 +1,7 @@
 import { BadRequestError, ConflictError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import MockProductRepository from "./ProductRepository.mock";
 import { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
-import type ProductOutputDTO from "@/products/application/usecases/default/ProductOutput";
+import type { ProductOutput } from "@/products/application/usecases/default/productIo";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import UpdateProductUseCaseImpl from "@/products/application/usecases/updateProduct/UpdateProductUseCaseImpl";
 import type UpdateProductInput from "@/products/application/usecases/updateProduct/UpdateProductInput";
@@ -14,7 +14,7 @@ let sut: UpdateProductUseCaseImpl;
 let mockRepository: ProductRepository;
 
 let productInputData: UpdateProductInput;
-let productOutputData: ProductOutputDTO;
+let productOutputData: ProductOutput;
 
 describe ("UpdateProductUseCaseImpl Test.", () => {
     beforeEach (() => {

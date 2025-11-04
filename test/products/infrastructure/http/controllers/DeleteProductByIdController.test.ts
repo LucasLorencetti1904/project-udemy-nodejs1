@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import { randomUUID } from "node:crypto";
-import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
+import type { ProductOutput } from "@/products/application/usecases/default/productIo";
 import DeleteProductByIdController from "@/products/infrastructure/http/controllers/DeleteProductByIdController";
 
 let sut: DeleteProductByIdController;

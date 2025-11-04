@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { StubInMemoryRepository, StubModelProps } from "./InMemoryRepository.stub";
-import type { RepositorySearchOutput } from "@/common/domain/repositories/Repository";
+import type { RepositorySearchOutput } from "@/common/domain/repositories/repositoryIo";
 
 describe ("InMemoryRepository Test.", () => {
     let sut: StubInMemoryRepository;

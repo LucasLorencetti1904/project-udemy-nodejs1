@@ -5,13 +5,13 @@ import MockProductRepository from "./ProductRepository.mock";
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type GetProductByIdProductInput from "@/products/application/usecases/getProductById/GetProductByIdInput";
-import type ProductOutputDTO from "@/products/application/usecases/default/ProductOutput";
+import type { ProductOutput } from "@/products/application/usecases/default/productIo";
 
 let sut: GetProductByIdUseCaseImpl;
 let mockRepository: ProductRepository;
 
 let productInputData: GetProductByIdProductInput;
-let productOutputData: ProductOutputDTO;
+let productOutputData: ProductOutput;
 
 describe ("GetProductByIdUseCaseImpl Test.", () => {
     beforeEach (() => {
@@ -50,7 +50,7 @@ describe ("GetProductByIdUseCaseImpl Test.", () => {
         productInputData = randomUUID();
         productOutputData = productOutputBuilder({ id: productInputData });
         mockRepository.findById = vi.fn().mockResolvedValue(productOutputData);
-        const result: ProductOutputDTO = await sut.execute(productInputData);
+        const result: ProductOutput = await sut.execute(productInputData);
         expect (result).toEqual(productOutputData);
         expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData);
     });

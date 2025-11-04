@@ -4,14 +4,14 @@ import MockProductRepository from "./ProductRepository.mock";
 import { createProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import type CreateProductInput from "@/products/application/usecases/createProduct/CreateProductInput";
-import type ProductOutputDTO from "@/products/application/usecases/default/ProductOutput";
+import type { ProductOutput } from "@/products/application/usecases/default/productIo";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 
 let sut: CreateProductUseCaseImpl;
 let mockRepository: ProductRepository;
 
 let productInputData: CreateProductInput;
-let productOutputData: ProductOutputDTO;
+let productOutputData: ProductOutput;
 
 describe ("CreateProductUseCaseImpl Test.", () => {
     beforeEach (() => {

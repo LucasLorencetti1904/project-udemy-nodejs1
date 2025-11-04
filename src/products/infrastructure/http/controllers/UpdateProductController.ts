@@ -4,7 +4,7 @@ import z from "zod";
 import Controller from "@/common/infrastructure/http/controllers/Controller";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
 import type { ZodType } from "zod";
-import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
+import type { ProductOutput } from "@/products/application/usecases/default/productIo";
 import UpdateProductUseCase from "@/products/application/usecases/updateProduct/UpdateProductUseCase";
 import type UpdateProductInput from "@/products/application/usecases/updateProduct/UpdateProductInput";
 

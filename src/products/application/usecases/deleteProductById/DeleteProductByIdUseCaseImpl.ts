@@ -4,7 +4,7 @@ import ReadProductUseCase from "@/products/application/usecases/default/ReadProd
 import DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
 import type DeleteProductByIdInput from "@/products/application/usecases/deleteProductById/DeleteProductByIdInput";
 import { NotFoundError } from "@/common/domain/errors/httpErrors";
-import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
+import type { ProductOutput } from "@/products/application/usecases/default/productIo";
 import type ProductModel from "@/products/domain/models/ProductModel";
 
 @injectable()

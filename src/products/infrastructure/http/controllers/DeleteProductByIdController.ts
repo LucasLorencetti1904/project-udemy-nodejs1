@@ -1,9 +1,9 @@
 import { inject, injectable } from "tsyringe";
-import z, { ZodSafeParseResult } from "zod";
+import z from "zod";
 import Controller from "@/common/infrastructure/http/controllers/Controller";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
 import type { Request, Response } from "express";
-import type ProductOutput from "@/products/application/usecases/default/ProductOutput";
+import type { ProductOutput } from "@/products/application/usecases/default/productIo";
 import type DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
 
 @injectable()
