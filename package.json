@@ -7,7 +7,10 @@
     "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules ./src/common/infrastructure/http/server.ts",
     "lint": "eslint .",
     "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "typeorm:migration": "ts-node-esm -r tsconfig-paths/register node_modules/typeorm/cli.js migration:run -d ./src/common/infrastructure/typeorm/config/dataSource.ts",
+    "typeorm:dev": "npm run typeorm -- -d ./src/common/infrastructure/typeorm/config/dataSource.ts",
+    "typeorm:migration": "ts-node-esm -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run",
+    "typeorm:migration:dev": "NODE_ENV=development npm run typeorm:migration -- -d ./src/common/infrastructure/typeorm/config/dataSource.ts",
+    "typeorm:migration:test": "NODE_ENV=test npm run typeorm:migration -- -d ./src/common/infrastructure/typeorm/config/testingDataSource.ts",
     "pretest:int": "clear && docker run --rm --name testdb -e POSTGRES_PASSWORD=postgres -p 5433:5432 -d postgres",
     "test:int": "sleep 5 && vitest run --mode test --config ./vitest.int.config.ts",
     "posttest:int": "docker stop testdb"

@@ -1,18 +1,20 @@
 import { randomUUID } from "node:crypto";
-import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";import type UpdateUserInput from "@/Users/application/usecases/updateUser/UpdateUserInput";
+import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
+import type UpdateUserInput from "@/users/application/dto/UpdateUserInput";
 import UserModel from "@/users/domain/models/UserModel";
 import User from "@/users/infrastructure/typeorm/entities/User";
 import { RepositorySearchOutput } from "@/common/domain/repositories/repositoryIo";
 import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
 import { updateUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
+import UserTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTypeormRepository";
 
 describe ("UserTypeormRepository Test.", () => {
     let sut: UserTypeormRepository;
     let exampleOfUser: UserModel;
     let result: UserModel | UserModel[] | RepositorySearchOutput<UserModel>;
 
-    async function createAndSaveUser(UserData: User): Promise<UserModel> {
-        const toCreate: UserModel = testingDataSource.manager.create(User, UserData);
+    async function createAndSaveUser(userData: User): Promise<UserModel> {
+        const toCreate: UserModel = testingDataSource.manager.create(User, userData);
         await testingDataSource.manager.save(toCreate);
         return toCreate;
     }
@@ -100,26 +102,30 @@ describe ("UserTypeormRepository Test.", () => {
     });
 
     describe ("search", () => {
-        let models: UserModel[] = [
-            userModelBuilder({
-                name: "A", email: "examplethree@gmail.com", createdAt: new Date(2025, 4, 19)
-            }),
-            userModelBuilder({
-                name: "D", email: "examplefour@gmail.com", createdAt: new Date(2019, 2, 17)
-            }),
-            userModelBuilder({
-                name: "C", email: "exampletwo@gmail.com", createdAt: new Date(2024, 7, 23)
-            }),
-            userModelBuilder({
-                name: "B", email: "exampleone@gmail.com", createdAt: new Date(2020, 2, 1)
-            })
-        ];
+        let models: UserModel[];
 
         async function createAndSaveUsers(UsersData: User[]): Promise<UserModel[]> {
             const toCreate: UserModel[] = testingDataSource.manager.create(User, UsersData);
             await testingDataSource.manager.save(toCreate);
             return toCreate;
         }
+
+        beforeEach(() => {
+            models = [
+                userModelBuilder({
+                    name: "A", email: "examplethree@gmail.com", createdAt: new Date(2025, 4, 19)
+                }),
+                userModelBuilder({
+                    name: "D", email: "examplefour@gmail.com", createdAt: new Date(2019, 2, 17)
+                }),
+                userModelBuilder({
+                    name: "C", email: "exampletwo@gmail.com", createdAt: new Date(2024, 7, 23)
+                }),
+                userModelBuilder({
+                    name: "B", email: "exampleone@gmail.com", createdAt: new Date(2020, 2, 1)
+                })
+            ]
+        });
 
         afterEach (() => {
             testingDataSource.manager.clear(User);

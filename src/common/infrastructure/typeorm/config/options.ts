@@ -3,6 +3,7 @@ import { CreateUsers1762263461611 } from "@/common/infrastructure/typeorm/migrat
 import { DataSourceOptions } from "typeorm";
 import env from "@/common/infrastructure/env/dotenv";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
+import User from "@/users/infrastructure/typeorm/entities/User";
 
 const dbConfig: DataSourceOptions = {
     type: env.DB_TYPE,
@@ -16,7 +17,7 @@ const dbConfig: DataSourceOptions = {
 
 const config: DataSourceOptions = {
     ...dbConfig,
-    entities: [Product],
+    entities: [Product, User],
     migrations: [CreateProducts1757537584621, CreateUsers1762263461611]
 };
 

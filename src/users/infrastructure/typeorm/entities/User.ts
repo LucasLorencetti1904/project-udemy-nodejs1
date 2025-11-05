@@ -15,7 +15,7 @@ export default class User implements UserModel {
     @Column("varchar")
     password: string;
 
-    @Column("varchar")
+    @Column("varchar", { nullable: true })
     avatar?: string;
 
     @CreateDateColumn({ name: "created_at" })
