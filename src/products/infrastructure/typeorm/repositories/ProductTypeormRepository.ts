@@ -1,15 +1,23 @@
 import { inject, injectable } from "tsyringe";
-import { ILike, In, Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import type ProductRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository"
-import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/repositoryIo";
+import type { RepositorySearchInput } from "@/common/domain/repositories/repositorySearchIo";
 import type Product from "@/products/infrastructure/typeorm/entities/Product";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepository";
 
 @injectable()
-export default class ProductTypeormRepository extends TypeormRepository<Product>
+export default class ProductTypeormRepository extends TypeormRepository<ProductModel>
     implements ProductRepository {
-        public sortableFields: string[] = ["name", "createdAt"]; 
+        protected readonly defaultSearchValues: RepositorySearchInput<ProductModel> = {
+            page: 1,
+            perPage: 15,
+            sort: "createdAt",
+            sortDir: "desc",
+            filter: ""
+        };
+
+        protected readonly sortableFields: string[] = ["name", "createdAt"]; 
 
         constructor (
             @inject("ProductDefaultTypeormRepository")
@@ -22,24 +30,5 @@ export default class ProductTypeormRepository extends TypeormRepository<Product>
 
         public async findByName(name: string): Promise<ProductModel | null> {
             return await this.productRepository.findOneBy({ name });
-        }
-
-        public async search(config: RepositorySearchInput<ProductModel>): Promise<RepositorySearchOutput<ProductModel>> {
-                const input = this.setDefaultValuesForInvalidSearchInputProps(config, {
-                    page: 1,
-                    perPage: 15,
-                    sort: "createdAt",
-                    sortDir: "desc",
-                    filter: ""
-                });
-
-                const searchResult: [ProductModel[], number] = await this.userRepository.findAndCount({
-                    ...(input.filter && { where: { name: ILike(`%${input.filter}%`) } }),
-                    order: { [input.sort]: input.sortDir },
-                    skip: (input.page - 1) * input.perPage,
-                    take: input.perPage
-                });
-
-                return this.mapToSearchOutput(searchResult, input);
         }
 }

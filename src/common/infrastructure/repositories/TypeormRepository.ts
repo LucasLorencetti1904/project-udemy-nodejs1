@@ -1,16 +1,18 @@
-import { Repository as BaseTypeormRepository, DeepPartial, FindOptionsWhere } from "typeorm";
+import { Repository as BaseTypeormRepository, DeepPartial, FindOptionsOrder, FindOptionsWhere, ILike } from "typeorm";
 import type Repository from "@/common/domain/repositories/Repository";
-import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/repositoryIo";
+import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
 
 type TEntityDefaultProps = {
     id: string,
+    name: string,
     createdAt: Date,
     updatedAt: Date
 };
 
 export default abstract class TypeormRepository<TEntity extends TEntityDefaultProps>
     implements Repository<TEntity, DeepPartial<TEntity>> {
-        public abstract sortableFields: string[];
+        protected abstract defaultSearchValues: RepositorySearchInput<TEntity>;
+        protected abstract sortableFields: string[];
 
         constructor (
             protected readonly userRepository: BaseTypeormRepository<TEntity>
@@ -59,7 +61,22 @@ export default abstract class TypeormRepository<TEntity extends TEntityDefaultPr
             return model;
         }
 
-        public abstract search(config: RepositorySearchInput<TEntity>): Promise<RepositorySearchOutput<TEntity>>;
+        public async search(config: RepositorySearchInput<TEntity>): Promise<RepositorySearchOutput<TEntity>> {
+                const input = this.setDefaultValuesForInvalidSearchInputProps(config, this.defaultSearchValues);
+
+                const searchResult: [TEntity[], number] = await this.searchForResults(input);
+
+                return this.mapToSearchOutput(searchResult, input);
+        }
+        
+        protected async searchForResults(searchInput: RepositorySearchInput<TEntity>): Promise<[TEntity[], number]> {
+            return await this.userRepository.findAndCount({
+            ...(searchInput.filter && { where: { name: ILike(`%${searchInput.filter}%`) } as FindOptionsWhere<TEntity> }),
+            order: { [searchInput.sort]: searchInput.sortDir } as FindOptionsOrder<TEntity>,
+            skip: (searchInput.page - 1) * searchInput.perPage,
+            take: searchInput.perPage
+            });
+        }
 
         protected setDefaultValuesForInvalidSearchInputProps (
             originSearchInput: RepositorySearchInput<TEntity>,

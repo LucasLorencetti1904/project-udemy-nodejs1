@@ -1,4 +1,4 @@
-import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/repositoryIo";
+import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
 
 export default interface Repository<TModel, CreateData> {
     create(data: CreateData): TModel;

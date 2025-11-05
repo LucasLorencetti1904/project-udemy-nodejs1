@@ -3,7 +3,7 @@ import testingDataSource from "@/common/infrastructure/typeorm/config/testingDat
 import type UpdateUserInput from "@/users/application/dto/UpdateUserInput";
 import UserModel from "@/users/domain/models/UserModel";
 import User from "@/users/infrastructure/typeorm/entities/User";
-import { RepositorySearchOutput } from "@/common/domain/repositories/repositoryIo";
+import { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
 import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
 import { updateUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
 import UserTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTypeormRepository";
