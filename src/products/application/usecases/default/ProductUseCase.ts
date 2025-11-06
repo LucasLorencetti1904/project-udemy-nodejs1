@@ -1,18 +1,12 @@
-import HttpError, { BadRequestError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
+import BaseUseCase from "@/common/application/usecases/BaseUseCase";
+import { ConflictError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 
-export default abstract class ProductUseCase {
+export default abstract class ProductUseCase extends BaseUseCase {
     constructor(
         protected readonly repo: ProductRepository
-    ) {}    
-
-    protected handleApplicationErrors(e: unknown) {
-        if (e instanceof HttpError) {
-            throw e;
-        }
-        throw new InternalError(e instanceof Error ? e.message : String(e));
-    }
+    ) { super() }    
 
     protected async tryGetById(id: string): Promise<ProductModel> {
         const product: ProductModel = await this.repo.findById(id);
@@ -22,5 +16,15 @@ export default abstract class ProductUseCase {
         }
 
         return product;
+    }
+
+    protected async checkIfNameAlreadyExists(name: string): Promise<void> {
+        if (await this.nameAlreadyExists(name)) {
+            throw new ConflictError(`Product name ${name} already exists.`);
+        }
+    }
+
+    private async nameAlreadyExists(name: string): Promise<boolean> {
+        return !name || !!(await this.repo.findByName(name));
     }
 }

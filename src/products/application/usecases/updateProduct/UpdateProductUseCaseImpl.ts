@@ -5,11 +5,11 @@ import type ProductRepository from "@/products/domain/repositories/ProductReposi
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
 import type UpdateProductUseCase from "@/products/application/usecases/updateProduct/UpdateProductUseCase";
-import WriteProductUseCase from "@/products/application/usecases/default/WriteProductUseCase";
 import filterToTruthyObject from "@/common/domain/helpers/filterToTruthyObject";
+import ProductUseCase from "@/products/application/usecases/default/ProductUseCase";
 
 @injectable()
-export default class UpdateProductUseCaseImpl extends WriteProductUseCase implements UpdateProductUseCase {
+export default class UpdateProductUseCaseImpl extends ProductUseCase implements UpdateProductUseCase {
     constructor(
         @inject("ProductRepository")
         protected readonly repo: ProductRepository

@@ -1,8 +1,9 @@
-export default interface ProductModel {
-    id: string,
+import type Model from "@/common/domain/models/Model"
+
+type ProductModel = Model & {
     name: string,
     price: number,
-    quantity: number,
-    createdAt: Date,
-    updatedAt: Date
-}
+    quantity: number
+};
+
+export default ProductModel;

@@ -4,10 +4,10 @@ import { inject, injectable } from "tsyringe";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
 import type ProductModel from "@/products/domain/models/ProductModel";
-import ReadProductUseCase from "@/products/application/usecases/default/ReadProductUseCase";
+import ProductUseCase from "@/products/application/usecases/default/ProductUseCase";
 
 @injectable()
-export default class SearchProductUseCaseImpl extends ReadProductUseCase implements SearchProductUseCase {
+export default class SearchProductUseCaseImpl extends ProductUseCase implements SearchProductUseCase {
     constructor(
         @inject("ProductRepository")
         protected readonly repo: ProductRepository
