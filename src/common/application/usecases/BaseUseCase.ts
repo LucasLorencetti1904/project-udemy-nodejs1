@@ -8,6 +8,4 @@ export default abstract class BaseUseCase {
         }
         throw new InternalError(e instanceof Error ? e.message : String(e));
     }
-
-    protected abstract tryGetById(id: string): Promise<Model>
 }

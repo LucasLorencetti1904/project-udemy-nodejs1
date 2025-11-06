@@ -5,6 +5,7 @@ import MockUserRepository from "./UserRepository.mock";
 import { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 import { createUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
 import userOutputBuilder from "@/users/infrastructure/testing/userOutputBuilder";
+import CreateUserUseCaseImpl from "@/users/application/usecases/createUser/CreateUserUseCaseImpl";
 
 let sut: CreateUserUseCaseImpl;
 let mockRepository: MockUserRepository;
@@ -17,10 +18,10 @@ const exampleOfHashPassword: string = "$2b$06$Kb7JH8s9Qv1m2n3o4p5q6uvW8yZ0a1B2c3
 
 describe ("CreateUserUseCaseImpl Test.", () => {
     beforeEach (() => {
-        mockHashProvider = new MockStringHashProvider();
         mockRepository = new MockUserRepository();
+        mockHashProvider = new MockStringHashProvider();
 
-        sut = new CreateUserUseCaseImpl(mockHashProvider, mockRepository);
+        sut = new CreateUserUseCaseImpl(mockRepository, mockHashProvider);
     });
 
     ["name", "email", "password"].forEach((field) => {
