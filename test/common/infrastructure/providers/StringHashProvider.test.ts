@@ -1,33 +1,33 @@
 import StringHashProvider from "@/common/domain/providers/StringHashProvider";
-import bcrypt from "bcryptjs";
+import BcryptStringHashProvider from "@/common/infrastructure/providers/BcryptStringHashProvider";
 
 let str: string;
 let hash: string;
-let result: string;
+let result: string | boolean;
 
 const toTest: StringHashProvider[] = [
     new BcryptStringHashProvider()
 ];
 
 toTest.forEach((sut) => {
-    describe (`${sut.name} Test.`, () => {
-        it ("should generate a hash from string.", () => {
+    describe (`${sut.constructor.name} Test.`, () => {
+        it ("should generate a hash from string.", async () => {
             str = "String example";
-            result = sut.hash(str);
-            expect (result).not.toBe(str);
+            result = await sut.hashString(str);
+            expect (result && result != str).toBeTruthy();
         });
     
-        it ("should return true when string matches hash.", () => {
+        it ("should return true when string matches hash.", async () => {
             str = "String example";
-            hash = sut.hash(str);
-            result = sut.compare(str, hash);
-            expect (result).toBe(true);
+            hash = await sut.hashString(str);
+            result = await sut.compareWithHash(str, hash);
+            expect (result).toBeTruthy();
         });
     
-        it ("should return false when string does not match hash.", () => {
+        it ("should return false when string does not match hash.", async () => {
             str = "String example";
-            result = sut.compare(str, "Other string example");
-            expect (result).toBe(false);
+            result = await sut.compareWithHash(str, "Other string example");
+            expect (result).toBeFalsy();
         });
     });
 });
