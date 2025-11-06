@@ -4,6 +4,7 @@ import { MockCreateUserUseCase } from "./UserUseCase.mock";
 import { createUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
 import userOutputBuilder from "@/users/infrastructure/testing/userOutputBuilder";
 import type { UserOutput } from "@/users/application/dto/userIo";
+import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
 
 let sut: CreateUserController;
 let mockUseCase: MockCreateUserUseCase;
