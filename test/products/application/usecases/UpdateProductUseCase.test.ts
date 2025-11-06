@@ -23,7 +23,6 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
     });
 
     [
-        { field: "id", value: "fake-id" },
         { field: "price", value: 0 },
         { field: "quantity", value: 0 },
     ].forEach(({ field, value }) => {

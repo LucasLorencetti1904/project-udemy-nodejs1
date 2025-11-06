@@ -17,8 +17,6 @@ export default class UpdateProductUseCaseImpl extends WriteProductUseCase implem
 
     public async execute(input: UpdateProductInput): Promise<ProductOutput> { 
         try {
-            this.checkId(input.id);
-
             if (this.someInvalidField(input)) {
                 throw new BadRequestError("Input data not provided or invalid.");
             }

@@ -19,12 +19,6 @@ describe ("DeleteProductByIdUseCaseImpl Test.", () => {
         sut = new DeleteProductByIdUseCaseImpl(mockRepository);
     });
 
-    it ("should throw an BadRequestError when id is invalid.", async () => {
-        productInputData = "fake-id";
-        await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
-        expect (mockRepository.delete).not.toHaveBeenCalled();
-    });
-
     [
         {
             mockResult: vi.fn().mockResolvedValue(null),

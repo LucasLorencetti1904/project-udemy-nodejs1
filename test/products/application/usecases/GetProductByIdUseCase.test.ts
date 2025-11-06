@@ -19,12 +19,6 @@ describe ("GetProductByIdUseCaseImpl Test.", () => {
          sut = new GetProductByIdUseCaseImpl(mockRepository);
     });
 
-    it ("should throw an BadRequestError when id is invalid.", async () => {
-        productInputData = "fake-id";
-        await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
-        expect (mockRepository.findById).not.toHaveBeenCalled();
-    });
-
     [
         {
             mockResult: vi.fn().mockResolvedValue(null),

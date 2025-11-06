@@ -16,8 +16,6 @@ export default class DeleteProductByIdUseCaseImpl extends ReadProductUseCase imp
 
     public async execute(input: DeleteProductByIdInput): Promise<ProductOutput> {
         try {
-            this.checkId(input);
-
             const toDelete: ProductModel = await this.repo.delete(input);
 
             if (!toDelete) {

@@ -14,8 +14,6 @@ export default class GetProductByIdUseCaseImpl extends ReadProductUseCase implem
 
     public async execute(input: GetProductByIdInput): Promise<ProductOutput> {
         try {
-            this.checkId(input);
-
             return await this.tryGetById(input);
         }
         catch (e: unknown) {
