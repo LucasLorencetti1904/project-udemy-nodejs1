@@ -5,6 +5,7 @@ import { createUserInputBuilder } from "@/users/infrastructure/testing/userInput
 import userOutputBuilder from "@/users/infrastructure/testing/userOutputBuilder";
 import type { UserOutput } from "@/users/application/dto/userIo";
 import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
+import type CreateUserInput from "@/users/application/dto/CreateUserInput";
 
 let sut: CreateUserController;
 let mockUseCase: MockCreateUserUseCase;
@@ -28,6 +29,16 @@ describe ("CreateUserController Test.", () => {
     ["name", "email", "password"].forEach((field) => {
         it (`should return a response error with code 400 when user ${field} is empty.`, async () => {
             req.body = createUserInputBuilder({ [field]: "" });
+            await sut.handle(req as Request, res as Response);
+            expect (mockUseCase.execute).not.toHaveBeenCalled();
+            expect (res.status).toHaveBeenCalledExactlyOnceWith(400);
+            expect (res.json).toHaveBeenCalledExactlyOnceWith({ message: expect.stringContaining("") });
+        });
+    });
+
+    ["invalidEmail", "invalid email @gmail.com", "invalidemailgmail.com", "invalidemail@.com"].forEach((value) => {
+        it (`should return a response error with code 400 when user email is invalid.`, async () => {
+            req.body = createUserInputBuilder({ email: value });
             await sut.handle(req as Request, res as Response);
             expect (mockUseCase.execute).not.toHaveBeenCalled();
             expect (res.status).toHaveBeenCalledExactlyOnceWith(400);

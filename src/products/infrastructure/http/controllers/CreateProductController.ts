@@ -7,6 +7,7 @@ import type { ZodType } from "zod";
 import type CreateProductUseCase from "@/products/application/usecases/createProduct/CreateProductUseCase";
 import type CreateProductInput from "@/products/application/dto/CreateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
+import ZodSchemaValidator from "@/common/infrastructure/http/helpers/ZodSchemaValidator";
 
 @injectable()
 export default class CreateProductController extends Controller {
@@ -17,7 +18,7 @@ export default class CreateProductController extends Controller {
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const input = this.handleRequest(req.body);
+            const input: CreateProductInput = this.validateRequest(req.body);
             const product: ProductOutput = await this.useCase.execute(input);
             return res.status(201).json({ message: "Product registered successfully.", data: product });
         }
@@ -26,19 +27,13 @@ export default class CreateProductController extends Controller {
         }
     }
 
-    protected handleRequest(data: unknown): any {
+    protected validateRequest(data: unknown): CreateProductInput {
         const schema: ZodType<CreateProductInput> = z.object({
             name: z.string().nonempty(),
             price: z.number().gt(0),
             quantity: z.number().int().gt(0)
         }).strict();
 
-        const result = schema.safeParse(data);
-
-        if (result.success) {
-            return result.data;
-        }
-
-        this.ThrowZodError(result.error);
+        return ZodSchemaValidator.handleDataWithSchema({ data, schema });
     }   
 }

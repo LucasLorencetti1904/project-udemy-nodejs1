@@ -5,6 +5,8 @@ import ApplicationError from "@/common/domain/errors/ApplicationError";
 import GetProductByIdUseCase from "@/products/application/usecases/getProductById/GetProductByIdUseCase";
 import type { Request, Response } from "express";
 import type { ProductOutput } from "@/products/application/dto/productIo";
+import ZodSchemaValidator from "@/common/infrastructure/http/helpers/ZodSchemaValidator";
+import type GetProductByIdInput from "@/products/application/dto/GetProductByIdInput";
 
 @injectable()
 export default class GetProductByIdController extends Controller {
@@ -15,7 +17,7 @@ export default class GetProductByIdController extends Controller {
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const input = this.handleRequest(req.params.id);
+            const input: GetProductByIdInput = this.validateRequest(req.params.id);
             const product: ProductOutput = await this.useCase.execute(input);
             return res.status(200).json({ message: "Product found.", data: product });
         }
@@ -24,15 +26,9 @@ export default class GetProductByIdController extends Controller {
         }
     }
 
-    protected handleRequest(data: unknown): any {
+    protected validateRequest(data: unknown): GetProductByIdInput {
         const idSchema = z.string().uuid();
 
-        const result = idSchema.safeParse(data);
-
-        if (result.success) {
-            return result.data;
-        }
-
-        this.ThrowZodError(result.error);
+        return ZodSchemaValidator.handleDataWithSchema({ data, schema: idSchema });
     }   
 }

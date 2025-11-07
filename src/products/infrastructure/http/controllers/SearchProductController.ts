@@ -2,9 +2,10 @@ import { inject, injectable } from "tsyringe";
 import Controller from "@/common/infrastructure/http/controllers/Controller";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
 import type { Request, Response } from "express";
-import { SearchProductOutput } from "@/products/application/dto/searchProdutIo";
+import { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
 import z from "zod";
-import SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
+import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
+import ZodSchemaValidator from "@/common/infrastructure/http/helpers/ZodSchemaValidator";
 
 @injectable()
 export default class SearchProductController extends Controller {
@@ -15,7 +16,7 @@ export default class SearchProductController extends Controller {
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const input = this.handleRequest(req.query);
+            const input: SearchProductInput = this.validateRequest(req.query);
             const searchResult: SearchProductOutput = await this.useCase.execute(input);
             return res.status(200).json({ message: "Successful search.", data: searchResult });
         }
@@ -24,7 +25,7 @@ export default class SearchProductController extends Controller {
         }
     }
 
-    protected handleRequest(data: unknown): any {
+    protected validateRequest(data: unknown): SearchProductInput {
         const schema = z.object({
             page: z.coerce.number().optional(),
             perPage: z.coerce.number().optional(),
@@ -33,12 +34,6 @@ export default class SearchProductController extends Controller {
             filter: z.string().optional()
         }).strict();
 
-        const result = schema.safeParse(data);
-
-        if (result.success) {
-            return result.data;
-        }
-
-        this.ThrowZodError(result.error);
+        return ZodSchemaValidator.handleDataWithSchema({ data, schema });
     }  
 }

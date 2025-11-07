@@ -7,6 +7,7 @@ import type { Request, Response } from "express";
 import type CreateUserUseCase from "@/users/application/usecases/createUser/CreateUserUseCase";
 import type { UserOutput } from "@/users/application/dto/userIo";
 import type CreateUserInput from "@/users/application/dto/CreateUserInput";
+import ZodSchemaValidator from "@/common/infrastructure/http/helpers/ZodSchemaValidator";
 
 @injectable()
 export default class CreateUserController extends Controller {
@@ -17,7 +18,7 @@ export default class CreateUserController extends Controller {
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const input = this.handleRequest(req.body);
+            const input: CreateUserInput = this.validateRequest(req.body);
             const user: UserOutput = await this.useCase.execute(input);
             return res.status(201).json({ message: "User registered successfully.", data: user });
         }
@@ -26,19 +27,13 @@ export default class CreateUserController extends Controller {
         }
     }
 
-    protected handleRequest(data: unknown): any {
+    protected validateRequest(data: unknown): CreateUserInput {
         const schema: ZodType<CreateUserInput> = z.object({
             name: z.string().nonempty(),
-            email: z.string().nonempty(),
+            email: z.string().email(),
             password: z.string().nonempty()
         }).strict();
 
-        const result = schema.safeParse(data);
-
-        if (result.success) {
-            return result.data;
-        }
-
-        this.ThrowZodError(result.error);
+        return ZodSchemaValidator.handleDataWithSchema({ data, schema });
     }   
 }

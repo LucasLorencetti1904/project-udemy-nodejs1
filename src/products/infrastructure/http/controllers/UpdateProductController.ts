@@ -7,6 +7,7 @@ import type { ZodType } from "zod";
 import type { ProductOutput } from "@/products/application/dto/productIo";
 import UpdateProductUseCase from "@/products/application/usecases/updateProduct/UpdateProductUseCase";
 import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
+import ZodSchemaValidator from "@/common/infrastructure/http/helpers/ZodSchemaValidator";
 
 @injectable()
 export default class UpdateProductController extends Controller {
@@ -18,7 +19,7 @@ export default class UpdateProductController extends Controller {
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
             const rawData: UpdateProductInput = { id: req.params.id, ...req.body }
-            const input = this.handleRequest(rawData);
+            const input: UpdateProductInput = this.validateRequest(rawData);
             const updatedProduct: ProductOutput = await this.useCase.execute(input);
             return res.status(200).json({ message: "Product updated successfully.", data: updatedProduct });
         }
@@ -27,7 +28,7 @@ export default class UpdateProductController extends Controller {
         }
     }
 
-    protected handleRequest(data: unknown): any {
+    protected validateRequest(data: unknown): UpdateProductInput {
         const schema: ZodType<UpdateProductInput> = z.object({
             id: z.string().uuid(),
             name: z.string().optional(),
@@ -35,12 +36,6 @@ export default class UpdateProductController extends Controller {
             quantity: z.number().int().gt(0).optional()
         }).strict();
 
-        const result = schema.safeParse(data);
-
-        if (result.success) {
-            return result.data;
-        }
-
-        this.ThrowZodError(result.error);
+        return ZodSchemaValidator.handleDataWithSchema({ data, schema });
     }   
 }
