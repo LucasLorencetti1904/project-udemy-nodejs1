@@ -31,7 +31,7 @@ export default class CreateProductUseCaseImpl extends UserUseCase implements Cre
             const user: UserModel = this.repo.create({ ...input, password: hashPassword });
             await this.repo.insert(user);
 
-            return user;
+            return this.mapToUserOutput(user);
         }
         catch (e: unknown) {
             this.handleApplicationErrors(e);

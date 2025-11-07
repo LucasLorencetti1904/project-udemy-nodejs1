@@ -4,8 +4,10 @@ export type UserInput = {
     password?: string
 };
 
-export type UserOutput = Required<UserInput> & {
+export type UserOutput = {
     id: string,
+    name: string,
+    email: string,
     avatar?: string
     createdAt: Date,
     updatedAt: Date

@@ -14,6 +14,8 @@ let mockHashProvider: MockStringHashProvider;
 let userInputData: CreateUserInput;
 let userOutputData: UserOutput;
 
+let result: UserOutput;
+
 const exampleOfHashPassword: string = "$2b$06$Kb7JH8s9Qv1m2n3o4p5q6uvW8yZ0a1B2c3D4e5F6g7H8i9J0K1L2m";
 
 describe ("CreateUserUseCaseImpl Test.", () => {
@@ -74,9 +76,9 @@ describe ("CreateUserUseCaseImpl Test.", () => {
         { password: "PasswordExample12345!*" }, { password: "1A2B3C4D5E" }
     ]
     .forEach((specificInput) => {
-        it ("should return a new user with hash password when input data is valid.", async () => {
+        it ("should return a new user when input data is valid.", async () => {
             userInputData = createUserInputBuilder({ ...specificInput });
-            userOutputData = userOutputBuilder({ ...userInputData, password: exampleOfHashPassword });
+            userOutputData = userOutputBuilder({ name: userInputData.name, email: userInputData.email });
 
             mockRepository.findByEmail.mockResolvedValue(null);
             mockHashProvider.hashString.mockResolvedValue(exampleOfHashPassword);
@@ -84,9 +86,10 @@ describe ("CreateUserUseCaseImpl Test.", () => {
 
             const userInputDataWithHashPassword: CreateUserInput = { ...userInputData, password: exampleOfHashPassword };
 
-            await expect ((sut.execute(userInputData))).resolves.toEqual(userOutputData);
-    
-            expect(mockHashProvider.hashString).toHaveBeenCalledExactlyOnceWith(userInputData.password);
+            result = await sut.execute(userInputData);
+
+            expect (result).toEqual(userOutputData);
+            expect (result).not.toHaveProperty("password");
 
             [
                 { repoMethod: "findByEmail", expectedValue: userInputData.email },

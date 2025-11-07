@@ -5,7 +5,6 @@ import { createUserInputBuilder } from "@/users/infrastructure/testing/userInput
 import userOutputBuilder from "@/users/infrastructure/testing/userOutputBuilder";
 import type { UserOutput } from "@/users/application/dto/userIo";
 import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
-import type CreateUserInput from "@/users/application/dto/CreateUserInput";
 
 let sut: CreateUserController;
 let mockUseCase: MockCreateUserUseCase;
@@ -74,7 +73,7 @@ describe ("CreateUserController Test.", () => {
         { password: "123456789a" }, { password: "UserPasswordExample123!*" }
     ]
     .forEach((specificInput) => {
-        it (`should return a response user json object with code 201 when user registered successfully.`, async () => {
+        it (`should return a response user (without password) json object with code 201 when user registered successfully.`, async () => {
             req.body = createUserInputBuilder({ ...specificInput });
             const useCaseOutput: UserOutput = userOutputBuilder({ ...req.body });
             mockUseCase.execute.mockResolvedValue(useCaseOutput);

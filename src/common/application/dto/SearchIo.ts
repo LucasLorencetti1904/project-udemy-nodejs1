@@ -1,4 +1,4 @@
-export type SearchInput<TModel> = & {
+export type SearchInput<TModel> = {
     page?: number,
     perPage?: number,
     sort?: keyof TModel,

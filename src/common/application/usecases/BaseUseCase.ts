@@ -1,4 +1,3 @@
-import type Model from "@/common/domain/models/Model";
 import HttpError, { InternalError } from "@/common/domain/errors/httpErrors";
 
 export default abstract class BaseUseCase {
