@@ -1,7 +1,7 @@
 import BaseUseCase from "@/common/application/usecases/BaseUseCase";
 import { ConflictError } from "@/common/domain/errors/httpErrors";
 import type UserModel from "@/users/domain/models/UserModel";
-import UserRepository from "@/users/domain/repository/UserRepository";
+import UserRepository from "@/users/domain/repositories/UserRepository";
 import type { UserOutput } from "@/users/application/dto/userIo";
 
 export default abstract class UserUseCase extends BaseUseCase {

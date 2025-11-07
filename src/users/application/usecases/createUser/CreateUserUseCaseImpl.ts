@@ -3,7 +3,7 @@ import { BadRequestError } from "@/common/domain/errors/httpErrors";
 import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
 import type CreateUserUseCase from "@/users/application/usecases/createUser/CreateUserUseCase";
 import UserUseCase from "@/users/application/usecases/default/UserUseCase";
-import UserRepository from "@/users/domain/repository/UserRepository";
+import UserRepository from "@/users/domain/repositories/UserRepository";
 import { UserOutput } from "@/users/application/dto/userIo";
 import CreateUserInput from "@/users/application/dto/CreateUserInput";
 import UserModel from "@/users/domain/models/UserModel";

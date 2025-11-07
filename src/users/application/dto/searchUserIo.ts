@@ -1,7 +1,7 @@
 import type { SearchInput, SearchOutput } from "@/common/application/dto/SearchIo";
-import type UserModel from "@/users/domain/models/UserModel"
+import { UserInput, UserOutput } from "@/users/application/dto/userIo";
 
 
-export type SearchUserInput = SearchInput<UserModel>;
+export type SearchUserInput = SearchInput<UserInput>;
 
-export type SearchUserOutput = SearchOutput<UserModel>;
+export type SearchUserOutput = SearchOutput<UserOutput>;

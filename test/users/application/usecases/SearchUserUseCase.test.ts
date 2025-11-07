@@ -11,7 +11,8 @@ describe ("SearchUserUseCase Test", () => {
     let sut: SearchUserUseCase;
     let mockRepository: MockUserRepository;
 
-    let models: UserModel[] = Array(50).fill(userModelBuilder({}));
+    let models: UserModel[] = Array.from({ length: 50 }, () => userModelBuilder({}));
+    
     let exampleOfModel: UserModel = userModelBuilder({});
 
     let defaultRepoOutput: RepositorySearchOutput<UserModel>;
@@ -23,7 +24,7 @@ describe ("SearchUserUseCase Test", () => {
         mockRepository = new MockUserRepository();
         sut = new SearchUserUseCaseImpl(mockRepository);
         
-        models = Array(50).fill(userModelBuilder({ name: "Non" }));
+        models = Array.from({ length: 50 }, () => userModelBuilder({ name: "Non" }));
 
         defaultRepoOutput = {
             currentPage: 1,
@@ -78,13 +79,13 @@ describe ("SearchUserUseCase Test", () => {
             description: "should return the first 15 items by default.",
             input: {},
             output: { items: models.slice(0, 15) },
-            expected: { items: models.slice(0, 15) }
+            expected: { items: models.slice(0, 15).map(({ password, ...output }) => output) }
         },
         {
             description: "should return 6 items of page 2.",
             input: { page: 2, perPage: 6 },
             output: { items: models.slice(6, 12) },
-            expected: { items: models.slice(6, 12) }
+            expected: { items: models.slice(6, 12).map(({ password, ...output }) => output) }
         },
         {
             description: "should return the count of all items.",
@@ -114,14 +115,20 @@ describe ("SearchUserUseCase Test", () => {
                 sortDir: "asc",
                 filter: "am", 
                 total: 50,
-                items: Array(3).fill(userModelBuilder({ ...exampleOfModel, email: "example@gmail.com" }))
+                items: Array.from({ length: 3 }, () => userModelBuilder({
+                    ...exampleOfModel,
+                    email: "example@gmail.com"
+                }))
             },
             expected: {
                 currentPage: 2,
                 perPage: 25,
                 lastPage: 2,
                 total: 50,
-                items: Array(3).fill(userModelBuilder({ ...exampleOfModel, email: "example@gmail.com" }))
+                items: Array.from({ length: 3 }, () => userModelBuilder({
+                    ...exampleOfModel,
+                    email: "example@gmail.com"
+                })).map(({ password, ...output }) => output)
             }
         }
     ];
