@@ -1,8 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { randomUUID } from "node:crypto";
-import CreateUserInput from "@/users/application/dto/CreateUserInput";
-import UpdateUserInput from "@/users/application/dto/UpdateUserInput";
-import { UserInput } from "@/users/application/dto/userIo";
+import type AuthenticateUserInput from "@/users/application/dto/AuthenticateUserInput";
+import type CreateUserInput from "@/users/application/dto/CreateUserInput";
+import type UpdateUserInput from "@/users/application/dto/UpdateUserInput";
+import type { UserInput } from "@/users/application/dto/userIo";
 
 export default function userInputBuilder(props: Partial<UserInput>): UserInput {
     return {
@@ -10,6 +11,13 @@ export default function userInputBuilder(props: Partial<UserInput>): UserInput {
         email: props.email ?? faker.internet.email(),
         password: props.password ?? faker.internet.password(),
     };
+}
+
+export function authenticateUserInputBuilder(props: Partial<AuthenticateUserInput>): AuthenticateUserInput {
+    return {
+        email: props.email ?? faker.internet.email(),
+        password: props.password ?? faker.internet.password()     
+    }
 }
 
 export function createUserInputBuilder(props: Partial<CreateUserInput>): CreateUserInput {

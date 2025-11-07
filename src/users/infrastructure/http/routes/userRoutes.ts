@@ -1,10 +1,12 @@
 import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
+import SearchUserController from "@/users/infrastructure/http/controllers/SearchUserController";
 import { Router } from "express";
 import { container } from "tsyringe";
 
 const userRouter: Router = Router();
 
 const createUserController: CreateUserController = container.resolve(CreateUserController);
+const searchUserController: SearchUserController = container.resolve(SearchUserController);
 
 /**
  * @swagger
@@ -82,5 +84,52 @@ const createUserController: CreateUserController = container.resolve(CreateUserC
  *         description: Email already used on another user
  */
 userRouter.post("/", createUserController.handle);
+
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Returns a paginated list of users
+ *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: The page number to retrieve
+ *       - in: query
+ *         name: per_page
+ *         schema:
+ *           type: integer
+ *           default: 15
+ *         description: Number of items per page
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *           default: null
+ *         description: Field to sort by
+ *       - in: query
+ *         name: sort_dir
+ *         schema:
+ *           type: string
+ *           default: null
+ *         description: Sort direction (asc or desc)
+ *       - in: query
+ *         name: filter
+ *         schema:
+ *           type: string
+ *           default: null
+ *         description: Filter string to search for specific users
+ *     responses:
+ *       200:
+ *         description: A paginated list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserListResponse'
+ */
+userRouter.get("/", searchUserController.handle);
 
 export default userRouter;
