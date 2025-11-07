@@ -16,7 +16,7 @@ const options: swaggerJSDoc.Options = {
             version: "1.0.0",
         }
     },
-    apis: ["./src/**/infrastructure/http/routes/*"]
+    apis: ["./src/**/http/routes/*.ts"]
 };
 
 const swaggerSpec = swaggerJSDoc(options) as OpenAPIV3.Document;
