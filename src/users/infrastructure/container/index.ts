@@ -5,6 +5,7 @@ import SearchUserUseCaseImpl from "@/users/application/usecases/searchUser/Searc
 import AuthenticateUserUseCaseImpl from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCaseImpl";
 import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
 import SearchUserController from "@/users/infrastructure/http/controllers/SearchUserController";
+import AuthenticateUserController from "@/users/infrastructure/http/controllers/AuthenticateUserController";
 import User from "@/users/infrastructure/typeorm/entities/User";
 import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
 
@@ -18,3 +19,4 @@ container.registerSingleton("SearchUserUseCase", SearchUserUseCaseImpl);
 container.registerSingleton("SearchUserController", SearchUserController);
 
 container.registerSingleton("AuthenticateUserUseCase", AuthenticateUserUseCaseImpl);
+container.registerSingleton("AuthenticateUserController", AuthenticateUserController);
