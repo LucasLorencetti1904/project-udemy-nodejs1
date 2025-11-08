@@ -1,18 +1,18 @@
 import { inject, injectable } from "tsyringe";
-import type ProductRepository from "@/products/domain/repositories/ProductRepository";
-import DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
-import type DeleteProductByIdInput from "@/products/application/dto/DeleteProductByIdInput";
-import { NotFoundError } from "@/common/domain/errors/httpErrors";
-import type { ProductOutput } from "@/products/application/dto/productIo";
-import type ProductModel from "@/products/domain/models/ProductModel";
 import ProductUseCase from "@/products/application/usecases/default/ProductUseCase";
+import type DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
+import type ProductRepository from "@/products/domain/repositories/ProductRepository";
+import type ProductModel from "@/products/domain/models/ProductModel";
+import type DeleteProductByIdInput from "@/products/application/dto/DeleteProductByIdInput";
+import type { ProductOutput } from "@/products/application/dto/productIo";
+import { NotFoundError } from "@/common/domain/errors/httpErrors";
 
 @injectable()
 export default class DeleteProductByIdUseCaseImpl extends ProductUseCase implements DeleteProductByIdUseCase {
     constructor(
         @inject("ProductRepository")
         protected readonly repo: ProductRepository
-    ) { super(repo) }
+    ) { super(repo); }
 
     public async execute(input: DeleteProductByIdInput): Promise<ProductOutput> {
         try {

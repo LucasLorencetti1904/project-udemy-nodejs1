@@ -1,14 +1,14 @@
-import { BadRequestError, ConflictError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
-import MockProductRepository from "./ProductRepository.mock";
-import { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
-import type { ProductOutput } from "@/products/application/dto/productIo";
-import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import UpdateProductUseCaseImpl from "@/products/application/usecases/updateProduct/UpdateProductUseCaseImpl";
-import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
-import { randomUUID } from "node:crypto";
+import MockProductRepository from "./ProductRepository.mock";
+import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type ProductModel from "@/products/domain/models/ProductModel";
+import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
+import type { ProductOutput } from "@/products/application/dto/productIo";
 import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
+import { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
 import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
+import { randomUUID } from "node:crypto";
+import { BadRequestError, ConflictError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 
 let sut: UpdateProductUseCaseImpl;
 let mockRepository: ProductRepository;
@@ -27,7 +27,7 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
         { field: "quantity", value: 0 },
     ].forEach(({ field, value }) => {
         it (`should throw BadRequestError when product ${field} is defined and invalid.`, async () => {
-            productInputData = updateProductInputBuilder({ [field]: value })
+            productInputData = updateProductInputBuilder({ [field]: value });
             await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
 
             ["findByName", "findById", "update"].forEach((method) => {
@@ -38,7 +38,7 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
 
     ["name", "price", "quantity"].forEach((field) => {
         it (`should not throw BadRequestError when product ${field} is undefined.`, async () => {
-            productInputData = updateProductInputBuilder({ [field]: undefined })
+            productInputData = updateProductInputBuilder({ [field]: undefined });
             await expect (sut.execute(productInputData)).rejects.not.toBeInstanceOf(BadRequestError);
         });
     });
@@ -46,6 +46,7 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
     it ("should throw ConflictError when product name already exists.", async () => {
         productInputData = updateProductInputBuilder({ name: "Existent Product" });
         mockRepository.findByName = vi.fn().mockResolvedValue(productInputData.name);
+
         await expect ((sut.execute(productInputData))).rejects.toBeInstanceOf(ConflictError);
 
         expect (mockRepository.findByName).toHaveBeenCalledExactlyOnceWith(productInputData.name);
@@ -56,6 +57,7 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
     it ("should throw an NotFoundError when product is not found by id.", async () => {
         productInputData = updateProductInputBuilder({ id: randomUUID() });
         mockRepository.findById = vi.fn().mockResolvedValue(null);
+
         await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(NotFoundError);
 
         expect (mockRepository.findByName).toHaveBeenCalledExactlyOnceWith(productInputData.name);
@@ -67,6 +69,7 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
         it ("should throw an InternalError when repository throws an unexpected error.", async () => {
             mockRepository.findById = vi.fn().mockResolvedValue(productOutputBuilder({}));
             mockRepository[method] = vi.fn().mockRejectedValue(new Error());
+
             await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
         });
     });
@@ -83,7 +86,7 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
         { field: "price", oldValue: 1, newValue: 2.32 },
         { field: "price", oldValue: 92.43, newValue: 84 },
         { field: "quantity", oldValue: 1, newValue: 3 },
-        { field: "quantity", oldValue: 932, newValue: 927 },
+        { field: "quantity", oldValue: 932, newValue: 927 }
     ];
     
     updateTestingCases.forEach(({ field, oldValue, newValue }) => {
@@ -93,9 +96,11 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
                 ...productInputData, [field]: oldValue
             });
             productOutputData = { ...oldProduct, [field]: productInputData[field] };
+
             mockRepository.findById = vi.fn().mockResolvedValue(oldProduct)
             mockRepository.findByName = vi.fn().mockResolvedValue(null);
             mockRepository.update = vi.fn().mockReturnValue(productOutputData);
+
             await expect ((sut.execute(productInputData))).resolves.toEqual(productOutputData);
     
             [
@@ -119,9 +124,11 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
                 id: productInputData.id, [field]: oldValue
             });
             productOutputData = { ...oldProduct, [field]: productInputData[field] };
+
             mockRepository.findById = vi.fn().mockResolvedValue(oldProduct)
             mockRepository.findByName = vi.fn().mockResolvedValue(null);
             mockRepository.update = vi.fn().mockReturnValue(productOutputData);
+            
             await expect ((sut.execute(productInputData))).resolves.toEqual(productOutputData);
             
             if (productInputData.name != undefined) {

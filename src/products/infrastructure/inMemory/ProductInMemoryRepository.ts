@@ -15,7 +15,7 @@ implements ProductRepository {
         }
 
         return items.filter((item) => {
-            return item.name.toLowerCase().includes(filter.toLowerCase())
+            return item.name.toLowerCase().includes(filter.toLowerCase());
         }); 
     }
 

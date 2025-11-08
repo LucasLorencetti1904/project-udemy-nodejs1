@@ -1,11 +1,11 @@
-import { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 import CreateProductUseCaseImpl from "@/products/application/usecases/createProduct/CreateProductUseCaseImpl";
 import MockProductRepository from "./ProductRepository.mock";
-import { createProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
-import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
+import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type CreateProductInput from "@/products/application/dto/CreateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import type ProductRepository from "@/products/domain/repositories/ProductRepository";
+import { createProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
+import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
+import { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 
 let sut: CreateProductUseCaseImpl;
 let mockRepository: ProductRepository;
@@ -26,12 +26,12 @@ describe ("CreateProductUseCaseImpl Test.", () => {
     ]
     .forEach(({ field, wrong, value }) => {
         it (`should throw BadRequestError when product ${field} is ${wrong}.`, async () => {
-            productInputData = createProductInputBuilder({ [field]: value })
+            productInputData = createProductInputBuilder({ [field]: value });
             await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
             
             ["findByName", "create", "insert"].forEach((method) => {
                 expect (mockRepository[method]).not.toHaveBeenCalled();
-            })
+            });
         });
     });
 
@@ -66,8 +66,10 @@ describe ("CreateProductUseCaseImpl Test.", () => {
         it ("should return a new product when input data is valid.", async () => {
             productInputData = createProductInputBuilder({ ...specificInput });
             productOutputData = productOutputBuilder({ ...productInputData });
+
             mockRepository.findByName = vi.fn().mockResolvedValue(null);
             mockRepository.create = vi.fn().mockReturnValue(productOutputData);
+            
             await expect ((sut.execute(productInputData))).resolves.toEqual(productOutputData);
     
             [

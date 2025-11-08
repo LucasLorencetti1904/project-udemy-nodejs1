@@ -1,19 +1,19 @@
 import { inject, injectable } from "tsyringe";
-import z from "zod";
 import Controller from "@/common/infrastructure/http/controllers/Controller";
-import ApplicationError from "@/common/domain/errors/ApplicationError";
-import type { Request, Response } from "express";
-import type { ProductOutput } from "@/products/application/dto/productIo";
 import type DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
-import ZodSchemaValidator from "@/common/infrastructure/http/helpers/ZodSchemaValidator";
 import type DeleteProductByIdInput from "@/products/application/dto/DeleteProductByIdInput";
+import type { ProductOutput } from "@/products/application/dto/productIo";
+import z from "zod";
+import ZodSchemaValidator from "@/common/infrastructure/http/helpers/ZodSchemaValidator";
+import type { Request, Response } from "express";
+import ApplicationError from "@/common/domain/errors/ApplicationError";
 
 @injectable()
 export default class DeleteProductByIdController extends Controller {
     constructor (
         @inject("DeleteProductByIdUseCase") 
         private readonly useCase: DeleteProductByIdUseCase
-    ) { super () }
+    ) { super (); }
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {

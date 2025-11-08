@@ -26,7 +26,7 @@ export class CreateProducts1757537584621 implements MigrationInterface {
                     },  
                 ]
             })
-        )
+        );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {

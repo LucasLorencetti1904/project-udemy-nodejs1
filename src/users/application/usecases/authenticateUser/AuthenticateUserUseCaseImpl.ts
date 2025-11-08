@@ -1,12 +1,12 @@
-import type AuthenticateUserUseCase from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCase";
-import UserUseCase from "@/users/application/usecases/default/UserUseCase";
-import type AuthenticateUserInput from "../../dto/AuthenticateUserInput";
-import type { UserOutput } from "@/users/application/dto/userIo";
 import { inject, injectable } from "tsyringe";
-import { BadRequestError, NotFoundError } from "@/common/domain/errors/httpErrors";
+import UserUseCase from "@/users/application/usecases/default/UserUseCase";
+import type AuthenticateUserUseCase from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCase";
 import type UserRepository from "@/users/domain/repositories/UserRepository";
 import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
 import type UserModel from "@/users/domain/models/UserModel";
+import type AuthenticateUserInput from "@/users/application/dto/AuthenticateUserInput";
+import type { UserOutput } from "@/users/application/dto/userIo";
+import { BadRequestError, NotFoundError } from "@/common/domain/errors/httpErrors";
 
 @injectable()
 export default class AuthenticateUserUseCaseImpl extends UserUseCase implements AuthenticateUserUseCase {
@@ -16,7 +16,7 @@ export default class AuthenticateUserUseCaseImpl extends UserUseCase implements 
         
         @inject("StringHashProvider")
         protected readonly hashProvider: StringHashProvider
-    ) { super(repo) }
+    ) { super(repo); }
 
     public async execute(input: AuthenticateUserInput): Promise<UserOutput> {
         try {

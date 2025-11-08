@@ -10,4 +10,4 @@ export default defineConfig({
         include: ["./test/**/*.test.ts"],
         exclude: ["**/*.int.test.ts"]
     }
-})
+});

@@ -13,4 +13,4 @@ export default defineConfig({
         },
         include: ["**/*.int.test.ts"]
     }
-})
+});

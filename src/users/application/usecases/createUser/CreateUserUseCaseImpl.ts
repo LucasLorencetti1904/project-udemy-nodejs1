@@ -1,12 +1,12 @@
 import { inject, injectable } from "tsyringe";
-import { BadRequestError, ConflictError } from "@/common/domain/errors/httpErrors";
-import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
-import type CreateUserUseCase from "@/users/application/usecases/createUser/CreateUserUseCase";
 import UserUseCase from "@/users/application/usecases/default/UserUseCase";
-import UserRepository from "@/users/domain/repositories/UserRepository";
-import { UserOutput } from "@/users/application/dto/userIo";
-import CreateUserInput from "@/users/application/dto/CreateUserInput";
-import UserModel from "@/users/domain/models/UserModel";
+import type CreateUserUseCase from "@/users/application/usecases/createUser/CreateUserUseCase";
+import type UserRepository from "@/users/domain/repositories/UserRepository";
+import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
+import type UserModel from "@/users/domain/models/UserModel";
+import type CreateUserInput from "@/users/application/dto/CreateUserInput";
+import type { UserOutput } from "@/users/application/dto/userIo";
+import { BadRequestError, ConflictError } from "@/common/domain/errors/httpErrors";
 
 @injectable()
 export default class CreateProductUseCaseImpl extends UserUseCase implements CreateUserUseCase {
@@ -16,7 +16,7 @@ export default class CreateProductUseCaseImpl extends UserUseCase implements Cre
         
         @inject("StringHashProvider")
         protected readonly hashProvider: StringHashProvider
-    ) { super(repo) }
+    ) { super(repo); }
 
     public async execute(input: CreateUserInput): Promise<UserOutput> {
        

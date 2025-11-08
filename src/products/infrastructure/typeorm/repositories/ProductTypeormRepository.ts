@@ -1,10 +1,10 @@
 import { inject, injectable } from "tsyringe";
-import { In, Repository } from "typeorm";
+import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepository";
 import type ProductRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository"
 import type { RepositorySearchInput } from "@/common/domain/repositories/repositorySearchIo";
 import type Product from "@/products/infrastructure/typeorm/entities/Product";
 import type ProductModel from "@/products/domain/models/ProductModel";
-import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepository";
+import { In, Repository } from "typeorm";
 
 @injectable()
 export default class ProductTypeormRepository extends TypeormRepository<ProductModel>
@@ -22,7 +22,7 @@ export default class ProductTypeormRepository extends TypeormRepository<ProductM
         constructor (
             @inject("ProductDefaultTypeormRepository")
             protected readonly productRepository: Repository<Product>
-        ) { super(productRepository) }
+        ) { super(productRepository); }
 
         public async findAllByIds(productIds: string[]): Promise<ProductModel[]> {
             return await this.productRepository.find({ where: { id: In(productIds) } });

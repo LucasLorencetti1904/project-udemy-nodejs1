@@ -1,4 +1,4 @@
-import { TableColumnOptions } from "typeorm";
+import type { TableColumnOptions } from "typeorm";
 
 export const id: TableColumnOptions = {
     name: "id",

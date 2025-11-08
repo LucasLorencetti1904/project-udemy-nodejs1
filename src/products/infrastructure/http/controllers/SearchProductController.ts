@@ -1,18 +1,18 @@
 import { inject, injectable } from "tsyringe";
 import Controller from "@/common/infrastructure/http/controllers/Controller";
-import ApplicationError from "@/common/domain/errors/ApplicationError";
-import type { Request, Response } from "express";
+import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 import { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
 import z from "zod";
-import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 import ZodSchemaValidator from "@/common/infrastructure/http/helpers/ZodSchemaValidator";
+import type { Request, Response } from "express";
+import ApplicationError from "@/common/domain/errors/ApplicationError";
 
 @injectable()
 export default class SearchProductController extends Controller {
     constructor (
         @inject("SearchProductUseCase") 
         private readonly useCase: SearchProductUseCase
-    ) { super () }
+    ) { super (); }
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {

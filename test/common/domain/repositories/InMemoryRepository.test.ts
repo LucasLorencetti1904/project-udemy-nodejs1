@@ -1,6 +1,6 @@
-import { randomUUID } from "node:crypto";
-import { StubInMemoryRepository, StubModelProps } from "./InMemoryRepository.stub";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
+import { StubInMemoryRepository, StubModelProps } from "./InMemoryRepository.stub";
+import { randomUUID } from "node:crypto";
 
 describe ("InMemoryRepository Test.", () => {
     let sut: StubInMemoryRepository;
@@ -28,14 +28,14 @@ describe ("InMemoryRepository Test.", () => {
     describe ("create", () => {
         it ("should create a new model.", () => {
             result = sut.create(props);
-            expect (result.name).toStrictEqual("test name")
+            expect (result.name).toStrictEqual("test name");
         });
     
         it ("should insert the model.", async () => {
             result = await sut.insert(model);
-            expect (result).toEqual(sut.items[0])
+            expect (result).toEqual(sut.items[0]);
         });
-    })
+    });
 
     describe ("findById", () => {
         it ("should return null when data is not found by id.", async () => {
@@ -46,23 +46,26 @@ describe ("InMemoryRepository Test.", () => {
         it ("should return data founded by id.", async () => {
             const createdData: StubModelProps = await sut.insert(model);
             const foundData: StubModelProps = await sut.findById(createdData.id);
+
             expect(foundData).toEqual(sut.items[0]);
         });
     });
 
     describe ("update", () => {
         it ("should return null when data to be updated is not found by id.", async () => {
-            result = await sut.update(model)
+            result = await sut.update(model);
             expect (result).toBeNull();
         });
     
         it ("should update data founded by id.", async () => {
             const createdData: StubModelProps = await sut.insert(model);
+
             const updatedData: StubModelProps = await sut.update({
                 ...createdData,
                 name: "new test name",
                 price: 12.00
             });
+
             expect(updatedData).toEqual(sut.items[0]);
         });
     });
@@ -75,9 +78,13 @@ describe ("InMemoryRepository Test.", () => {
     
         it ("should delete data founded by id.", async () => {
             const createdData: StubModelProps = await sut.insert(model);
+
             const countBeforeDelete: number = sut.items.length;
+
             await sut.delete(createdData.id);
+
             const countAfterDelete: number = sut.items.length
+
             expect([countBeforeDelete, countAfterDelete]).toEqual([1, 0]);
         });
     });
@@ -214,6 +221,7 @@ describe ("InMemoryRepository Test.", () => {
 
         it ("should return a default pagination with the first unsorted items when params is not specified.", async () => {
             result = await sut['search']({});
+
             expect (result).toEqual<RepositorySearchOutput<StubModelProps>>({
                 items: sut.items.slice(0, 15),
                 total: sut.items.length,
@@ -230,6 +238,7 @@ describe ("InMemoryRepository Test.", () => {
                 page: 4,
                 perPage: 4
             });
+
             expect (result).toEqual<RepositorySearchOutput<StubModelProps>>({
                 items: sut.items.slice(0, 4),
                 total: sut.items.length,
@@ -248,11 +257,13 @@ describe ("InMemoryRepository Test.", () => {
                 { ...model, name: "TEST 2" },
                 { ...model, name: "test 3" }
             ];
+
             result = await sut['search']({
                 page: 2,
                 perPage: 2,
                 filter: "tE"
             });
+
             expect (result).toEqual<RepositorySearchOutput<StubModelProps>>({
                 items: [sut.items[3]],
                 total: 3,
@@ -271,12 +282,14 @@ describe ("InMemoryRepository Test.", () => {
                 { ...model, name: "d" },
                 { ...model, name: "b" }
             ];
+
             result = await sut['search']({
                 page: 2,
                 perPage: 2,
                 sort: "name",
                 sortDir: "asc"
             });
+
             expect (result).toEqual<RepositorySearchOutput<StubModelProps>>({
                 items: [sut.items[0], sut.items[2]],
                 total: 4,
@@ -295,6 +308,7 @@ describe ("InMemoryRepository Test.", () => {
                 { ...model, name: "B2" },
                 { ...model, name: "A1" }
             ];
+
             result = await sut['search']({
                 page: 1,
                 perPage: 2,
@@ -302,6 +316,7 @@ describe ("InMemoryRepository Test.", () => {
                 sortDir: "desc",
                 filter: "2"
             });
+
             expect (result).toEqual<RepositorySearchOutput<StubModelProps>>({
                 items: [sut.items[0], sut.items[2]],
                 total: 2,
@@ -313,4 +328,4 @@ describe ("InMemoryRepository Test.", () => {
             });
         });
     });
-});  
+});

@@ -1,6 +1,6 @@
-import { z, ZodSafeParseResult } from "zod";
 import dotenv from "dotenv";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
+import { z, ZodSafeParseResult } from "zod";
 
 const envPath: string = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
 

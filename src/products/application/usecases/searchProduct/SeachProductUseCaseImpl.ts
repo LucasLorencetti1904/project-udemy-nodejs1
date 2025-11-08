@@ -1,17 +1,17 @@
-import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
-import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 import { inject, injectable } from "tsyringe";
-import type ProductRepository from "@/products/domain/repositories/ProductRepository";
-import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
-import type ProductModel from "@/products/domain/models/ProductModel";
 import ProductUseCase from "@/products/application/usecases/default/ProductUseCase";
+import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
+import type ProductRepository from "@/products/domain/repositories/ProductRepository";
+import type ProductModel from "@/products/domain/models/ProductModel";
+import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
+import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
 
 @injectable()
 export default class SearchProductUseCaseImpl extends ProductUseCase implements SearchProductUseCase {
     constructor(
         @inject("ProductRepository")
         protected readonly repo: ProductRepository
-    ) { super(repo) }
+    ) { super(repo); }
 
     public async execute(input: SearchProductInput): Promise<SearchProductOutput> {
         try {
@@ -30,7 +30,7 @@ export default class SearchProductUseCaseImpl extends ProductUseCase implements 
             perPage: repoOutput.perPage,
             lastPage: this.calcLastPage(repoOutput.total, repoOutput.perPage),
             currentPage: repoOutput.currentPage
-        }
+        };
     }
 
     private calcLastPage(total: number, perPage: number) {

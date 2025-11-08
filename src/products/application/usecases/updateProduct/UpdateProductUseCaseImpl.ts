@@ -1,19 +1,19 @@
 import { inject, injectable } from "tsyringe";
-import { BadRequestError } from "@/common/domain/errors/httpErrors";
-import type { ProductOutput } from "@/products/application/dto/productIo";
+import ProductUseCase from "@/products/application/usecases/default/ProductUseCase";
+import type UpdateProductUseCase from "@/products/application/usecases/updateProduct/UpdateProductUseCase";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
-import type UpdateProductUseCase from "@/products/application/usecases/updateProduct/UpdateProductUseCase";
+import type { ProductOutput } from "@/products/application/dto/productIo";
+import { BadRequestError } from "@/common/domain/errors/httpErrors";
 import filterToTruthyObject from "@/common/domain/helpers/filterToTruthyObject";
-import ProductUseCase from "@/products/application/usecases/default/ProductUseCase";
 
 @injectable()
 export default class UpdateProductUseCaseImpl extends ProductUseCase implements UpdateProductUseCase {
     constructor(
         @inject("ProductRepository")
         protected readonly repo: ProductRepository
-    ) { super(repo) }
+    ) { super(repo); }
 
     public async execute(input: UpdateProductInput): Promise<ProductOutput> { 
         try {

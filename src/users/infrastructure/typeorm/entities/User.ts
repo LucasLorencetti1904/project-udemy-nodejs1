@@ -1,4 +1,4 @@
-import UserModel from "@/users/domain/models/UserModel";
+import type UserModel from "@/users/domain/models/UserModel";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("users")

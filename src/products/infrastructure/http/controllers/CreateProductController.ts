@@ -1,20 +1,20 @@
 import { inject, injectable } from "tsyringe";
-import type { Request, Response } from "express";
 import z from "zod";
 import Controller from "@/common/infrastructure/http/controllers/Controller";
-import ApplicationError from "@/common/domain/errors/ApplicationError";
-import type { ZodType } from "zod";
 import type CreateProductUseCase from "@/products/application/usecases/createProduct/CreateProductUseCase";
 import type CreateProductInput from "@/products/application/dto/CreateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
+import type { Request, Response } from "express";
+import type { ZodType } from "zod";
 import ZodSchemaValidator from "@/common/infrastructure/http/helpers/ZodSchemaValidator";
+import ApplicationError from "@/common/domain/errors/ApplicationError";
 
 @injectable()
 export default class CreateProductController extends Controller {
     constructor (
         @inject("CreateProductUseCase") 
         private readonly useCase: CreateProductUseCase
-    ) { super () }
+    ) { super (); }
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {

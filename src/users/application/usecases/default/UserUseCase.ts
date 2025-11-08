@@ -1,12 +1,12 @@
 import BaseUseCase from "@/common/application/usecases/BaseUseCase";
+import type UserRepository from "@/users/domain/repositories/UserRepository";
 import type UserModel from "@/users/domain/models/UserModel";
-import UserRepository from "@/users/domain/repositories/UserRepository";
 import type { UserOutput } from "@/users/application/dto/userIo";
 
 export default abstract class UserUseCase extends BaseUseCase {
     constructor(
         protected readonly repo: UserRepository
-    ) { super() }
+    ) { super(); }
 
     protected mapToUserOutput(model: UserModel): UserOutput {
         return {
@@ -16,6 +16,6 @@ export default abstract class UserUseCase extends BaseUseCase {
             avatar: model.avatar,
             createdAt: model.createdAt,
             updatedAt: model.updatedAt
-        }
+        };
     }
 }

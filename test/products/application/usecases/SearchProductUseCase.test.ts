@@ -1,10 +1,10 @@
-import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
-import MockProductRepository from "./ProductRepository.mock";
-import type ProductModel from "@/products/domain/models/ProductModel";
-import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
-import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
 import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 import SearchProductUseCaseImpl from "@/products/application/usecases/searchProduct/SeachProductUseCaseImpl";
+import MockProductRepository from "./ProductRepository.mock";
+import type ProductModel from "@/products/domain/models/ProductModel";
+import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
+import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
+import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
 import { InternalError } from "@/common/domain/errors/httpErrors";
 
 describe ("SearchProductUseCase Test", () => {  
@@ -135,6 +135,7 @@ describe ("SearchProductUseCase Test", () => {
     
             mockRepository.search.mockResolvedValue(repoOutput);
             result = await sut.execute(input);
+            
             expect (result).toEqual(expect.objectContaining(expected));
             expect (mockRepository.search).toHaveBeenCalledExactlyOnceWith(input);
         });

@@ -1,9 +1,9 @@
-import { CreateProducts1757537584621 } from "@/common/infrastructure/typeorm/migrations/1757537584621-CreateProducts";
-import { CreateUsers1762263461611 } from "@/common/infrastructure/typeorm/migrations/1762263461611-CreateUsers";
-import { DataSourceOptions } from "typeorm";
 import env from "@/common/infrastructure/env/dotenv";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import User from "@/users/infrastructure/typeorm/entities/User";
+import { CreateProducts1757537584621 } from "@/common/infrastructure/typeorm/migrations/1757537584621-CreateProducts";
+import { CreateUsers1762263461611 } from "@/common/infrastructure/typeorm/migrations/1762263461611-CreateUsers";
+import { DataSourceOptions } from "typeorm";
 
 const dbConfig: DataSourceOptions = {
     type: env.DB_TYPE,

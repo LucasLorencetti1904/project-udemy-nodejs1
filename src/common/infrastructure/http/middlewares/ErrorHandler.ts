@@ -1,5 +1,5 @@
 import HttpError from "@/common/domain/errors/httpErrors";
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 
 export default class ErrorHandler {
     public static handle(e: Error, req: Request, res: Response, next: NextFunction): Response {

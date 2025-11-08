@@ -1,6 +1,6 @@
-import { randomUUID } from "node:crypto";
 import type Repository from "@/common/domain/repositories/Repository"
 import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
+import { randomUUID } from "node:crypto";
 
 type ModelProps = {
     id: string,

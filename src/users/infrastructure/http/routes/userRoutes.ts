@@ -1,7 +1,7 @@
+import { container } from "tsyringe";
+import { Router } from "express";
 import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
 import SearchUserController from "@/users/infrastructure/http/controllers/SearchUserController";
-import { Router } from "express";
-import { container } from "tsyringe";
 
 const userRouter: Router = Router();
 

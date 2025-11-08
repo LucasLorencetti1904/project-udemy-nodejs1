@@ -1,9 +1,9 @@
-import { MockSearchUserUseCase } from "./UserUseCase.mock";
-import { Request, Response } from "express";
-import { InternalError } from "@/common/domain/errors/httpErrors";
-import userOutputBuilder from "@/users/infrastructure/testing/userOutputBuilder";
-import { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
 import SearchUserController from "@/users/infrastructure/http/controllers/SearchUserController";
+import { MockSearchUserUseCase } from "./UserUseCase.mock";
+import { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
+import userOutputBuilder from "@/users/infrastructure/testing/userOutputBuilder";
+import type { Request, Response } from "express";
+import { InternalError } from "@/common/domain/errors/httpErrors";
 
 let sut: SearchUserController;
 let mockUseCase: MockSearchUserUseCase;
@@ -15,9 +15,11 @@ describe ("SearchUserController Test.", () => {
     beforeEach (() => {
         mockUseCase = new MockSearchUserUseCase();
         sut = new SearchUserController(mockUseCase);
+
         req = {
             query: {},
         };
+
         res = {
             status: vi.fn().mockReturnThis(),
             json: vi.fn()
@@ -36,7 +38,9 @@ describe ("SearchUserController Test.", () => {
     for (let field in invalidSearchInput) {
         it (`should return a response error with code 400 when search input is invalid.`, async () => {
             req.query = { [field]: invalidSearchInput[field] };
+            
             await sut.handle(req as Request, res as Response);
+
             expect (mockUseCase.execute).not.toHaveBeenCalled();
             expect (res.status).toHaveBeenCalledWith(400);
             expect (res.json).toHaveBeenCalledWith({ message: expect.stringContaining("") });
@@ -46,7 +50,9 @@ describe ("SearchUserController Test.", () => {
     it (`should return a response error with code 500 when usecase throws an unexpected error.`, async () => {
         mockUseCase.execute.mockRejectedValue(new InternalError("Example"));
         req.query = {};
+
         await sut.handle(req as Request, res as Response);
+
         expect (mockUseCase.execute).toHaveBeenCalledExactlyOnceWith({});
         expect (res.status).toHaveBeenCalledWith(500);
         expect (res.json).toHaveBeenCalledWith({ message: expect.stringContaining("") });
@@ -56,7 +62,7 @@ describe ("SearchUserController Test.", () => {
         input: Partial<Record<keyof SearchUserInput, string>>,
         output: SearchUserOutput
         expectedCall: SearchUserInput 
-    }
+    };
 
     const cases: Case[] = [
         {
@@ -99,7 +105,9 @@ describe ("SearchUserController Test.", () => {
         it (`should return a response search output json object with code 200 when search is successful.`, async () => {
             mockUseCase.execute.mockResolvedValue(output);
             req.query = input;
+
             await sut.handle(req as Request, res as Response);
+            
             expect (mockUseCase.execute).toHaveBeenCalledWith(expectedCall);
             expect (res.status).toHaveBeenCalledWith(200);
             expect (res.json).toHaveBeenCalledWith({

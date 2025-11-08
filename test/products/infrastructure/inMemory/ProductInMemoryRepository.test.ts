@@ -1,7 +1,7 @@
-import { randomUUID } from "node:crypto";
-import ProductInMemoryRepository from "@/products/infrastructure/inMemory/ProductInMemoryRepository";
 import type ProductModel from "@/products/domain/models/ProductModel";
+import ProductInMemoryRepository from "@/products/infrastructure/inMemory/ProductInMemoryRepository";
 import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
+import { randomUUID } from "node:crypto";
 
 describe ("ProductInMemoryRepository Test.", () => {
     let sut: ProductInMemoryRepository;
@@ -20,7 +20,9 @@ describe ("ProductInMemoryRepository Test.", () => {
         it ("should return a product when it is found by name.", async () => {
             const exampleOfProduct: ProductModel = productModelBuilder({ name: "Valid Name Example" });
             sut.items.push(exampleOfProduct);
+
             result = await sut.findByName("Valid Name Example");
+
             expect (result).toEqual(exampleOfProduct);
         });
     });
@@ -37,7 +39,9 @@ describe ("ProductInMemoryRepository Test.", () => {
                 productModelBuilder({ id: randomIds[0] }),
                 productModelBuilder({ id: randomIds[1] })
             ];
+
             result = await sut.findAllByIds([randomIds[1], randomUUID()]);
+            
             expect (result).toEqual([sut.items[1]]);
         });
     });

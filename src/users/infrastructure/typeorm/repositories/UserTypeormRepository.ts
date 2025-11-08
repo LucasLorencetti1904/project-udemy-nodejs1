@@ -1,10 +1,10 @@
 import { inject, injectable } from "tsyringe";
-import { Repository } from "typeorm";
+import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepository";
 import type UserRepository from "@/users/domain/repositories/UserRepository"
+import type { Repository } from "typeorm";
 import type User from "@/users/infrastructure/typeorm/entities/User";
 import type UserModel from "@/users/domain/models/UserModel";
-import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepository";
-import { RepositorySearchInput } from "@/common/domain/repositories/repositorySearchIo";
+import type { RepositorySearchInput } from "@/common/domain/repositories/repositorySearchIo";
 
 @injectable()
 export default class UserTypeormRepository extends TypeormRepository<UserModel>
@@ -22,7 +22,7 @@ export default class UserTypeormRepository extends TypeormRepository<UserModel>
         constructor (
             @inject("UserDefaultTypeormRepository")
             protected readonly userRepository: Repository<User>
-        ) { super(userRepository) }
+        ) { super(userRepository); }
 
         public async findByName(name: string): Promise<UserModel[]> {
             return await this.userRepository.findBy({ name });

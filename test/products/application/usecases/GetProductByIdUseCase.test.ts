@@ -1,11 +1,11 @@
-import { BadRequestError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
-import { randomUUID } from "node:crypto";
 import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProductById/GetProductByIdUseCaseImpl";
 import MockProductRepository from "./ProductRepository.mock";
-import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type GetProductByIdProductInput from "@/products/application/dto/GetProductByIdInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
+import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
+import { randomUUID } from "node:crypto";
+import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 
 let sut: GetProductByIdUseCaseImpl;
 let mockRepository: ProductRepository;
@@ -35,7 +35,9 @@ describe ("GetProductByIdUseCaseImpl Test.", () => {
         it (`should throw an ${expectedErrorInstance.name} when ${occasion}.`, async () => {
             productInputData = randomUUID();
             mockRepository.findById = mockResult;
+
             await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(expectedErrorInstance);
+
             expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData);
         });
     });
@@ -44,7 +46,9 @@ describe ("GetProductByIdUseCaseImpl Test.", () => {
         productInputData = randomUUID();
         productOutputData = productOutputBuilder({ id: productInputData });
         mockRepository.findById = vi.fn().mockResolvedValue(productOutputData);
+
         const result: ProductOutput = await sut.execute(productInputData);
+
         expect (result).toEqual(productOutputData);
         expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(productInputData);
     });

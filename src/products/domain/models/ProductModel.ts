@@ -1,4 +1,4 @@
-import type Model from "@/common/domain/models/Model"
+import type Model from "@/common/domain/models/Model";
 
 type ProductModel = Model & {
     name: string,

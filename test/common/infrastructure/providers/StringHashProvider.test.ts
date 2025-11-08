@@ -1,4 +1,4 @@
-import StringHashProvider from "@/common/domain/providers/StringHashProvider";
+import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
 import BcryptStringHashProvider from "@/common/infrastructure/providers/BcryptStringHashProvider";
 
 let str: string;
@@ -14,6 +14,7 @@ toTest.forEach((sut) => {
         it ("should generate a hash from string.", async () => {
             str = "String example";
             result = await sut.hashString(str);
+
             expect (result && result != str).toBeTruthy();
         });
     
@@ -21,12 +22,14 @@ toTest.forEach((sut) => {
             str = "String example";
             hash = await sut.hashString(str);
             result = await sut.compareWithHash(str, hash);
+
             expect (result).toBeTruthy();
         });
     
         it ("should return false when string does not match hash.", async () => {
             str = "String example";
             result = await sut.compareWithHash(str, "Other string example");
+
             expect (result).toBeFalsy();
         });
     });

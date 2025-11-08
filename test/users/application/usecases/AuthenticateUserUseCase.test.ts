@@ -1,12 +1,12 @@
+import AuthenticateUserUseCaseImpl from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCaseImpl";
+import MockUserRepository from "./UserRepository.mock";
+import MockStringHashProvider from "test/common/application/usecases/StringHashProvider.mock";
+import type UserModel from "@/users/domain/models/UserModel";
 import type AuthenticateUserInput from "@/users/application/dto/AuthenticateUserInput";
 import type { UserOutput } from "@/users/application/dto/userIo";
-import MockStringHashProvider from "test/common/application/usecases/StringHashProvider.mock";
-import MockUserRepository from "./UserRepository.mock";
-import { BadRequestError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import { authenticateUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
 import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
-import type UserModel from "@/users/domain/models/UserModel";
-import AuthenticateUserUseCaseImpl from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCaseImpl";
+import { BadRequestError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 
 let sut: AuthenticateUserUseCaseImpl;
 let mockRepository: MockUserRepository;

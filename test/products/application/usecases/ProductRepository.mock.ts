@@ -1,4 +1,4 @@
-import ProductRepository from "@/products/domain/repositories/ProductRepository";
+import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 
 export default class MockProductRepository implements ProductRepository {
     public findById = vi.fn();

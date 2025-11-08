@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
-import { ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
+import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
 import { MockCreateUserUseCase } from "./UserUseCase.mock";
+import type { UserOutput } from "@/users/application/dto/userIo";
 import { createUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
 import userOutputBuilder from "@/users/infrastructure/testing/userOutputBuilder";
-import type { UserOutput } from "@/users/application/dto/userIo";
-import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
+import type { Request, Response } from "express";
+import { ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 
 let sut: CreateUserController;
 let mockUseCase: MockCreateUserUseCase;
@@ -16,9 +16,11 @@ describe ("CreateUserController Test.", () => {
     beforeEach (() => {
         mockUseCase = new MockCreateUserUseCase();
         sut = new CreateUserController(mockUseCase);
+
         req = {
             body: createUserInputBuilder({})
         };
+
         res = {
             status: vi.fn().mockReturnThis(),
             json: vi.fn()
@@ -28,7 +30,9 @@ describe ("CreateUserController Test.", () => {
     ["name", "email", "password"].forEach((field) => {
         it (`should return a response error with code 400 when user ${field} is empty.`, async () => {
             req.body = createUserInputBuilder({ [field]: "" });
+
             await sut.handle(req as Request, res as Response);
+
             expect (mockUseCase.execute).not.toHaveBeenCalled();
             expect (res.status).toHaveBeenCalledExactlyOnceWith(400);
             expect (res.json).toHaveBeenCalledExactlyOnceWith({ message: expect.stringContaining("") });
@@ -38,7 +42,9 @@ describe ("CreateUserController Test.", () => {
     ["invalidEmail", "invalid email @gmail.com", "invalidemailgmail.com", "invalidemail@.com"].forEach((value) => {
         it (`should return a response error with code 400 when user email is invalid.`, async () => {
             req.body = createUserInputBuilder({ email: value });
+
             await sut.handle(req as Request, res as Response);
+
             expect (mockUseCase.execute).not.toHaveBeenCalled();
             expect (res.status).toHaveBeenCalledExactlyOnceWith(400);
             expect (res.json).toHaveBeenCalledExactlyOnceWith({ message: expect.stringContaining("") });
@@ -47,7 +53,9 @@ describe ("CreateUserController Test.", () => {
 
     it ("should return a response error with code 400 when user contains invalid fields.", async () => {
         req.body = { ...createUserInputBuilder({}), unexpectedField: "Unexpected Value" };
+
         await sut.handle(req as Request, res as Response);
+
         expect (mockUseCase.execute).not.toHaveBeenCalled();
         expect (res.status).toHaveBeenCalledExactlyOnceWith(400);
         expect (res.json).toHaveBeenCalledExactlyOnceWith({ message: expect.stringContaining("") });
@@ -59,7 +67,9 @@ describe ("CreateUserController Test.", () => {
     ].forEach(({ useCaseError, statusCode, occasion }) => {
         it (`should return a response error with code ${statusCode} when ${occasion}.`, async () => {
             mockUseCase.execute.mockRejectedValue(useCaseError);
+
             await sut.handle(req as Request, res as Response);
+
             expect (mockUseCase.execute).toHaveBeenCalledExactlyOnceWith(req.body);
             expect (res.status).toHaveBeenCalledExactlyOnceWith(statusCode);
             expect (res.json).toHaveBeenCalledExactlyOnceWith({ message: expect.stringContaining("") });
@@ -77,7 +87,9 @@ describe ("CreateUserController Test.", () => {
             req.body = createUserInputBuilder({ ...specificInput });
             const useCaseOutput: UserOutput = userOutputBuilder({ ...req.body });
             mockUseCase.execute.mockResolvedValue(useCaseOutput);
+
             await sut.handle(req as Request, res as Response);
+
             expect (mockUseCase.execute).toHaveBeenCalledExactlyOnceWith(req.body);
             expect (res.status).toHaveBeenCalledExactlyOnceWith(201);
             expect (res.json).toHaveBeenCalledExactlyOnceWith({

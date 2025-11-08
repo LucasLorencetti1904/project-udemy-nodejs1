@@ -1,7 +1,7 @@
 import { injectable } from "tsyringe";
 import InMemoryRepository from "@/common/domain/repositories/InMemoryRepository";
+import type UserRepository from "@/users/domain/repositories/UserRepository";
 import type UserModel from "@/users/domain/models/UserModel";
-import UserRepository from "@/users/domain/repositories/UserRepository";
 
 @injectable()
 export default class UserInMemoryRepository
@@ -15,7 +15,7 @@ implements UserRepository {
         }
 
         return items.filter((item) => {
-            return item.name.toLowerCase().includes(filter.toLowerCase())
+            return item.name.toLowerCase().includes(filter.toLowerCase());
         }); 
     }
 

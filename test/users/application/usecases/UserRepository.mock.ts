@@ -1,4 +1,4 @@
-import UserRepository from "@/users/domain/repositories/UserRepository";
+import type UserRepository from "@/users/domain/repositories/UserRepository";
 
 export default class MockUserRepository implements UserRepository {
     public findById = vi.fn();

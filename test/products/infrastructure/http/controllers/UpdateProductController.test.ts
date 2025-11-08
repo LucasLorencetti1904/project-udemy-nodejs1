@@ -1,10 +1,10 @@
+import UpdateProductController from "@/products/infrastructure/http/controllers/UpdateProductController";
 import { MockUpdateProductUseCase } from "./ProductUseCase.mock";
+import type { ProductOutput } from "@/products/application/dto/productIo";
+import productInputBuilder from "@/products/infrastructure/testing/productInputBuilder";
+import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import { Request, Response } from "express";
 import { ConflictError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
-import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
-import productInputBuilder from "@/products/infrastructure/testing/productInputBuilder";
-import type { ProductOutput } from "@/products/application/dto/productIo";
-import UpdateProductController from "@/products/infrastructure/http/controllers/UpdateProductController";
 import { randomUUID } from "node:crypto";
 
 let sut: UpdateProductController;
@@ -17,12 +17,14 @@ describe ("UpdateProductController Test.", () => {
     beforeEach (() => {
         mockUseCase = new MockUpdateProductUseCase();
         sut = new UpdateProductController(mockUseCase);
+
         req = {
             body: productInputBuilder({}),
             params: {
                 id: randomUUID()
             }
         };
+
         res = {
             status: vi.fn().mockReturnThis(),
             json: vi.fn()
@@ -32,7 +34,9 @@ describe ("UpdateProductController Test.", () => {
     [["quantity", -2], ["quantity", 3.9], ["quantity", 0], ["price", -7.89], ["price", 0.0]].forEach(([field, value]) => {
         it (`should return a response error with code 400 when product ${field} is defined and invalid.`, async () => {
             req.body = productInputBuilder({ [field]: value });
+
             await sut.handle(req as Request, res as Response);
+
             expect (mockUseCase.execute).not.toHaveBeenCalled();
             expect (res.status).toHaveBeenCalledExactlyOnceWith(400);
             expect (res.json).toHaveBeenCalledExactlyOnceWith({ message: expect.stringContaining("") });
@@ -42,7 +46,9 @@ describe ("UpdateProductController Test.", () => {
     [undefined, "fake-id", ""].forEach((expectedValue) => {
         it (`should return a response error with code 400 when id is undefined or invalid.`, async () => {
             req.params.id = expectedValue;
+
             await sut.handle(req as Request, res as Response);
+
             expect (mockUseCase.execute).not.toHaveBeenCalled();
             expect (res.status).toHaveBeenCalledExactlyOnceWith(400);
             expect (res.json).toHaveBeenCalledExactlyOnceWith({ message: expect.stringContaining("") });
@@ -51,7 +57,9 @@ describe ("UpdateProductController Test.", () => {
 
     it ("should return a response error with code 400 when product contains invalid fields.", async () => {
         req.body = { unexpectedField: "Unexpected Value" };
+
         await sut.handle(req as Request, res as Response);
+
         expect (mockUseCase.execute).not.toHaveBeenCalled();
         expect (res.status).toHaveBeenCalledExactlyOnceWith(400);
         expect (res.json).toHaveBeenCalledExactlyOnceWith({ message: expect.stringContaining("") });
@@ -60,7 +68,9 @@ describe ("UpdateProductController Test.", () => {
     ["name", "quantity", "price"].forEach((field) => {
         it (`should not return a response error with code 400 when product ${field} is undefined.`, async () => {
             req.body = productInputBuilder({ [field]: undefined });
+
             await sut.handle(req as Request, res as Response);
+
             expect (mockUseCase.execute).toHaveBeenCalledExactlyOnceWith({
                  id: req.params.id, ...req.body 
             });
@@ -76,7 +86,9 @@ describe ("UpdateProductController Test.", () => {
     ].forEach(({ useCaseError, statusCode, occasion }) => {
         it (`should return a response error with code ${statusCode} when ${occasion}.`, async () => {
             mockUseCase.execute.mockRejectedValue(useCaseError);
+
             await sut.handle(req as Request, res as Response);
+
             expect (mockUseCase.execute).toHaveBeenCalledWith({
                 id: req.params.id, ...req.body
             });
@@ -97,7 +109,9 @@ describe ("UpdateProductController Test.", () => {
             req.body = productInputBuilder({ ...specificInput });
             const useCaseOutput: ProductOutput = productOutputBuilder({ ...req.body });
             mockUseCase.execute.mockResolvedValue(useCaseOutput);
+            
             await sut.handle(req as Request, res as Response);
+
             expect (mockUseCase.execute).toHaveBeenCalledExactlyOnceWith({
                 id: req.params.id, ...req.body
             });

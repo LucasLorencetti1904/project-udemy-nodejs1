@@ -1,18 +1,18 @@
-import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
-import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
 import { inject, injectable } from "tsyringe";
-import type UserRepository from "@/users/domain/repositories/UserRepository";
-import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
-import type UserModel from "@/users/domain/models/UserModel";
 import UserUseCase from "@/users/application/usecases/default/UserUseCase";
+import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
+import type UserRepository from "@/users/domain/repositories/UserRepository";
+import type UserModel from "@/users/domain/models/UserModel";
+import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
 import type { UserOutput } from "@/users/application/dto/userIo";
+import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
 
 @injectable()
 export default class SearchUserUseCaseImpl extends UserUseCase implements SearchUserUseCase {
     constructor(
         @inject("UserRepository")
         protected readonly repo: UserRepository
-    ) { super(repo) }
+    ) { super(repo); }
 
     public async execute(input: SearchUserInput): Promise<SearchUserOutput> {
         try {
@@ -31,7 +31,7 @@ export default class SearchUserUseCaseImpl extends UserUseCase implements Search
             perPage: repoOutput.perPage,
             lastPage: this.calcLastPage(repoOutput.total, repoOutput.perPage),
             currentPage: repoOutput.currentPage
-        }
+        };
     }
 
     private mapSearchResultUsersToOutput(users: UserModel[]): UserOutput[] {

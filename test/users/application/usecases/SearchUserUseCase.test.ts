@@ -1,10 +1,10 @@
-import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
-import MockUserRepository from "./UserRepository.mock";
-import type UserModel from "@/users/domain/models/UserModel";
-import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
-import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
 import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
 import SearchUserUseCaseImpl from "@/users/application/usecases/searchUser/SearchUserUseCaseImpl";
+import MockUserRepository from "./UserRepository.mock";
+import type UserModel from "@/users/domain/models/UserModel";
+import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
+import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
+import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
 import { InternalError } from "@/common/domain/errors/httpErrors";
 
 describe ("SearchUserUseCase Test", () => {  
@@ -141,7 +141,9 @@ describe ("SearchUserUseCase Test", () => {
             };
     
             mockRepository.search.mockResolvedValue(repoOutput);
+            
             result = await sut.execute(input);
+
             expect (result).toEqual(expect.objectContaining(expected));
             expect (mockRepository.search).toHaveBeenCalledExactlyOnceWith(input);
         });

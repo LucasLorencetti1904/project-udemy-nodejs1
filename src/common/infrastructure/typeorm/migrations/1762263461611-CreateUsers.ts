@@ -1,5 +1,5 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
 import commonFields from "@/common/infrastructure/typeorm/migrations/commonFields";
+import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
 export class CreateUsers1762263461611 implements MigrationInterface {
 
@@ -30,7 +30,7 @@ export class CreateUsers1762263461611 implements MigrationInterface {
                     },
                 ]
             })
-        )
+        );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {

@@ -1,13 +1,13 @@
-import { randomUUID } from "node:crypto";
 import ProductTypeormRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository";
-import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
-import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import type ProductModel from "@/products/domain/models/ProductModel";
-import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
 import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
-import { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
+import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
+import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
 import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
+import { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
+import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
+import { randomUUID } from "node:crypto";
 
 describe ("ProductTypeormRepository Test.", () => {
     let sut: ProductTypeormRepository;
@@ -44,6 +44,7 @@ describe ("ProductTypeormRepository Test.", () => {
         it ("should find product by id.", async () => {
             const product: ProductModel =  await createAndSaveProduct(exampleOfProduct);
             result = await sut.findById(product.id);
+
             expect (result.id).toBe(product.id);
         });
     });
@@ -78,6 +79,7 @@ describe ("ProductTypeormRepository Test.", () => {
         it ("should find product by name.", async () => {
             const product: ProductModel = await createAndSaveProduct(exampleOfProduct);
             result = await sut.findByName(product.name);
+
             expect (result.name).toBe(product.name);
         });
     });
@@ -105,6 +107,7 @@ describe ("ProductTypeormRepository Test.", () => {
             exampleOfProduct = productModelBuilder({ ...input, name: "Old Name" });
             const oldProduct: ProductModel = await createAndSaveProduct(exampleOfProduct);
             result = await sut.update({ ...oldProduct, ...input });
+
             expect (result.name).not.toBe(oldProduct.name);
         });
     });
@@ -119,6 +122,7 @@ describe ("ProductTypeormRepository Test.", () => {
             const existentProduct: ProductModel = await createAndSaveProduct(exampleOfProduct);
             result = await sut.delete(existentProduct.id);
             const deletedProduct: ProductModel = await testingDataSource.manager.findOneBy(Product, { id: existentProduct.id });
+
             expect (!deletedProduct && result.name == existentProduct.name).toBe(true);
         });
     });
@@ -149,6 +153,7 @@ describe ("ProductTypeormRepository Test.", () => {
             products = Array.from({ length: 20 }, () => productOutputBuilder({}));
             await createAndSaveProducts(products);
             result = await sut.search({});
+
             expect (result.items).toHaveLength(15); 
         });
         
@@ -156,18 +161,21 @@ describe ("ProductTypeormRepository Test.", () => {
             products = Array.from({ length: 20 }, () => productOutputBuilder({}));
             await createAndSaveProducts(products);
             result = await sut.search({ page: 3, perPage: 7 });
+
             expect (result.items).toHaveLength(6); 
         });
 
         it ("should apply only default desc sort by createdAt when params is null.", async () => {
             await createAndSaveProducts(products);
             result = await sut.search({});
+
             expect (result.items[3].name).toBe("D"); 
         });
 
         it ("should apply only asc sort by name when other params is null.", async () => {
             await createAndSaveProducts(products);
             result = await sut.search({ sort: "name", sortDir: "asc" });
+
             expect (result.items[3].createdAt.getFullYear()).toBe(2019); 
         });
         
@@ -175,17 +183,20 @@ describe ("ProductTypeormRepository Test.", () => {
             products = "AB,BC,CA".split(",").map((e) => productOutputBuilder({ name: e }));
             await createAndSaveProducts(products);
             result = await sut.search({ filter: "c" });
+
             expect (result.items[1].name).toBe("CA");
         });
 
         it ("should apply all params.", async () => {
             products = "TESTE,tst,fake,test,te".split(",").map((e) => {
-                return productOutputBuilder({ name: e })
+                return productOutputBuilder({ name: e });
             });
             await createAndSaveProducts(products);
+            
             result = await sut.search({
                 page: 1, perPage: 2, sortDir: "asc", sort: "name", filter: "tes"
             });
+
             expect (result.items[0].name).toBe("test");
         });
     });

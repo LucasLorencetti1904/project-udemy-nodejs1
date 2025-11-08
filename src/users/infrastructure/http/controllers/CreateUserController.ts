@@ -1,20 +1,20 @@
 import { inject, injectable } from "tsyringe";
-import z from "zod";
 import Controller from "@/common/infrastructure/http/controllers/Controller";
-import ApplicationError from "@/common/domain/errors/ApplicationError";
-import type { ZodType } from "zod";
-import type { Request, Response } from "express";
 import type CreateUserUseCase from "@/users/application/usecases/createUser/CreateUserUseCase";
-import type { UserOutput } from "@/users/application/dto/userIo";
 import type CreateUserInput from "@/users/application/dto/CreateUserInput";
+import type { UserOutput } from "@/users/application/dto/userIo";
+import z from "zod";
+import type { ZodType } from "zod";
 import ZodSchemaValidator from "@/common/infrastructure/http/helpers/ZodSchemaValidator";
+import type { Request, Response } from "express";
+import ApplicationError from "@/common/domain/errors/ApplicationError";
 
 @injectable()
 export default class CreateUserController extends Controller {
     constructor (
         @inject("CreateUserUseCase") 
         private readonly useCase: CreateUserUseCase
-    ) { super () }
+    ) { super (); }
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {

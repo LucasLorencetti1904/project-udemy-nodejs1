@@ -20,8 +20,10 @@ describe ("UserInMemoryRepository Test.", () => {
             it ("should return a array of users when found by name.", async () => {
                 const exampleOfUsers: UserModel[] = Array(i)
                     .fill(userModelBuilder({ name: "Valid Name Example" }));
+
                 sut.items.push(...exampleOfUsers);
                 result = await sut.findByName("Valid Name Example");
+
                 expect (result).toHaveLength(i);
             });
         }
@@ -37,6 +39,7 @@ describe ("UserInMemoryRepository Test.", () => {
             const exampleOfUser: UserModel = userModelBuilder({ email: "testing@gmail.com" });
             sut.items.push(exampleOfUser);
             result = await sut.findByEmail("testing@gmail.com");
+
             expect (result).toEqual(exampleOfUser);
         });
     });
@@ -145,6 +148,7 @@ describe ("UserInMemoryRepository Test.", () => {
                 const filteredModels: UserModel[] = await sut['applyFilter'] ( 
                     sut.items, filterInput
                 );
+                
                 expect (filteredModels).toEqual(expected());
             });
         });

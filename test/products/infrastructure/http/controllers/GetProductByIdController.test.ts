@@ -1,10 +1,10 @@
-import { MockGetProductByIdUseCase } from "./ProductUseCase.mock";
-import { Request, Response } from "express";
-import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
-import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
-import { randomUUID } from "node:crypto";
 import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
+import { MockGetProductByIdUseCase } from "./ProductUseCase.mock";
 import type { ProductOutput } from "@/products/application/dto/productIo";
+import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
+import { Request, Response } from "express";
+import { randomUUID } from "node:crypto";
+import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 
 let sut: GetProductByIdController;
 let mockUseCase: MockGetProductByIdUseCase;
@@ -16,11 +16,13 @@ describe ("GetProductByIdController Test.", () => {
     beforeEach (() => {
         mockUseCase = new MockGetProductByIdUseCase();
         sut = new GetProductByIdController(mockUseCase);
+
         req = {
             params: {
                 id: randomUUID()
             }
         };
+
         res = {
             status: vi.fn().mockReturnThis(),
             json: vi.fn()
@@ -29,7 +31,9 @@ describe ("GetProductByIdController Test.", () => {
 
     it (`should return a response error with code 400 when id is invalid.`, async () => {
         req.params.id = "fake-id";
+
         await sut.handle(req as Request, res as Response);
+
         expect (mockUseCase.execute).not.toHaveBeenCalled();
         expect (res.status).toHaveBeenCalledWith(400);
         expect (res.json).toHaveBeenCalledWith({ message: expect.stringContaining("") });
@@ -41,7 +45,9 @@ describe ("GetProductByIdController Test.", () => {
     ].forEach(({ useCaseError, statusCode, occasion }) => {
         it (`should return a response error with code ${statusCode} when ${occasion}.`, async () => {
             mockUseCase.execute.mockRejectedValue(useCaseError);
+
             await sut.handle(req as Request, res as Response);
+
             expect (mockUseCase.execute).toHaveBeenCalledWith(req.params.id);
             expect (res.status).toHaveBeenCalledWith(statusCode);
             expect (res.json).toHaveBeenCalledWith({ message: expect.stringContaining("") });
@@ -51,7 +57,9 @@ describe ("GetProductByIdController Test.", () => {
     it (`should return a response product json object with code 200 when product is found by id.`, async () => {
         const useCaseOutput: ProductOutput = productOutputBuilder({ id: req.params.id });
         mockUseCase.execute.mockResolvedValue(useCaseOutput);
+        
         await sut.handle(req as Request, res as Response);
+
         expect (mockUseCase.execute).toHaveBeenCalledWith(req.params.id);
         expect (res.status).toHaveBeenCalledWith(200);
         expect (res.json).toHaveBeenCalledWith({

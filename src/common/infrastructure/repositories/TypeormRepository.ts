@@ -1,6 +1,6 @@
-import { Repository as BaseTypeormRepository, DeepPartial, FindOptionsOrder, FindOptionsWhere, ILike } from "typeorm";
 import type Repository from "@/common/domain/repositories/Repository";
 import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
+import { Repository as BaseTypeormRepository, DeepPartial, FindOptionsOrder, FindOptionsWhere, ILike } from "typeorm";
 
 type TEntityDefaultProps = {
     id: string,
@@ -71,10 +71,10 @@ export default abstract class TypeormRepository<TEntity extends TEntityDefaultPr
         
         protected async searchForResults(searchInput: RepositorySearchInput<TEntity>): Promise<[TEntity[], number]> {
             return await this.userRepository.findAndCount({
-            ...(searchInput.filter && { where: { name: ILike(`%${searchInput.filter}%`) } as FindOptionsWhere<TEntity> }),
-            order: { [searchInput.sort]: searchInput.sortDir } as FindOptionsOrder<TEntity>,
-            skip: (searchInput.page - 1) * searchInput.perPage,
-            take: searchInput.perPage
+                ...(searchInput.filter && { where: { name: ILike(`%${searchInput.filter}%`) } as FindOptionsWhere<TEntity> }),
+                order: { [searchInput.sort]: searchInput.sortDir } as FindOptionsOrder<TEntity>,
+                skip: (searchInput.page - 1) * searchInput.perPage,
+                take: searchInput.perPage
             });
         }
 
@@ -84,7 +84,7 @@ export default abstract class TypeormRepository<TEntity extends TEntityDefaultPr
         ): RepositorySearchInput<TEntity> {
             ["page", "perPage"].forEach((paginationNumber) => {
                 if (this.isInvalidPaginationNumber(originSearchInput[paginationNumber])) {
-                    originSearchInput[paginationNumber] = defaultSearchInput[paginationNumber]
+                    originSearchInput[paginationNumber] = defaultSearchInput[paginationNumber];
                 }
             })
 
@@ -115,7 +115,7 @@ export default abstract class TypeormRepository<TEntity extends TEntityDefaultPr
                 sort: searchInput.sort,
                 sortDir: searchInput.sortDir,
                 filter: searchInput.filter
-            }
+            };
         }
 
         private isInvalidPaginationNumber(pageNumber?: number): boolean {
@@ -123,11 +123,11 @@ export default abstract class TypeormRepository<TEntity extends TEntityDefaultPr
         }
 
         private isInvalidSortField(sortField?: string): boolean {
-            return !sortField || !this.sortableFields.includes(sortField)
+            return !sortField || !this.sortableFields.includes(sortField);
         }
 
         private isInvalidSortDir(sortDir?: string): boolean {
-            return !sortDir || !["asc", "desc"].includes(sortDir)
+            return !sortDir || !["asc", "desc"].includes(sortDir);
         }
 
         private isEmptyFilter(filter?: string) {

@@ -1,12 +1,12 @@
-import { randomUUID } from "node:crypto";
-import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
-import type UpdateUserInput from "@/users/application/dto/UpdateUserInput";
-import UserModel from "@/users/domain/models/UserModel";
+import UserTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTypeormRepository";
 import User from "@/users/infrastructure/typeorm/entities/User";
-import { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
+import type UserModel from "@/users/domain/models/UserModel";
+import type UpdateUserInput from "@/users/application/dto/UpdateUserInput";
+import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
 import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
 import { updateUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
-import UserTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTypeormRepository";
+import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
+import { randomUUID } from "node:crypto";
 
 describe ("UserTypeormRepository Test.", () => {
     let sut: UserTypeormRepository;
@@ -43,6 +43,7 @@ describe ("UserTypeormRepository Test.", () => {
         it ("should find user by id.", async () => {
             const user: UserModel =  await createAndSaveUser(exampleOfUser);
             result = await sut.findById(user.id);
+
             expect (result.id).toBe(user.id);
         });
     });
@@ -56,6 +57,7 @@ describe ("UserTypeormRepository Test.", () => {
         it ("should return array of users found by name.", async () => {
             const user: UserModel = await createAndSaveUser(exampleOfUser);
             result = await sut.findByName(user.name);
+
             expect (result).toHaveLength(1);
         });
     });
@@ -81,8 +83,10 @@ describe ("UserTypeormRepository Test.", () => {
         it ("should update a existent user.", async () => {
             const input: UpdateUserInput = updateUserInputBuilder({ name: "New Name" });
             exampleOfUser = userModelBuilder({ ...input, name: "Old Name" });
+
             const oldUser: UserModel = await createAndSaveUser(exampleOfUser);
             result = await sut.update({ ...oldUser, ...input });
+
             expect (result.name).not.toBe(oldUser.name);
         });
     });
@@ -97,6 +101,7 @@ describe ("UserTypeormRepository Test.", () => {
             const existentUser: UserModel = await createAndSaveUser(exampleOfUser);
             result = await sut.delete(existentUser.id);
             const deletedUser: UserModel = await testingDataSource.manager.findOneBy(User, { id: existentUser.id });
+            
             expect (!deletedUser && result.name == existentUser.name).toBe(true);
         });
     });
@@ -135,6 +140,7 @@ describe ("UserTypeormRepository Test.", () => {
             models = Array.from({ length: 20 }, () => userModelBuilder({}));
             await createAndSaveUsers(models);
             result = await sut.search({});
+
             expect (result.items).toHaveLength(15); 
         });
         
@@ -142,24 +148,28 @@ describe ("UserTypeormRepository Test.", () => {
             models = Array.from({ length: 20 }, () => userModelBuilder({}));
             await createAndSaveUsers(models);
             result = await sut.search({ page: 3, perPage: 7 });
+
             expect (result.items).toHaveLength(6); 
         });
 
         it ("should apply only default desc sort by createdAt when params is null.", async () => {
             await createAndSaveUsers(models);
             result = await sut.search({});
+
             expect (result.items[3].name).toBe("D"); 
         });
 
         it ("should apply only asc sort by name when other params is null.", async () => {
             await createAndSaveUsers(models);
             result = await sut.search({ sort: "name", sortDir: "asc" });
+
             expect (result.items[3].name).toBe("D"); 
         });
 
         it ("should apply only asc sort by email when other params is null.", async () => {
             await createAndSaveUsers(models);
             result = await sut.search({ sort: "email", sortDir: "asc" });
+
             expect (result.items[3].name).toBe("C"); 
         });
         
@@ -167,6 +177,7 @@ describe ("UserTypeormRepository Test.", () => {
             models = "AB,BC,CA".split(",").map((e) => userModelBuilder({ name: e }));
             await createAndSaveUsers(models);
             result = await sut.search({ filter: "c" });
+
             expect (result.items[1].name).toBe("CA");
         });
 
@@ -174,10 +185,12 @@ describe ("UserTypeormRepository Test.", () => {
             models = "TESTE,tst,fake,test,te".split(",").map((e) => {
                 return userModelBuilder({ name: e })
             });
+            
             await createAndSaveUsers(models);
             result = await sut.search({
                 page: 1, perPage: 2, sortDir: "asc", sort: "name", filter: "tes"
             });
+
             expect (result.items[0].name).toBe("test");
         });
     });

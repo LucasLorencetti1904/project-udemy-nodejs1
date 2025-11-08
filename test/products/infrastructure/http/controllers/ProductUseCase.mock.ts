@@ -1,8 +1,8 @@
-import CreateProductUseCase from "@/products/application/usecases/createProduct/CreateProductUseCase";
-import DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
-import GetProductByIdUseCase from "@/products/application/usecases/getProductById/GetProductByIdUseCase";
-import SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
-import UpdateProductUseCase from "@/products/application/usecases/updateProduct/UpdateProductUseCase";
+import type CreateProductUseCase from "@/products/application/usecases/createProduct/CreateProductUseCase";
+import type DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
+import type GetProductByIdUseCase from "@/products/application/usecases/getProductById/GetProductByIdUseCase";
+import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
+import type UpdateProductUseCase from "@/products/application/usecases/updateProduct/UpdateProductUseCase";
 
 export class MockCreateProductUseCase implements CreateProductUseCase {
     public execute = vi.fn();
