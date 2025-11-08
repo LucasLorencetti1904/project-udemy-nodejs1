@@ -1,3 +1,4 @@
+import AuthenticateUserController from "@/users/infrastructure/http/controllers/AuthenticateUserController";
 import { MockAuthenticateUserUseCase } from "./UserUseCase.mock";
 import type { UserOutput } from "@/users/application/dto/userIo";
 import { authenticateUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
@@ -63,7 +64,7 @@ describe ("CreateUserController Test.", () => {
     [
         { useCaseError: new InternalError("Example"), statusCode: 500, occasion: "usecase throws an unexpected error" },
         { useCaseError: new ConflictError("Example"), statusCode: 409, occasion: "user email already exists" },
-        { useCaseError: new BadRequestError("Example"), statusCode: 409, occasion: "user password does not match" }
+        { useCaseError: new BadRequestError("Example"), statusCode: 400, occasion: "user password does not match" }
     ].forEach(({ useCaseError, statusCode, occasion }) => {
         it (`should return a response error with code ${statusCode} when ${occasion}.`, async () => {
             mockUseCase.execute.mockRejectedValue(useCaseError);
