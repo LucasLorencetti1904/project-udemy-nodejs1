@@ -19,7 +19,9 @@ const envSchema = z.object({
     DB_NAME: z.string().default(db),
     DB_USER: z.string().default(db),
     DB_DATABASE: z.string().default(db),
-    DB_PASS: z.string().default(db)
+    DB_PASS: z.string().default(db),
+    JWT_SECRET: z.string(),
+    JWT_EXPIRES_IN: z.coerce.number().default(86400)
 });
 
 type Env = z.infer<typeof envSchema>;
