@@ -6,7 +6,7 @@ import type StringHashProvider from "@/common/domain/providers/StringHashProvide
 import type UserModel from "@/users/domain/models/UserModel";
 import type AuthenticateUserInput from "@/users/application/dto/AuthenticateUserInput";
 import type { UserOutput } from "@/users/application/dto/userIo";
-import { BadRequestError, NotFoundError } from "@/common/domain/errors/httpErrors";
+import { UnauthorizedError } from "@/common/domain/errors/httpErrors";
 
 @injectable()
 export default class AuthenticateUserUseCaseImpl extends UserUseCase implements AuthenticateUserUseCase {
@@ -21,19 +21,19 @@ export default class AuthenticateUserUseCaseImpl extends UserUseCase implements 
     public async execute(input: AuthenticateUserInput): Promise<UserOutput> {
         try {
             if (!input.email || !input.password) {
-                throw new BadRequestError(`Invalid email or password`);
+                throw new UnauthorizedError(`Invalid email or password`);
             }
 
             const user: UserModel = await this.repo.findByEmail(input.email);
 
             if (!user) {
-                throw new NotFoundError(`Email does not exist: ${input.email}.`);
+                throw new UnauthorizedError(`Email does not exist: ${input.email}.`);
             }
 
             const passwordMaches: boolean = await this.passwordMatches(input, user);
 
             if (!passwordMaches) {
-                throw new BadRequestError(`Incorrect password: ${input.password}`);
+                throw new UnauthorizedError(`Incorrect password: ${input.password}`);
             }
 
             return this.mapToUserOutput(user);

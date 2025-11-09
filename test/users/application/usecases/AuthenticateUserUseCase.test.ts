@@ -6,7 +6,7 @@ import type AuthenticateUserInput from "@/users/application/dto/AuthenticateUser
 import type { UserOutput } from "@/users/application/dto/userIo";
 import { authenticateUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
 import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
-import { BadRequestError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
+import { BadRequestError, InternalError, NotFoundError, UnauthorizedError } from "@/common/domain/errors/httpErrors";
 
 let sut: AuthenticateUserUseCaseImpl;
 let mockRepository: MockUserRepository;
@@ -26,29 +26,29 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
     });
 
     ["email", "password"].forEach((field) => {
-        it (`should throw a BadRequestError when user ${field} is empty.`, async () => {
+        it (`should throw a UnauthorizedError when user ${field} is empty.`, async () => {
             input = authenticateUserInputBuilder({});
             input[field] = undefined;
 
-            await expect (sut.execute(input)).rejects.toBeInstanceOf(BadRequestError);
+            await expect (sut.execute(input)).rejects.toBeInstanceOf(UnauthorizedError);
 
             expect (mockRepository.findByEmail).not.toBeCalled();
             expect (mockHashProvider.compareWithHash).not.toBeCalled();
         });
     });
             
-    it (`should throw a NotFoundError when user email is not found.`, async () => {
+    it (`should throw a UnauthorizedError when user email is not found.`, async () => {
         input = authenticateUserInputBuilder({ email: "anyemail@gmail.com" });
 
         mockRepository.findByEmail.mockResolvedValue(null);
 
-        await expect (sut.execute(input)).rejects.toBeInstanceOf(NotFoundError);
+        await expect (sut.execute(input)).rejects.toBeInstanceOf(UnauthorizedError);
 
         expect (mockRepository.findByEmail).toHaveBeenCalledExactlyOnceWith(input.email);
         expect (mockHashProvider.compareWithHash).not.toHaveBeenCalled();
     });
 
-    it (`should throw a BadRequestError when user password does not match.`, async () => {
+    it (`should throw a UnauthorizedError when user password does not match.`, async () => {
         input = authenticateUserInputBuilder({ password: "AnyWrongPassword12345!*" });
 
         userInstance = userModelBuilder({});
@@ -56,7 +56,7 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
         mockRepository.findByEmail.mockResolvedValue(userInstance);
         mockHashProvider.compareWithHash.mockResolvedValue(false);
 
-        await expect (sut.execute(input)).rejects.toBeInstanceOf(BadRequestError);
+        await expect (sut.execute(input)).rejects.toBeInstanceOf(UnauthorizedError);
 
         expect (mockRepository.findByEmail).toHaveBeenCalledExactlyOnceWith(input.email);
         expect (mockHashProvider.compareWithHash)
