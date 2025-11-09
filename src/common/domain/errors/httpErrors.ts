@@ -8,6 +8,9 @@ export class BadRequestError extends HttpError {
     public readonly statusCode: number = 400;
 }
 
+export class UnauthorizedError extends HttpError {
+    public readonly statusCode: number = 401;
+}
 export class NotFoundError extends HttpError {
     public readonly statusCode: number = 404;
 }

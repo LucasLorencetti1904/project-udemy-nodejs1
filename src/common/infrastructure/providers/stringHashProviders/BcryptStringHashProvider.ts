@@ -1,5 +1,5 @@
 import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
-import bcrypt from "bcryptjs";
+import bcrypt from "node_modules/bcryptjs";
 
 export default class BcryptStringHashProvider implements StringHashProvider {
     public async hashString(str: string): Promise<string> {

@@ -1,5 +1,5 @@
 import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
-import BcryptStringHashProvider from "@/common/infrastructure/providers/BcryptStringHashProvider";
+import BcryptStringHashProvider from "@/common/infrastructure/providers/stringHashProviders/BcryptStringHashProvider";
 
 let str: string;
 let hash: string;
