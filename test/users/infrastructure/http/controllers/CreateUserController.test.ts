@@ -1,8 +1,8 @@
 import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
 import { MockCreateUserUseCase } from "./UserUseCase.mock";
 import type { UserOutput } from "@/users/application/dto/userIo";
-import { createUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
-import userOutputBuilder from "@/users/infrastructure/testing/userOutputBuilder";
+import { createUserInputBuilder } from "test/users/testingHelpers/userInputBuilder";
+import userOutputBuilder from "test/users/testingHelpers/userOutputBuilder";
 import type { Request, Response } from "express";
 import { ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 

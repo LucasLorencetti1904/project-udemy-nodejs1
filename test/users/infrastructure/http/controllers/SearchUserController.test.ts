@@ -1,7 +1,7 @@
 import SearchUserController from "@/users/infrastructure/http/controllers/SearchUserController";
 import { MockSearchUserUseCase } from "./UserUseCase.mock";
 import { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
-import userOutputBuilder from "@/users/infrastructure/testing/userOutputBuilder";
+import userOutputBuilder from "test/users/testingHelpers/userOutputBuilder";
 import type { Request, Response } from "express";
 import { InternalError } from "@/common/domain/errors/httpErrors";
 

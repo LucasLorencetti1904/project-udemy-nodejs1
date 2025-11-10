@@ -1,7 +1,7 @@
 import SearchProductController from "@/products/infrastructure/http/controllers/SearchProductController";
 import { MockSearchProductUseCase } from "./ProductUseCase.mock";
 import { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
-import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
+import productOutputBuilder from "test/products/testingHelpers/productOutputBuilder";
 import { Request, Response } from "express";
 import { InternalError } from "@/common/domain/errors/httpErrors";
 

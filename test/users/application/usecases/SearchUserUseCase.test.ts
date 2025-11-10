@@ -1,10 +1,10 @@
 import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
 import SearchUserUseCaseImpl from "@/users/application/usecases/searchUser/SearchUserUseCaseImpl";
-import { MockUserRepository } from "./providers.mock";
+import { MockUserRepository } from "../../providers.mock";
 import type UserModel from "@/users/domain/models/UserModel";
 import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
-import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
+import userModelBuilder from "test/users/testingHelpers/userModelBuilder";
 import { InternalError } from "@/common/domain/errors/httpErrors";
 
 describe ("SearchUserUseCase Test", () => {  

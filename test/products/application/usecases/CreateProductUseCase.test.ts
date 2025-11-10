@@ -3,8 +3,8 @@ import MockProductRepository from "./ProductRepository.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type CreateProductInput from "@/products/application/dto/CreateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import { createProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
-import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
+import { createProductInputBuilder } from "test/products/testingHelpers/productInputBuilder";
+import productOutputBuilder from "test/products/testingHelpers/productOutputBuilder";
 import { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 
 let sut: CreateProductUseCaseImpl;

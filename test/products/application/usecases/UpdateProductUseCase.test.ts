@@ -4,9 +4,9 @@ import type ProductRepository from "@/products/domain/repositories/ProductReposi
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
-import { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
-import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
+import productModelBuilder from "test/products/testingHelpers/productModelBuilder";
+import { updateProductInputBuilder } from "test/products/testingHelpers/productInputBuilder";
+import productOutputBuilder from "test/products/testingHelpers/productOutputBuilder";
 import { randomUUID } from "node:crypto";
 import { BadRequestError, ConflictError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 

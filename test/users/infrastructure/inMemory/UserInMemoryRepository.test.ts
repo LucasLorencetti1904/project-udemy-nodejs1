@@ -1,6 +1,6 @@
 import type UserModel from "@/users/domain/models/UserModel";
 import UserInMemoryRepository from "@/users/infrastructure/inMemory/UserInMemoryRepository";
-import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
+import userModelBuilder from "test/users/testingHelpers/userModelBuilder";
 
 describe ("UserInMemoryRepository Test.", () => {
     let sut: UserInMemoryRepository;

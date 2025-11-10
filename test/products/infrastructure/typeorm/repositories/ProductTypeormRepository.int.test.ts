@@ -4,9 +4,9 @@ import type ProductModel from "@/products/domain/models/ProductModel";
 import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
 import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
-import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
-import { updateProductInputBuilder } from "@/products/infrastructure/testing/productInputBuilder";
-import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
+import productModelBuilder from "test/products/testingHelpers/productModelBuilder";
+import { updateProductInputBuilder } from "test/products/testingHelpers/productInputBuilder";
+import productOutputBuilder from "test/products/testingHelpers/productOutputBuilder";
 import { randomUUID } from "node:crypto";
 
 describe ("ProductTypeormRepository Test.", () => {

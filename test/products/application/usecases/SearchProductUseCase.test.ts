@@ -4,7 +4,7 @@ import MockProductRepository from "./ProductRepository.mock";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
-import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
+import productModelBuilder from "test/products/testingHelpers/productModelBuilder";
 import { InternalError } from "@/common/domain/errors/httpErrors";
 
 describe ("SearchProductUseCase Test", () => {  

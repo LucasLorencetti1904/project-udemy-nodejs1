@@ -3,8 +3,8 @@ import User from "@/users/infrastructure/typeorm/entities/User";
 import type UserModel from "@/users/domain/models/UserModel";
 import type UpdateUserInput from "@/users/application/dto/UpdateUserInput";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
-import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
-import { updateUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
+import userModelBuilder from "test/users/testingHelpers/userModelBuilder";
+import { updateUserInputBuilder } from "test/users/testingHelpers/userInputBuilder";
 import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
 import { randomUUID } from "node:crypto";
 

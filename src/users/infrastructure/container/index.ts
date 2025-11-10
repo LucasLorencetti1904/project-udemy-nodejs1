@@ -6,6 +6,7 @@ import AuthenticateUserUseCaseImpl from "@/users/application/usecases/authentica
 import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
 import SearchUserController from "@/users/infrastructure/http/controllers/SearchUserController";
 import AuthenticateUserController from "@/users/infrastructure/http/controllers/AuthenticateUserController";
+import AuthorizationMiddleware from "@/users/infrastructure/http/middlewares/AuthorizationMiddleware";
 import User from "@/users/infrastructure/typeorm/entities/User";
 import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
 
@@ -20,3 +21,4 @@ container.registerSingleton("SearchUserController", SearchUserController);
 
 container.registerSingleton("AuthenticateUserUseCase", AuthenticateUserUseCaseImpl);
 container.registerSingleton("AuthenticateUserController", AuthenticateUserController);
+container.registerSingleton("AuthenticationMiddleware", AuthorizationMiddleware);

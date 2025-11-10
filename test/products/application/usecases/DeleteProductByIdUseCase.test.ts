@@ -4,7 +4,7 @@ import MockProductRepository from "./ProductRepository.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type DeleteProductByIdInput from "@/products/application/dto/DeleteProductByIdInput";
 import type ProductModel from "@/products/domain/models/ProductModel";
-import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
+import productModelBuilder from "test/products/testingHelpers/productModelBuilder";
 import { randomUUID } from "node:crypto";
 import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 

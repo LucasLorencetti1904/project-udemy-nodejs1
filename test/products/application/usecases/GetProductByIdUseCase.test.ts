@@ -3,7 +3,7 @@ import MockProductRepository from "./ProductRepository.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type GetProductByIdProductInput from "@/products/application/dto/GetProductByIdInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import productOutputBuilder from "@/products/infrastructure/testing/productOutputBuilder";
+import productOutputBuilder from "test/products/testingHelpers/productOutputBuilder";
 import { randomUUID } from "node:crypto";
 import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 

@@ -1,6 +1,6 @@
 import type ProductModel from "@/products/domain/models/ProductModel";
 import ProductInMemoryRepository from "@/products/infrastructure/inMemory/ProductInMemoryRepository";
-import productModelBuilder from "@/products/infrastructure/testing/productModelBuilder";
+import productModelBuilder from "test/products/testingHelpers/productModelBuilder";
 import { randomUUID } from "node:crypto";
 
 describe ("ProductInMemoryRepository Test.", () => {

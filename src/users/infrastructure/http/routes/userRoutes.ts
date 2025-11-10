@@ -6,6 +6,8 @@ import AuthorizationMiddleware from "@/users/infrastructure/http/middlewares/Aut
 
 const userRouter: Router = Router();
 
+const authorizationMiddleware: AuthorizationMiddleware = container.resolve(AuthorizationMiddleware);
+
 const createUserController: CreateUserController = container.resolve(CreateUserController);
 const searchUserController: SearchUserController = container.resolve(SearchUserController);
 
@@ -86,7 +88,7 @@ const searchUserController: SearchUserController = container.resolve(SearchUserC
  */
 userRouter.post("/", createUserController.handle);
 
-userRouter.use(AuthorizationMiddleware.handle);
+userRouter.use(authorizationMiddleware.handle);
 
 /**
  * @swagger

@@ -1,9 +1,9 @@
 import AuthenticateUserUseCaseImpl from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCaseImpl";
-import { MockUserRepository, MockStringHashProvider, MockAuthenticationProvider } from "./providers.mock";
+import { MockUserRepository, MockStringHashProvider, MockAuthenticationProvider } from "../../providers.mock";
 import type UserModel from "@/users/domain/models/UserModel";
 import type { AuthenticateUserInput, AuthenticateUserOutput } from "@/users/application/dto/authenticateUserIo";
-import { authenticateUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
-import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
+import { authenticateUserInputBuilder } from "test/users/testingHelpers/userInputBuilder";
+import userModelBuilder from "test/users/testingHelpers/userModelBuilder";
 import { InternalError, UnauthorizedError } from "@/common/domain/errors/httpErrors";
 
 let sut: AuthenticateUserUseCaseImpl;

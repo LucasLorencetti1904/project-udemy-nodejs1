@@ -1,25 +1,34 @@
 import type { NextFunction, Request, Response } from "express";
 import type AuthenticationProvider from "@/common/domain/providers/AuthenticationProvider";
-import JwtAuthenticationProvider from "@/common/infrastructure/providers/authenticationProviders/JwtAuthenticationProvider";
-import { container } from "tsyringe";
+import { inject, injectable } from "tsyringe";
 import { UnauthorizedError } from "@/common/domain/errors/httpErrors";
 
+@injectable()
 export default class AuthorizationMiddleware {
-    public static handle = (req: Request, _res: Response, next: NextFunction): void => {
-        const authHeader: string = req.headers.authorization;
-    
-        if (!authHeader) {
-            throw new UnauthorizedError("Token is missing.");
+    constructor(
+        @inject("AuthenticationProvider")
+        private readonly authProvider: AuthenticationProvider
+    ) {}
+
+    public handle = (req: Request, _res: Response, next: NextFunction): void => {
+        try {
+            const authHeader: string = req.headers.authorization;
+        
+            if (!authHeader) {
+                throw new UnauthorizedError("Token is missing.");
+            }
+        
+            const [, token] = authHeader.split(" ");    
+        
+            const { userId } = this.authProvider.verifyToken(token);
+        
+            req.authUserId = userId;
+        
+            return next();
         }
-    
-        const [, token] = authHeader.split(" ");
-    
-        const authProvider: AuthenticationProvider = container.resolve(JwtAuthenticationProvider);
-    
-        const { userId } = authProvider.verifyToken(token);
-    
-        req.authUserId = userId;
-    
-        return next();
+
+        catch (e: unknown) {
+            throw e;
+        }
     };
 }
