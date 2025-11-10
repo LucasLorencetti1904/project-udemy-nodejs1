@@ -1,4 +1,4 @@
-import type AuthenticateUserInput from "@/users/application/dto/AuthenticateUserInput";
+import type AuthenticateUserInput from "@/users/application/dto/authenticateUserIo";
 import type CreateUserInput from "@/users/application/dto/CreateUserInput";
 import type UpdateUserInput from "@/users/application/dto/UpdateUserInput";
 import type { UserInput } from "@/users/application/dto/userIo";

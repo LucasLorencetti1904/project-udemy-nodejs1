@@ -3,9 +3,9 @@ import UserUseCase from "@/users/application/usecases/default/UserUseCase";
 import type AuthenticateUserUseCase from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCase";
 import type UserRepository from "@/users/domain/repositories/UserRepository";
 import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
+import type AuthenticationProvider from "@/common/domain/providers/AuthenticationProvider";
 import type UserModel from "@/users/domain/models/UserModel";
-import type AuthenticateUserInput from "@/users/application/dto/AuthenticateUserInput";
-import type { UserOutput } from "@/users/application/dto/userIo";
+import type { AuthenticateUserInput, AuthenticateUserOutput } from "@/users/application/dto/authenticateUserIo";
 import { UnauthorizedError } from "@/common/domain/errors/httpErrors";
 
 @injectable()
@@ -15,10 +15,13 @@ export default class AuthenticateUserUseCaseImpl extends UserUseCase implements 
         protected readonly repo: UserRepository,
         
         @inject("StringHashProvider")
-        protected readonly hashProvider: StringHashProvider
+        private readonly hashProvider: StringHashProvider,
+
+        @inject("AuthenticationProvider")
+        private readonly authProvider: AuthenticationProvider
     ) { super(repo); }
 
-    public async execute(input: AuthenticateUserInput): Promise<UserOutput> {
+    public async execute(input: AuthenticateUserInput): Promise<AuthenticateUserOutput> {
         try {
             if (!input.email || !input.password) {
                 throw new UnauthorizedError(`Invalid email or password`);
@@ -36,7 +39,7 @@ export default class AuthenticateUserUseCaseImpl extends UserUseCase implements 
                 throw new UnauthorizedError(`Incorrect password: ${input.password}`);
             }
 
-            return this.mapToUserOutput(user);
+            return this.authProvider.generateToken(user.id);
         }
         catch (e: unknown) {
             this.handleApplicationErrors(e);

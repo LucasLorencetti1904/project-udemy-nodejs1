@@ -1,28 +1,29 @@
 import AuthenticateUserUseCaseImpl from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCaseImpl";
-import MockUserRepository from "./UserRepository.mock";
-import MockStringHashProvider from "test/common/application/usecases/StringHashProvider.mock";
+import { MockUserRepository, MockStringHashProvider, MockAuthenticationProvider } from "./providers.mock";
 import type UserModel from "@/users/domain/models/UserModel";
-import type AuthenticateUserInput from "@/users/application/dto/AuthenticateUserInput";
-import type { UserOutput } from "@/users/application/dto/userIo";
+import type { AuthenticateUserInput, AuthenticateUserOutput } from "@/users/application/dto/authenticateUserIo";
 import { authenticateUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
 import userModelBuilder from "@/users/infrastructure/testing/userModelBuilder";
-import { BadRequestError, InternalError, NotFoundError, UnauthorizedError } from "@/common/domain/errors/httpErrors";
+import { InternalError, UnauthorizedError } from "@/common/domain/errors/httpErrors";
 
 let sut: AuthenticateUserUseCaseImpl;
+
 let mockRepository: MockUserRepository;
 let mockHashProvider: MockStringHashProvider;
+let mockAuthProvider: MockAuthenticationProvider;
 
 let input: AuthenticateUserInput;
 let userInstance: UserModel;
 
-let result: UserOutput;
+let result: AuthenticateUserOutput;
 
 describe ("AuthenticateUserUseCaseImpl Test.", () => {
     beforeEach (() => {
         mockRepository = new MockUserRepository();
         mockHashProvider = new MockStringHashProvider();
+        mockAuthProvider = new MockAuthenticationProvider()
 
-        sut = new AuthenticateUserUseCaseImpl(mockRepository, mockHashProvider);
+        sut = new AuthenticateUserUseCaseImpl(mockRepository, mockHashProvider, mockAuthProvider);
     });
 
     ["email", "password"].forEach((field) => {
@@ -34,6 +35,7 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
 
             expect (mockRepository.findByEmail).not.toBeCalled();
             expect (mockHashProvider.compareWithHash).not.toBeCalled();
+            expect (mockAuthProvider.generateToken).not.toBeCalled();
         });
     });
             
@@ -46,6 +48,7 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
 
         expect (mockRepository.findByEmail).toHaveBeenCalledExactlyOnceWith(input.email);
         expect (mockHashProvider.compareWithHash).not.toHaveBeenCalled();
+        expect (mockAuthProvider.generateToken).not.toBeCalled();
     });
 
     it (`should throw a UnauthorizedError when user password does not match.`, async () => {
@@ -61,6 +64,7 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
         expect (mockRepository.findByEmail).toHaveBeenCalledExactlyOnceWith(input.email);
         expect (mockHashProvider.compareWithHash)
             .toHaveBeenCalledExactlyOnceWith(input.password, userInstance.password);
+        expect (mockAuthProvider.generateToken).not.toBeCalled();
     });
 
     it (`should throw an InternalError when method 'findByEmail' of repository throws an unexpected error.`, async () => {
@@ -72,6 +76,7 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
 
         expect (mockRepository.findByEmail).toHaveBeenCalledExactlyOnceWith(input.email);
         expect (mockHashProvider.compareWithHash).not.toHaveBeenCalled();
+        expect (mockAuthProvider.generateToken).not.toBeCalled();
     });
 
     it (`should throw an InternalError when method 'compareWithHash' of hash provider throws an unexpected error.`, async () => {
@@ -87,6 +92,24 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
         expect (mockRepository.findByEmail).toHaveBeenCalledExactlyOnceWith(input.email);
         expect (mockHashProvider.compareWithHash)
             .toHaveBeenCalledExactlyOnceWith(input.password, userInstance.password);
+        expect (mockAuthProvider.generateToken).not.toBeCalled();
+    });
+
+    it (`should throw an InternalError when method 'generateToken' of authentication provider throws an unexpected error.`, async () => {
+        input = authenticateUserInputBuilder({});
+
+        userInstance = userModelBuilder({});
+
+        mockRepository.findByEmail.mockResolvedValue(userInstance);
+        mockHashProvider.compareWithHash.mockResolvedValue(true);
+        mockAuthProvider.generateToken.mockImplementation(() => { throw new Error(); });
+
+        await expect (sut.execute(input)).rejects.toBeInstanceOf(InternalError);
+
+        expect (mockRepository.findByEmail).toHaveBeenCalledExactlyOnceWith(input.email);
+        expect (mockHashProvider.compareWithHash)
+            .toHaveBeenCalledExactlyOnceWith(input.password, userInstance.password);
+        expect (mockAuthProvider.generateToken).toHaveBeenCalledExactlyOnceWith(userInstance.id);
     });
 
     it (`should a user instance when input email and password is valid.`, async () => {
@@ -96,16 +119,18 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
 
         mockRepository.findByEmail.mockResolvedValue(userInstance);
         mockHashProvider.compareWithHash.mockResolvedValue(true);
+        mockAuthProvider.generateToken
+            .mockReturnValue({ token: "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MX0.dBj5W9i5jzA" });
 
         result = await sut.execute(input);
 
-        const { password, ...output } = userInstance;
-
-        expect (result).toEqual(output);
-        expect (result).not.toHaveProperty("password");
+        expect (result).toEqual({
+            token: "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MX0.dBj5W9i5jzA"
+        });
 
         expect (mockRepository.findByEmail).toHaveBeenCalledExactlyOnceWith(input.email);
         expect (mockHashProvider.compareWithHash)
             .toHaveBeenCalledExactlyOnceWith(input.password, userInstance.password);
+        expect (mockAuthProvider.generateToken).toHaveBeenCalledExactlyOnceWith(userInstance.id)
     });
 });

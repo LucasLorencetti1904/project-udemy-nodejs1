@@ -1,6 +1,5 @@
 import CreateUserUseCaseImpl from "@/users/application/usecases/createUser/CreateUserUseCaseImpl";
-import MockUserRepository from "./UserRepository.mock";
-import MockStringHashProvider from "test/common/application/usecases/StringHashProvider.mock";
+import { MockUserRepository, MockStringHashProvider } from "./providers.mock";
 import type CreateUserInput from "@/users/application/dto/CreateUserInput";
 import type { UserOutput } from "@/users/application/dto/userIo";
 import { createUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";

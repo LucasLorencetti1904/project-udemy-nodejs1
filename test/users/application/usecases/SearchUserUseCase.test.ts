@@ -1,6 +1,6 @@
 import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
 import SearchUserUseCaseImpl from "@/users/application/usecases/searchUser/SearchUserUseCaseImpl";
-import MockUserRepository from "./UserRepository.mock";
+import { MockUserRepository } from "./providers.mock";
 import type UserModel from "@/users/domain/models/UserModel";
 import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";

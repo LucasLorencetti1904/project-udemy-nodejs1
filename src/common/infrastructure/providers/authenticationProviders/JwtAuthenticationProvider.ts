@@ -14,7 +14,7 @@ export default class JwtAuthenticationProvider implements AuthenticationProvider
         return { token };
     }
 
-    public verififyToken(token: string): VerificationTokenOutput {
+    public verifyToken(token: string): VerificationTokenOutput {
         try {
             const { sub } = jwt.verify(token, env.JWT_SECRET);
 

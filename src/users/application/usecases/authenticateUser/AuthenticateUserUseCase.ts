@@ -1,6 +1,5 @@
-import type { UserOutput } from "@/users/application/dto/userIo";
-import type AuthenticateUserInput from "@/users/application/dto/AuthenticateUserInput";
+import type { AuthenticateUserInput, AuthenticateUserOutput } from "@/users/application/dto/authenticateUserIo";
 
 export default interface AuthenticateUserUseCase {
-    execute(data: AuthenticateUserInput): Promise<UserOutput>;
+    execute(data: AuthenticateUserInput): Promise<AuthenticateUserOutput>;
 }

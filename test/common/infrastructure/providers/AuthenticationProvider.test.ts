@@ -29,7 +29,7 @@ toTest.forEach((sut) => {
             id = randomUUID();
             token = sut.generateToken(id).token;
 
-            result = sut.verififyToken(token);
+            result = sut.verifyToken(token);
 
             tokenRegex = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
 
@@ -38,7 +38,7 @@ toTest.forEach((sut) => {
     
         ["abc.def", "invalid.token", "abc.def.ghi.jkl"].forEach((invalidToken) => {
             it ("should throw an UnauthorizedError when authentication web token is expired or invalid.", () => {    
-                expect (() => sut.verififyToken(invalidToken)).toThrowError(UnauthorizedError);
+                expect (() => sut.verifyToken(invalidToken)).toThrowError(UnauthorizedError);
             });
         });
     });

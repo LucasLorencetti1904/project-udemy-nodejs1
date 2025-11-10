@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import Controller from "@/common/infrastructure/http/controllers/Controller";
 import type AuthenticateUserUseCase from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCase";
-import type AuthenticateUserInput from "@/users/application/dto/AuthenticateUserInput";
+import type AuthenticateUserInput from "@/users/application/dto/authenticateUserIo";
 import type { UserOutput } from "@/users/application/dto/userIo";
 import z from "zod";
 import type { ZodType } from "zod";

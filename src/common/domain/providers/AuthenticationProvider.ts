@@ -8,5 +8,5 @@ export type VerificationTokenOutput = {
 
 export default interface AuthenticationProvider {
     generateToken(userId: string): TokenGenerationOutput;
-    verififyToken(token: string): VerificationTokenOutput;
+    verifyToken(token: string): VerificationTokenOutput;
 }
