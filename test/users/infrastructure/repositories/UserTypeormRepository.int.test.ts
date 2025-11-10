@@ -3,8 +3,7 @@ import User from "@/users/infrastructure/typeorm/entities/User";
 import type UserModel from "@/users/domain/models/UserModel";
 import type UpdateUserInput from "@/users/application/dto/UpdateUserInput";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
-import userModelBuilder from "test/users/testingHelpers/userModelBuilder";
-import { updateUserInputBuilder } from "test/users/testingHelpers/userInputBuilder";
+import TestingUserFactory from "test/users/testingHelpers/TestingUserFactory";
 import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
 import { randomUUID } from "node:crypto";
 
@@ -31,7 +30,7 @@ describe ("UserTypeormRepository Test.", () => {
     beforeEach(async () => {
         await testingDataSource.manager.query("DELETE FROM users");
         sut = new UserTypeormRepository(testingDataSource.getRepository(User));
-        exampleOfUser = userModelBuilder({});
+        exampleOfUser = TestingUserFactory.model({});
     });
 
     describe ("findById", () => {
@@ -81,8 +80,8 @@ describe ("UserTypeormRepository Test.", () => {
         });
 
         it ("should update a existent user.", async () => {
-            const input: UpdateUserInput = updateUserInputBuilder({ name: "New Name" });
-            exampleOfUser = userModelBuilder({ ...input, name: "Old Name" });
+            const input: UpdateUserInput = TestingUserFactory.updateInput({ name: "New Name" });
+            exampleOfUser = TestingUserFactory.model({ ...input, name: "Old Name" });
 
             const oldUser: UserModel = await createAndSaveUser(exampleOfUser);
             result = await sut.update({ ...oldUser, ...input });
@@ -117,16 +116,16 @@ describe ("UserTypeormRepository Test.", () => {
 
         beforeEach(() => {
             models = [
-                userModelBuilder({
+                TestingUserFactory.model({
                     name: "A", email: "examplethree@gmail.com", createdAt: new Date(2025, 4, 19)
                 }),
-                userModelBuilder({
+                TestingUserFactory.model({
                     name: "D", email: "examplefour@gmail.com", createdAt: new Date(2019, 2, 17)
                 }),
-                userModelBuilder({
+                TestingUserFactory.model({
                     name: "C", email: "exampletwo@gmail.com", createdAt: new Date(2024, 7, 23)
                 }),
-                userModelBuilder({
+                TestingUserFactory.model({
                     name: "B", email: "exampleone@gmail.com", createdAt: new Date(2020, 2, 1)
                 })
             ]
@@ -137,7 +136,7 @@ describe ("UserTypeormRepository Test.", () => {
         });
 
         it ("should apply a default pagination with the first unsorted items when params is not specified.", async () => {
-            models = Array.from({ length: 20 }, () => userModelBuilder({}));
+            models = Array.from({ length: 20 }, () => TestingUserFactory.model({}));
             await createAndSaveUsers(models);
             result = await sut.search({});
 
@@ -145,7 +144,7 @@ describe ("UserTypeormRepository Test.", () => {
         });
         
         it ("should apply only paginate when other params is null.", async () => {
-            models = Array.from({ length: 20 }, () => userModelBuilder({}));
+            models = Array.from({ length: 20 }, () => TestingUserFactory.model({}));
             await createAndSaveUsers(models);
             result = await sut.search({ page: 3, perPage: 7 });
 
@@ -174,7 +173,7 @@ describe ("UserTypeormRepository Test.", () => {
         });
         
         it ("should apply only filter when other params is null.", async () => {
-            models = "AB,BC,CA".split(",").map((e) => userModelBuilder({ name: e }));
+            models = "AB,BC,CA".split(",").map((e) => TestingUserFactory.model({ name: e }));
             await createAndSaveUsers(models);
             result = await sut.search({ filter: "c" });
 
@@ -183,7 +182,7 @@ describe ("UserTypeormRepository Test.", () => {
 
         it ("should apply all params.", async () => {
             models = "TESTE,tst,fake,test,te".split(",").map((e) => {
-                return userModelBuilder({ name: e })
+                return TestingUserFactory.model({ name: e })
             });
             
             await createAndSaveUsers(models);

@@ -1,6 +1,6 @@
 import type ProductModel from "@/products/domain/models/ProductModel";
 import ProductInMemoryRepository from "@/products/infrastructure/inMemory/ProductInMemoryRepository";
-import productModelBuilder from "test/products/testingHelpers/productModelBuilder";
+import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
 import { randomUUID } from "node:crypto";
 
 describe ("ProductInMemoryRepository Test.", () => {
@@ -18,7 +18,7 @@ describe ("ProductInMemoryRepository Test.", () => {
         });
 
         it ("should return a product when it is found by name.", async () => {
-            const exampleOfProduct: ProductModel = productModelBuilder({ name: "Valid Name Example" });
+            const exampleOfProduct: ProductModel = TestingProductFactory.model({ name: "Valid Name Example" });
             sut.items.push(exampleOfProduct);
 
             result = await sut.findByName("Valid Name Example");
@@ -36,8 +36,8 @@ describe ("ProductInMemoryRepository Test.", () => {
         it ("should return an array of products when it is found by id.", async () => {
             const randomIds: string[] = [randomUUID(), randomUUID()];
             sut.items = [
-                productModelBuilder({ id: randomIds[0] }),
-                productModelBuilder({ id: randomIds[1] })
+                TestingProductFactory.model({ id: randomIds[0] }),
+                TestingProductFactory.model({ id: randomIds[1] })
             ];
 
             result = await sut.findAllByIds([randomIds[1], randomUUID()]);
@@ -49,9 +49,9 @@ describe ("ProductInMemoryRepository Test.", () => {
     describe ("applySort", () => {
         beforeEach (() => {    
             sut.items = [
-                productModelBuilder({ name: "b", createdAt: new Date(2024, 8, 12) }),
-                productModelBuilder({ name: "a", createdAt: new Date(2025, 10, 19) }),
-                productModelBuilder({ name: "c", createdAt: new Date(2025, 2, 29) })
+                TestingProductFactory.model({ name: "b", createdAt: new Date(2024, 8, 12) }),
+                TestingProductFactory.model({ name: "a", createdAt: new Date(2025, 10, 19) }),
+                TestingProductFactory.model({ name: "c", createdAt: new Date(2025, 2, 29) })
             ];
         });
 
@@ -81,9 +81,9 @@ describe ("ProductInMemoryRepository Test.", () => {
     describe ("applyFilter", () => {
         beforeEach (() => {
             sut.items = [
-                productModelBuilder({ name: "test name" }),
-                productModelBuilder({ name: "TEST NAME" }),
-                productModelBuilder({ name: "fake name"})
+                TestingProductFactory.model({ name: "test name" }),
+                TestingProductFactory.model({ name: "TEST NAME" }),
+                TestingProductFactory.model({ name: "fake name"})
             ];
         });
 

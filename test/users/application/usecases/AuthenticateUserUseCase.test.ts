@@ -2,8 +2,7 @@ import AuthenticateUserUseCaseImpl from "@/users/application/usecases/authentica
 import { MockUserRepository, MockStringHashProvider, MockAuthenticationProvider } from "../../providers.mock";
 import type UserModel from "@/users/domain/models/UserModel";
 import type { AuthenticateUserInput, AuthenticateUserOutput } from "@/users/application/dto/authenticateUserIo";
-import { authenticateUserInputBuilder } from "test/users/testingHelpers/userInputBuilder";
-import userModelBuilder from "test/users/testingHelpers/userModelBuilder";
+import TestingUserFactory from "test/users/testingHelpers/TestingUserFactory";
 import { InternalError, UnauthorizedError } from "@/common/domain/errors/httpErrors";
 
 let sut: AuthenticateUserUseCaseImpl;
@@ -28,7 +27,7 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
 
     ["email", "password"].forEach((field) => {
         it (`should throw a UnauthorizedError when user ${field} is empty.`, async () => {
-            input = authenticateUserInputBuilder({});
+            input = TestingUserFactory.authenticateInput({});
             input[field] = undefined;
 
             await expect (sut.execute(input)).rejects.toBeInstanceOf(UnauthorizedError);
@@ -40,7 +39,7 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
     });
             
     it (`should throw a UnauthorizedError when user email is not found.`, async () => {
-        input = authenticateUserInputBuilder({ email: "anyemail@gmail.com" });
+        input = TestingUserFactory.authenticateInput({ email: "anyemail@gmail.com" });
 
         mockRepository.findByEmail.mockResolvedValue(null);
 
@@ -52,9 +51,9 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
     });
 
     it (`should throw a UnauthorizedError when user password does not match.`, async () => {
-        input = authenticateUserInputBuilder({ password: "AnyWrongPassword12345!*" });
+        input = TestingUserFactory.authenticateInput({ password: "AnyWrongPassword12345!*" });
 
-        userInstance = userModelBuilder({});
+        userInstance = TestingUserFactory.model({});
 
         mockRepository.findByEmail.mockResolvedValue(userInstance);
         mockHashProvider.compareWithHash.mockResolvedValue(false);
@@ -68,7 +67,7 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
     });
 
     it (`should throw an InternalError when method 'findByEmail' of repository throws an unexpected error.`, async () => {
-        input = authenticateUserInputBuilder({});
+        input = TestingUserFactory.authenticateInput({});
 
         mockRepository.findByEmail.mockRejectedValue(new Error());
 
@@ -80,9 +79,9 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
     });
 
     it (`should throw an InternalError when method 'compareWithHash' of hash provider throws an unexpected error.`, async () => {
-        input = authenticateUserInputBuilder({});
+        input = TestingUserFactory.authenticateInput({});
 
-        userInstance = userModelBuilder({});
+        userInstance = TestingUserFactory.model({});
 
         mockRepository.findByEmail.mockResolvedValue(userInstance);
         mockHashProvider.compareWithHash.mockRejectedValue(new Error());
@@ -96,9 +95,9 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
     });
 
     it (`should throw an InternalError when method 'generateToken' of authentication provider throws an unexpected error.`, async () => {
-        input = authenticateUserInputBuilder({});
+        input = TestingUserFactory.authenticateInput({});
 
-        userInstance = userModelBuilder({});
+        userInstance = TestingUserFactory.model({});
 
         mockRepository.findByEmail.mockResolvedValue(userInstance);
         mockHashProvider.compareWithHash.mockResolvedValue(true);
@@ -113,9 +112,9 @@ describe ("AuthenticateUserUseCaseImpl Test.", () => {
     });
 
     it (`should a user instance when input email and password is valid.`, async () => {
-        input = authenticateUserInputBuilder({});
+        input = TestingUserFactory.authenticateInput({});
         
-        userInstance = userModelBuilder({});
+        userInstance = TestingUserFactory.model({});
 
         mockRepository.findByEmail.mockResolvedValue(userInstance);
         mockHashProvider.compareWithHash.mockResolvedValue(true);

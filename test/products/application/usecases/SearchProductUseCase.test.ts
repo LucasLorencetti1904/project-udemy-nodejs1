@@ -4,15 +4,15 @@ import MockProductRepository from "./ProductRepository.mock";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
-import productModelBuilder from "test/products/testingHelpers/productModelBuilder";
+import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
 import { InternalError } from "@/common/domain/errors/httpErrors";
 
 describe ("SearchProductUseCase Test", () => {  
     let sut: SearchProductUseCase;
     let mockRepository: MockProductRepository;
 
-    let models: ProductModel[] = Array(50).fill(productModelBuilder({}));
-    let exampleOfModel: ProductModel = productModelBuilder({});
+    let models: ProductModel[] = Array(50).fill(TestingProductFactory.model({}));
+    let exampleOfModel: ProductModel = TestingProductFactory.model({});
 
     let defaultRepoOutput: RepositorySearchOutput<ProductModel>;
     let repoOutput: RepositorySearchOutput<ProductModel>;
@@ -23,7 +23,7 @@ describe ("SearchProductUseCase Test", () => {
         mockRepository = new MockProductRepository();
         sut = new SearchProductUseCaseImpl(mockRepository);
         
-        models = Array(50).fill(productModelBuilder({ name: "Non" }));
+        models = Array(50).fill(TestingProductFactory.model({ name: "Non" }));
 
         defaultRepoOutput = {
             currentPage: 1,
@@ -114,14 +114,14 @@ describe ("SearchProductUseCase Test", () => {
                 sortDir: "asc",
                 filter: "am", 
                 total: 50,
-                items: Array(3).fill(productModelBuilder({ ...exampleOfModel, name: "example" }))
+                items: Array(3).fill(TestingProductFactory.model({ ...exampleOfModel, name: "example" }))
             },
             expected: {
                 currentPage: 2,
                 perPage: 25,
                 lastPage: 2,
                 total: 50,
-                items: Array(3).fill(productModelBuilder({ ...exampleOfModel, name: "example" }))
+                items: Array(3).fill(TestingProductFactory.model({ ...exampleOfModel, name: "example" }))
             }
         }
     ];

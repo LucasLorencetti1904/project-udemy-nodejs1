@@ -4,9 +4,7 @@ import type ProductModel from "@/products/domain/models/ProductModel";
 import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
 import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
-import productModelBuilder from "test/products/testingHelpers/productModelBuilder";
-import { updateProductInputBuilder } from "test/products/testingHelpers/productInputBuilder";
-import productOutputBuilder from "test/products/testingHelpers/productOutputBuilder";
+import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
 import { randomUUID } from "node:crypto";
 
 describe ("ProductTypeormRepository Test.", () => {
@@ -32,7 +30,7 @@ describe ("ProductTypeormRepository Test.", () => {
     beforeEach(async () => {
         await testingDataSource.manager.query("DELETE FROM products");
         sut = new ProductTypeormRepository(testingDataSource.getRepository(Product));
-        exampleOfProduct = productOutputBuilder({});
+        exampleOfProduct = TestingProductFactory.output({});
     });
 
     describe ("findById", () => {
@@ -103,8 +101,8 @@ describe ("ProductTypeormRepository Test.", () => {
         });
 
         it ("should update a existent product.", async () => {
-            const input: UpdateProductInput = updateProductInputBuilder({ name: "New Name" });
-            exampleOfProduct = productModelBuilder({ ...input, name: "Old Name" });
+            const input: UpdateProductInput = TestingProductFactory.updateInput({ name: "New Name" });
+            exampleOfProduct = TestingProductFactory.model({ ...input, name: "Old Name" });
             const oldProduct: ProductModel = await createAndSaveProduct(exampleOfProduct);
             result = await sut.update({ ...oldProduct, ...input });
 
@@ -138,10 +136,10 @@ describe ("ProductTypeormRepository Test.", () => {
         
         beforeEach (() => {
             products = [
-                productOutputBuilder({ name: "A", createdAt: new Date(2025, 4, 19) }),
-                productOutputBuilder({ name: "D", createdAt: new Date(2019, 2, 17) }),
-                productOutputBuilder({ name: "C", createdAt: new Date(2024, 7, 23) }),
-                productOutputBuilder({ name: "B", createdAt: new Date(2020, 2, 1) })
+                TestingProductFactory.output({ name: "A", createdAt: new Date(2025, 4, 19) }),
+                TestingProductFactory.output({ name: "D", createdAt: new Date(2019, 2, 17) }),
+                TestingProductFactory.output({ name: "C", createdAt: new Date(2024, 7, 23) }),
+                TestingProductFactory.output({ name: "B", createdAt: new Date(2020, 2, 1) })
             ];
         });
 
@@ -150,7 +148,7 @@ describe ("ProductTypeormRepository Test.", () => {
         });
 
         it ("should apply a default pagination with the first unsorted items when params is not specified.", async () => {
-            products = Array.from({ length: 20 }, () => productOutputBuilder({}));
+            products = Array.from({ length: 20 }, () => TestingProductFactory.output({}));
             await createAndSaveProducts(products);
             result = await sut.search({});
 
@@ -158,7 +156,7 @@ describe ("ProductTypeormRepository Test.", () => {
         });
         
         it ("should apply only paginate when other params is null.", async () => {
-            products = Array.from({ length: 20 }, () => productOutputBuilder({}));
+            products = Array.from({ length: 20 }, () => TestingProductFactory.output({}));
             await createAndSaveProducts(products);
             result = await sut.search({ page: 3, perPage: 7 });
 
@@ -180,7 +178,7 @@ describe ("ProductTypeormRepository Test.", () => {
         });
         
         it ("should apply only filter when other params is null.", async () => {
-            products = "AB,BC,CA".split(",").map((e) => productOutputBuilder({ name: e }));
+            products = "AB,BC,CA".split(",").map((e) => TestingProductFactory.output({ name: e }));
             await createAndSaveProducts(products);
             result = await sut.search({ filter: "c" });
 
@@ -189,7 +187,7 @@ describe ("ProductTypeormRepository Test.", () => {
 
         it ("should apply all params.", async () => {
             products = "TESTE,tst,fake,test,te".split(",").map((e) => {
-                return productOutputBuilder({ name: e });
+                return TestingProductFactory.output({ name: e });
             });
             await createAndSaveProducts(products);
             

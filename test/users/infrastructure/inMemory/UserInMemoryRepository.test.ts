@@ -1,6 +1,6 @@
 import type UserModel from "@/users/domain/models/UserModel";
 import UserInMemoryRepository from "@/users/infrastructure/inMemory/UserInMemoryRepository";
-import userModelBuilder from "test/users/testingHelpers/userModelBuilder";
+import TestingUserFactory from "test/users/testingHelpers/TestingUserFactory";
 
 describe ("UserInMemoryRepository Test.", () => {
     let sut: UserInMemoryRepository;
@@ -19,7 +19,7 @@ describe ("UserInMemoryRepository Test.", () => {
         for (let i = 1; i <= 2; i++) {
             it ("should return a array of users when found by name.", async () => {
                 const exampleOfUsers: UserModel[] = Array(i)
-                    .fill(userModelBuilder({ name: "Valid Name Example" }));
+                    .fill(TestingUserFactory.model({ name: "Valid Name Example" }));
 
                 sut.items.push(...exampleOfUsers);
                 result = await sut.findByName("Valid Name Example");
@@ -36,7 +36,7 @@ describe ("UserInMemoryRepository Test.", () => {
         });
 
         it ("should return user when found by email.", async () => {
-            const exampleOfUser: UserModel = userModelBuilder({ email: "testing@gmail.com" });
+            const exampleOfUser: UserModel = TestingUserFactory.model({ email: "testing@gmail.com" });
             sut.items.push(exampleOfUser);
             result = await sut.findByEmail("testing@gmail.com");
 
@@ -48,13 +48,13 @@ describe ("UserInMemoryRepository Test.", () => {
     describe ("applySort", () => {
         beforeEach (() => {    
             sut.items = [
-                userModelBuilder({
+                TestingUserFactory.model({
                     name: "b", email: "userone@gmail.com", createdAt: new Date(2024, 8, 12)
                 }),
-                userModelBuilder({
+                TestingUserFactory.model({
                     name: "a", email: "usertwo@gmail.com", createdAt: new Date(2025, 10, 19)
                 }),
-                userModelBuilder({
+                TestingUserFactory.model({
                     name: "c", email: "userthree@gmail.com", createdAt: new Date(2025, 2, 29)
                 })
             ];
@@ -113,9 +113,9 @@ describe ("UserInMemoryRepository Test.", () => {
     describe ("applyFilter", () => {
         beforeEach (() => {
             sut.items = [
-                userModelBuilder({ name: "test name" }),
-                userModelBuilder({ name: "TEST NAME" }),
-                userModelBuilder({ name: "fake name"})
+                TestingUserFactory.model({ name: "test name" }),
+                TestingUserFactory.model({ name: "TEST NAME" }),
+                TestingUserFactory.model({ name: "fake name"})
             ];
         });
         

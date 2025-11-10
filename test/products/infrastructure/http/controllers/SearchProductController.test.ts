@@ -1,7 +1,7 @@
 import SearchProductController from "@/products/infrastructure/http/controllers/SearchProductController";
 import { MockSearchProductUseCase } from "./ProductUseCase.mock";
 import { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
-import productOutputBuilder from "test/products/testingHelpers/productOutputBuilder";
+import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
 import { Request, Response } from "express";
 import { InternalError } from "@/common/domain/errors/httpErrors";
 
@@ -72,7 +72,7 @@ describe ("SearchProductController Test.", () => {
                 perPage: 15,
                 lastPage: 2,
                 total: 28,
-                items: Array(15).fill(productOutputBuilder({}))
+                items: Array(15).fill(TestingProductFactory.output({}))
             },
             expectedCall: {}
         },
@@ -89,7 +89,7 @@ describe ("SearchProductController Test.", () => {
                 perPage: 12,
                 lastPage: 4,
                 total: 45,
-                items: Array(12).fill(productOutputBuilder({}))
+                items: Array(12).fill(TestingProductFactory.output({}))
             },
             expectedCall: {
                 page: 3,

@@ -1,8 +1,7 @@
 import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
 import { MockCreateUserUseCase } from "./UserUseCase.mock";
 import type { UserOutput } from "@/users/application/dto/userIo";
-import { createUserInputBuilder } from "test/users/testingHelpers/userInputBuilder";
-import userOutputBuilder from "test/users/testingHelpers/userOutputBuilder";
+import TestingUserFactory from "test/users/testingHelpers/TestingUserFactory";
 import type { Request, Response } from "express";
 import { ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 
@@ -18,7 +17,7 @@ describe ("CreateUserController Test.", () => {
         sut = new CreateUserController(mockUseCase);
 
         req = {
-            body: createUserInputBuilder({})
+            body: undefined
         };
 
         res = {
@@ -29,7 +28,7 @@ describe ("CreateUserController Test.", () => {
     
     ["name", "email", "password"].forEach((field) => {
         it (`should return a response error with code 400 when user ${field} is empty.`, async () => {
-            req.body = createUserInputBuilder({ [field]: "" });
+            req.body = TestingUserFactory.createInput({ [field]: "" });
 
             await sut.handle(req as Request, res as Response);
 
@@ -41,7 +40,7 @@ describe ("CreateUserController Test.", () => {
 
     ["invalidEmail", "invalid email @gmail.com", "invalidemailgmail.com", "invalidemail@.com"].forEach((value) => {
         it (`should return a response error with code 400 when user email is invalid.`, async () => {
-            req.body = createUserInputBuilder({ email: value });
+            req.body = TestingUserFactory.createInput({ email: value });
 
             await sut.handle(req as Request, res as Response);
 
@@ -52,7 +51,7 @@ describe ("CreateUserController Test.", () => {
     });
 
     it ("should return a response error with code 400 when user contains invalid fields.", async () => {
-        req.body = { ...createUserInputBuilder({}), unexpectedField: "Unexpected Value" };
+        req.body = { ...TestingUserFactory.createInput({}), unexpectedField: "Unexpected Value" };
 
         await sut.handle(req as Request, res as Response);
 
@@ -66,6 +65,7 @@ describe ("CreateUserController Test.", () => {
         { useCaseError: new ConflictError("Example"), statusCode: 409, occasion: "user email already exists" }
     ].forEach(({ useCaseError, statusCode, occasion }) => {
         it (`should return a response error with code ${statusCode} when ${occasion}.`, async () => {
+            req.body = TestingUserFactory.createInput({});
             mockUseCase.execute.mockRejectedValue(useCaseError);
 
             await sut.handle(req as Request, res as Response);
@@ -84,8 +84,8 @@ describe ("CreateUserController Test.", () => {
     ]
     .forEach((specificInput) => {
         it (`should return a response user (without password) json object with code 201 when user registered successfully.`, async () => {
-            req.body = createUserInputBuilder({ ...specificInput });
-            const useCaseOutput: UserOutput = userOutputBuilder({ ...req.body });
+            req.body = TestingUserFactory.createInput({ ...specificInput });
+            const useCaseOutput: UserOutput = TestingUserFactory.output({ ...req.body });
             mockUseCase.execute.mockResolvedValue(useCaseOutput);
 
             await sut.handle(req as Request, res as Response);

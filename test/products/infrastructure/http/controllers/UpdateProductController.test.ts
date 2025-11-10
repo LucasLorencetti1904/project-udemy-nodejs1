@@ -1,8 +1,7 @@
 import UpdateProductController from "@/products/infrastructure/http/controllers/UpdateProductController";
 import { MockUpdateProductUseCase } from "./ProductUseCase.mock";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import productInputBuilder from "test/products/testingHelpers/productInputBuilder";
-import productOutputBuilder from "test/products/testingHelpers/productOutputBuilder";
+import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
 import { Request, Response } from "express";
 import { ConflictError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import { randomUUID } from "node:crypto";
@@ -19,9 +18,9 @@ describe ("UpdateProductController Test.", () => {
         sut = new UpdateProductController(mockUseCase);
 
         req = {
-            body: productInputBuilder({}),
+            body: undefined,
             params: {
-                id: randomUUID()
+                id: undefined
             }
         };
 
@@ -33,7 +32,7 @@ describe ("UpdateProductController Test.", () => {
     
     [["quantity", -2], ["quantity", 3.9], ["quantity", 0], ["price", -7.89], ["price", 0.0]].forEach(([field, value]) => {
         it (`should return a response error with code 400 when product ${field} is defined and invalid.`, async () => {
-            req.body = productInputBuilder({ [field]: value });
+            req.body = TestingProductFactory.input({ [field]: value });
 
             await sut.handle(req as Request, res as Response);
 
@@ -67,7 +66,8 @@ describe ("UpdateProductController Test.", () => {
 
     ["name", "quantity", "price"].forEach((field) => {
         it (`should not return a response error with code 400 when product ${field} is undefined.`, async () => {
-            req.body = productInputBuilder({ [field]: undefined });
+            req.params.id = randomUUID();
+            req.body = TestingProductFactory.input({ [field]: undefined });
 
             await sut.handle(req as Request, res as Response);
 
@@ -85,6 +85,8 @@ describe ("UpdateProductController Test.", () => {
         { useCaseError: new ConflictError("Example"), statusCode: 409, occasion: "product name already exists" }
     ].forEach(({ useCaseError, statusCode, occasion }) => {
         it (`should return a response error with code ${statusCode} when ${occasion}.`, async () => {
+            req.params.id = randomUUID();
+            req.body = TestingProductFactory.updateInput({});
             mockUseCase.execute.mockRejectedValue(useCaseError);
 
             await sut.handle(req as Request, res as Response);
@@ -106,8 +108,9 @@ describe ("UpdateProductController Test.", () => {
     ]
     .forEach((specificInput) => {
         it (`should return a response product json object with code 200 when product updated successfully.`, async () => {
-            req.body = productInputBuilder({ ...specificInput });
-            const useCaseOutput: ProductOutput = productOutputBuilder({ ...req.body });
+            req.params.id = randomUUID();
+            req.body = TestingProductFactory.input({ ...specificInput });
+            const useCaseOutput: ProductOutput = TestingProductFactory.output({ ...req.body });
             mockUseCase.execute.mockResolvedValue(useCaseOutput);
             
             await sut.handle(req as Request, res as Response);

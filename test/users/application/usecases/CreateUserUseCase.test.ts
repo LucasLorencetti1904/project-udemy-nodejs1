@@ -2,8 +2,7 @@ import CreateUserUseCaseImpl from "@/users/application/usecases/createUser/Creat
 import { MockUserRepository, MockStringHashProvider } from "../../providers.mock";
 import type CreateUserInput from "@/users/application/dto/CreateUserInput";
 import type { UserOutput } from "@/users/application/dto/userIo";
-import { createUserInputBuilder } from "test/users/testingHelpers/userInputBuilder";
-import userOutputBuilder from "test/users/testingHelpers/userOutputBuilder";
+import TestingUserFactory from "test/users/testingHelpers/TestingUserFactory";
 import { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 
 let sut: CreateUserUseCaseImpl;
@@ -27,7 +26,7 @@ describe ("CreateUserUseCaseImpl Test.", () => {
 
     ["name", "email", "password"].forEach((field) => {
         it (`should throw BadRequestError when user ${field} is empty.`, async () => {
-            userInputData = createUserInputBuilder({ [field]: "" })
+            userInputData = TestingUserFactory.createInput({ [field]: "" })
 
             await expect (sut.execute(userInputData)).rejects.toBeInstanceOf(BadRequestError);
             
@@ -39,7 +38,7 @@ describe ("CreateUserUseCaseImpl Test.", () => {
     });
 
     it ("should throw ConflictError when user email already exists.", async () => {
-        userInputData = createUserInputBuilder({ email: "existentemail@gmail.com" });
+        userInputData = TestingUserFactory.createInput({ email: "existentemail@gmail.com" });
 
         mockRepository.findByEmail.mockResolvedValue(userInputData.email);
 
@@ -76,8 +75,8 @@ describe ("CreateUserUseCaseImpl Test.", () => {
     ]
     .forEach((specificInput) => {
         it ("should return a new user when input data is valid.", async () => {
-            userInputData = createUserInputBuilder({ ...specificInput });
-            userOutputData = userOutputBuilder({ name: userInputData.name, email: userInputData.email });
+            userInputData = TestingUserFactory.createInput({ ...specificInput });
+            userOutputData = TestingUserFactory.output({ name: userInputData.name, email: userInputData.email });
 
             mockRepository.findByEmail.mockResolvedValue(null);
             mockHashProvider.hashString.mockResolvedValue(exampleOfHashPassword);

@@ -4,16 +4,16 @@ import { MockUserRepository } from "../../providers.mock";
 import type UserModel from "@/users/domain/models/UserModel";
 import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
 import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
-import userModelBuilder from "test/users/testingHelpers/userModelBuilder";
+import TestingUserFactory from "test/users/testingHelpers/TestingUserFactory";
 import { InternalError } from "@/common/domain/errors/httpErrors";
 
 describe ("SearchUserUseCase Test", () => {  
     let sut: SearchUserUseCase;
     let mockRepository: MockUserRepository;
 
-    let models: UserModel[] = Array.from({ length: 50 }, () => userModelBuilder({}));
+    let models: UserModel[] = Array.from({ length: 50 }, () => TestingUserFactory.model({}));
     
-    let exampleOfModel: UserModel = userModelBuilder({});
+    let exampleOfModel: UserModel = TestingUserFactory.model({});
 
     let defaultRepoOutput: RepositorySearchOutput<UserModel>;
     let repoOutput: RepositorySearchOutput<UserModel>;
@@ -24,7 +24,7 @@ describe ("SearchUserUseCase Test", () => {
         mockRepository = new MockUserRepository();
         sut = new SearchUserUseCaseImpl(mockRepository);
         
-        models = Array.from({ length: 50 }, () => userModelBuilder({ name: "Non" }));
+        models = Array.from({ length: 50 }, () => TestingUserFactory.model({ name: "Non" }));
 
         defaultRepoOutput = {
             currentPage: 1,
@@ -115,7 +115,7 @@ describe ("SearchUserUseCase Test", () => {
                 sortDir: "asc",
                 filter: "am", 
                 total: 50,
-                items: Array.from({ length: 3 }, () => userModelBuilder({
+                items: Array.from({ length: 3 }, () => TestingUserFactory.model({
                     ...exampleOfModel,
                     email: "example@gmail.com"
                 }))
@@ -125,7 +125,7 @@ describe ("SearchUserUseCase Test", () => {
                 perPage: 25,
                 lastPage: 2,
                 total: 50,
-                items: Array.from({ length: 3 }, () => userModelBuilder({
+                items: Array.from({ length: 3 }, () => TestingUserFactory.model({
                     ...exampleOfModel,
                     email: "example@gmail.com"
                 })).map(({ password, ...output }) => output)

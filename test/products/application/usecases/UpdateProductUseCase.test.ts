@@ -4,9 +4,7 @@ import type ProductRepository from "@/products/domain/repositories/ProductReposi
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import productModelBuilder from "test/products/testingHelpers/productModelBuilder";
-import { updateProductInputBuilder } from "test/products/testingHelpers/productInputBuilder";
-import productOutputBuilder from "test/products/testingHelpers/productOutputBuilder";
+import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
 import { randomUUID } from "node:crypto";
 import { BadRequestError, ConflictError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 
@@ -27,7 +25,7 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
         { field: "quantity", value: 0 },
     ].forEach(({ field, value }) => {
         it (`should throw BadRequestError when product ${field} is defined and invalid.`, async () => {
-            productInputData = updateProductInputBuilder({ [field]: value });
+            productInputData = TestingProductFactory.updateInput({ [field]: value });
             await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
 
             ["findByName", "findById", "update"].forEach((method) => {
@@ -38,13 +36,13 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
 
     ["name", "price", "quantity"].forEach((field) => {
         it (`should not throw BadRequestError when product ${field} is undefined.`, async () => {
-            productInputData = updateProductInputBuilder({ [field]: undefined });
+            productInputData = TestingProductFactory.updateInput({ [field]: undefined });
             await expect (sut.execute(productInputData)).rejects.not.toBeInstanceOf(BadRequestError);
         });
     });
 
     it ("should throw ConflictError when product name already exists.", async () => {
-        productInputData = updateProductInputBuilder({ name: "Existent Product" });
+        productInputData = TestingProductFactory.updateInput({ name: "Existent Product" });
         mockRepository.findByName = vi.fn().mockResolvedValue(productInputData.name);
 
         await expect ((sut.execute(productInputData))).rejects.toBeInstanceOf(ConflictError);
@@ -55,7 +53,7 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
     });
 
     it ("should throw an NotFoundError when product is not found by id.", async () => {
-        productInputData = updateProductInputBuilder({ id: randomUUID() });
+        productInputData = TestingProductFactory.updateInput({ id: randomUUID() });
         mockRepository.findById = vi.fn().mockResolvedValue(null);
 
         await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(NotFoundError);
@@ -67,7 +65,7 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
 
     ["findByName", "findById", "update"].forEach((method) => {
         it ("should throw an InternalError when repository throws an unexpected error.", async () => {
-            mockRepository.findById = vi.fn().mockResolvedValue(productOutputBuilder({}));
+            mockRepository.findById = vi.fn().mockResolvedValue(TestingProductFactory.updateInput({}));
             mockRepository[method] = vi.fn().mockRejectedValue(new Error());
 
             await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(InternalError);
@@ -75,7 +73,7 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
     });
 
     it ("should not search by name when input name is undefined.", async () => {
-        productInputData = { ...updateProductInputBuilder({}), name: undefined };
+        productInputData = { ...TestingProductFactory.updateInput({}), name: undefined };
         try { await sut.execute(productInputData); } catch {}
         expect (mockRepository.findByName).not.toHaveBeenCalled();
     });
@@ -91,8 +89,8 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
     
     updateTestingCases.forEach(({ field, oldValue, newValue }) => {
         it ("should return a updated product when input data is defined and valid.", async () => {
-            productInputData = updateProductInputBuilder({ [field]: newValue });
-            const oldProduct: ProductModel = productModelBuilder({
+            productInputData = TestingProductFactory.updateInput({ [field]: newValue });
+            const oldProduct: ProductModel = TestingProductFactory.model({
                 ...productInputData, [field]: oldValue
             });
             productOutputData = { ...oldProduct, [field]: productInputData[field] };
@@ -120,7 +118,7 @@ describe ("UpdateProductUseCaseImpl Test.", () => {
                 id: randomUUID(), quantity: undefined, price: undefined, name: undefined
             };
             productInputData[field] = newValue;
-            const oldProduct: ProductModel = productModelBuilder({
+            const oldProduct: ProductModel = TestingProductFactory.model({
                 id: productInputData.id, [field]: oldValue
             });
             productOutputData = { ...oldProduct, [field]: productInputData[field] };

@@ -1,7 +1,7 @@
 import SearchUserController from "@/users/infrastructure/http/controllers/SearchUserController";
 import { MockSearchUserUseCase } from "./UserUseCase.mock";
 import { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
-import userOutputBuilder from "test/users/testingHelpers/userOutputBuilder";
+import TestingUserFactory from "test/users/testingHelpers/TestingUserFactory";
 import type { Request, Response } from "express";
 import { InternalError } from "@/common/domain/errors/httpErrors";
 
@@ -72,7 +72,7 @@ describe ("SearchUserController Test.", () => {
                 perPage: 15,
                 lastPage: 2,
                 total: 28,
-                items: Array(15).fill(userOutputBuilder({}))
+                items: Array(15).fill(TestingUserFactory.output({}))
             },
             expectedCall: {}
         },
@@ -89,7 +89,7 @@ describe ("SearchUserController Test.", () => {
                 perPage: 12,
                 lastPage: 4,
                 total: 45,
-                items: Array(12).fill(userOutputBuilder({}))
+                items: Array(12).fill(TestingUserFactory.output({}))
             },
             expectedCall: {
                 page: 3,

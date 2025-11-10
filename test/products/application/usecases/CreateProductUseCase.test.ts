@@ -3,8 +3,7 @@ import MockProductRepository from "./ProductRepository.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type CreateProductInput from "@/products/application/dto/CreateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import { createProductInputBuilder } from "test/products/testingHelpers/productInputBuilder";
-import productOutputBuilder from "test/products/testingHelpers/productOutputBuilder";
+import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
 import { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 
 let sut: CreateProductUseCaseImpl;
@@ -26,7 +25,7 @@ describe ("CreateProductUseCaseImpl Test.", () => {
     ]
     .forEach(({ field, wrong, value }) => {
         it (`should throw BadRequestError when product ${field} is ${wrong}.`, async () => {
-            productInputData = createProductInputBuilder({ [field]: value });
+            productInputData = TestingProductFactory.createInput({ [field]: value });
             await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
             
             ["findByName", "create", "insert"].forEach((method) => {
@@ -36,7 +35,7 @@ describe ("CreateProductUseCaseImpl Test.", () => {
     });
 
     it ("should throw ConflictError when product name already exists.", async () => {
-        productInputData = createProductInputBuilder({ name: "Existent Product" });
+        productInputData = TestingProductFactory.createInput({ name: "Existent Product" });
         mockRepository.findByName = vi.fn().mockResolvedValue(productInputData.name);
         await expect ((sut.execute(productInputData))).rejects.toBeInstanceOf(ConflictError);
         
@@ -64,8 +63,8 @@ describe ("CreateProductUseCaseImpl Test.", () => {
     ]
     .forEach((specificInput) => {
         it ("should return a new product when input data is valid.", async () => {
-            productInputData = createProductInputBuilder({ ...specificInput });
-            productOutputData = productOutputBuilder({ ...productInputData });
+            productInputData = TestingProductFactory.createInput({ ...specificInput });
+            productOutputData = TestingProductFactory.output({ ...productInputData });
 
             mockRepository.findByName = vi.fn().mockResolvedValue(null);
             mockRepository.create = vi.fn().mockReturnValue(productOutputData);

@@ -4,7 +4,7 @@ import MockProductRepository from "./ProductRepository.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type DeleteProductByIdInput from "@/products/application/dto/DeleteProductByIdInput";
 import type ProductModel from "@/products/domain/models/ProductModel";
-import productModelBuilder from "test/products/testingHelpers/productModelBuilder";
+import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
 import { randomUUID } from "node:crypto";
 import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 
@@ -45,7 +45,7 @@ describe ("DeleteProductByIdUseCaseImpl Test.", () => {
     it ("should delete product found by id.", async () => {
         productInputData = randomUUID();
 
-        const deletedProduct: ProductModel = productModelBuilder({ id: productInputData });
+        const deletedProduct: ProductModel = TestingProductFactory.model({ id: productInputData });
         
         mockRepository.delete = vi.fn().mockResolvedValue(deletedProduct);
 
