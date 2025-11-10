@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
-import { ProductInput, ProductOutput } from "@/products/application/dto/productIo";
-import CreateProductInput from "@/products/application/dto/CreateProductInput";
-import UpdateProductInput from "@/products/application/dto/UpdateProductInput";
 import { randomUUID } from "node:crypto";
-import ProductModel from "@/products/domain/models/ProductModel";
+import type { ProductInput, ProductOutput } from "@/products/application/dto/productIo";
+import type CreateProductInput from "@/products/application/dto/CreateProductInput";
+import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
+import type ProductModel from "@/products/domain/models/ProductModel";
 
 export default class TestingProductFactory {
     public static input(props: Partial<ProductInput>): ProductInput {

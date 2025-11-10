@@ -1,10 +1,10 @@
+import { faker } from "@faker-js/faker";
+import { randomUUID } from "node:crypto";
 import type { AuthenticateUserInput } from "@/users/application/dto/authenticateUserIo";
 import type CreateUserInput from "@/users/application/dto/CreateUserInput";
 import type UpdateUserInput from "@/users/application/dto/UpdateUserInput";
 import type { UserInput, UserOutput } from "@/users/application/dto/userIo";
-import UserModel from "@/users/domain/models/UserModel";
-import { faker } from "@faker-js/faker";
-import { randomUUID } from "node:crypto";
+import type UserModel from "@/users/domain/models/UserModel";
 
 export default class TestingUserFactory {
     public static input(props: Partial<UserInput>): UserInput {
