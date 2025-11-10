@@ -1,8 +1,7 @@
 import AuthenticateUserController from "@/users/infrastructure/http/controllers/AuthenticateUserController";
 import { MockAuthenticateUserUseCase } from "./UserUseCase.mock";
-import type { UserOutput } from "@/users/application/dto/userIo";
 import { authenticateUserInputBuilder } from "@/users/infrastructure/testing/userInputBuilder";
-import userOutputBuilder from "@/users/infrastructure/testing/userOutputBuilder";
+import type { AuthenticateUserOutput } from "@/users/application/dto/authenticateUserIo";
 import type { Request, Response } from "express";
 import { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 
@@ -85,7 +84,9 @@ describe ("CreateUserController Test.", () => {
     .forEach((specificInput) => {
         it (`should return a response user (without password) json object with code 201 when user registered successfully.`, async () => {
             req.body = authenticateUserInputBuilder({ ...specificInput });
-            const useCaseOutput: UserOutput = userOutputBuilder({ ...req.body });
+            const useCaseOutput: AuthenticateUserOutput = {
+                token: "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MX0.dBj5W9i5jzA"
+            };
             mockUseCase.execute.mockResolvedValue(useCaseOutput);
 
             await sut.handle(req as Request, res as Response);
