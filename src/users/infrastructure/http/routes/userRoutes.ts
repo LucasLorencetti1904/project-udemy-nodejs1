@@ -2,6 +2,7 @@ import { container } from "tsyringe";
 import { Router } from "express";
 import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
 import SearchUserController from "@/users/infrastructure/http/controllers/SearchUserController";
+import AuthorizationMiddleware from "@/users/infrastructure/http/middlewares/AuthorizationMiddleware";
 
 const userRouter: Router = Router();
 
@@ -84,6 +85,8 @@ const searchUserController: SearchUserController = container.resolve(SearchUserC
  *         description: Email already used on another user
  */
 userRouter.post("/", createUserController.handle);
+
+userRouter.use(AuthorizationMiddleware.handle);
 
 /**
  * @swagger
