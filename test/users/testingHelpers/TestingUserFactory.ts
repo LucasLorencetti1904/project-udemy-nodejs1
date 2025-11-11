@@ -2,7 +2,6 @@ import { faker } from "@faker-js/faker";
 import { randomUUID } from "node:crypto";
 import type { AuthenticateUserInput } from "@/users/application/dto/authenticateUserIo";
 import type CreateUserInput from "@/users/application/dto/CreateUserInput";
-import type UpdateUserInput from "@/users/application/dto/UpdateUserInput";
 import type { UserInput, UserOutput } from "@/users/application/dto/userIo";
 import type UserModel from "@/users/domain/models/UserModel";
 
@@ -27,16 +26,6 @@ export default class TestingUserFactory {
             name: props.name ?? faker.person.fullName(),
             email: props.email ?? faker.internet.email(),
             password: props.password ?? faker.internet.password()
-        };
-    }
-
-    public static updateInput(props: Partial<UpdateUserInput>): UpdateUserInput {
-        return {
-            id: props.id ?? randomUUID(),
-            name: props.name ?? faker.person.fullName(),
-            email: props.email ?? faker.internet.email(),
-            password: props.password ?? faker.internet.password(),
-            avatar: props.avatar
         };
     }
 

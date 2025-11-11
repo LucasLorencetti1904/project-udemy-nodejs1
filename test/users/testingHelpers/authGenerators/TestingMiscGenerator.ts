@@ -17,6 +17,10 @@ export default class TestingMiscGenerator {
         return faker.system.fileName();
     }
 
+    public static fileType(): string {
+        return faker.system.fileType();
+    }
+
     public static randomNumber(min: number, max:     number): number {
         return faker.number.int({ min, max });
     }

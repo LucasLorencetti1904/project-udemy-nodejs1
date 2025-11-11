@@ -24,16 +24,24 @@ describe ("LocalFileStorageProvider Test.", () => {
         sut["relativeStorageDirPath"] = relativeStorageDirPath;
         sut["absoluteStorageDirPath"] = absoluteStorageDirPath;
 
+        const randomSize: number = TestingMiscGenerator.randomNumber(1, 1024 * 1024 * 3)
+
         input = {
             fileName: TestingMiscGenerator.fileName(),
-            content: TestingMiscGenerator.buffer(
-                TestingMiscGenerator.randomNumber(1, 1024 * 1024 * 3)
-            )
-        };
+            content: TestingMiscGenerator.buffer(randomSize)
+        } as FileStorageInput;
     });
 
     afterEach(async () => {
-        await fs.rm(absoluteStorageDirPath, { recursive: true });
+        if ( await exists(absoluteStorageDirPath)) {
+            await fs.rm(absoluteStorageDirPath, { recursive: true });
+        }
+    });
+
+    it ("should throw an error when file name is empty.", async () => {
+        input.fileName = "";
+
+        await expect (sut.storage(input)).rejects.toBeInstanceOf(Error);
     });
 
     it ("should create directory with file if it does not already exists.", async () => {
@@ -55,10 +63,10 @@ describe ("LocalFileStorageProvider Test.", () => {
     });
 
     it ("should overwrite a file if the new file has the same name.", async () => {
-        input = { fileName: "Example.pdf", content: TestingMiscGenerator.buffer(840) };
+        input.content = TestingMiscGenerator.buffer(846);
         await sut.storage(input);
 
-        input = { fileName: "Example.pdf", content: TestingMiscGenerator.buffer(321) };
+        input.content = TestingMiscGenerator.buffer(321);
         await sut.storage(input);
         
         const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.fileName);

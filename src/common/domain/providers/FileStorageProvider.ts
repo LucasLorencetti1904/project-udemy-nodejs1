@@ -1,5 +1,7 @@
 export type FileStorageInput = {
     fileName: string,
+    fileType: string,
+    fileSize: number,
     content: Buffer
 };
 

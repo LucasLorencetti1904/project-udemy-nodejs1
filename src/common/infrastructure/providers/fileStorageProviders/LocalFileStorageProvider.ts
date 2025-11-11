@@ -9,12 +9,16 @@ export default class LocalFileStorageProvider implements FileStorageProvider {
     private readonly relativeStorageDirPath: string = "uploads/user/avatar";
     private readonly absoluteStorageDirPath: string = path.resolve(this.relativeStorageDirPath);
 
-    public async storage(fileInput: FileStorageInput): Promise<FileStorageOutput> {
-        const filePath: string = path.join(this.absoluteStorageDirPath, fileInput.fileName);
+    public async storage({ fileName, content }: FileStorageInput): Promise<FileStorageOutput> {
+        if (fileName == "") {
+            throw new Error("File name cannot be empty.");
+        }
+
+        const filePath: string = path.join(this.absoluteStorageDirPath, fileName);
 
         await fs.mkdir(this.absoluteStorageDirPath, { recursive: true });
-        await fs.writeFile(filePath, fileInput.content);
+        await fs.writeFile(filePath, content);
 
-        return { path: path.join(this.relativeStorageDirPath, fileInput.fileName) };
+        return { path: path.join(this.relativeStorageDirPath, fileName) };
     };
 }
