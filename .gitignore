@@ -40,4 +40,7 @@ lerna-debug.log*
 .env.local
 tsconfig.tsbuildinfo
 
+uploads/
+testingUploads/
+
 todo.md

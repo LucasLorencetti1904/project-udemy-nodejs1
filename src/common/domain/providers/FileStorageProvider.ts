@@ -8,5 +8,5 @@ export type FileStorageOutput =
     | { url: string, path?: never }
 
 export default interface FileStorageProvider {
-    upload(fileInput: FileStorageInput): Promise<FileStorageOutput>;
+    storage(fileInput: FileStorageInput): Promise<FileStorageOutput>;
 }

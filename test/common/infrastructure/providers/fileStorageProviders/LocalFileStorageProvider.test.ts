@@ -1,0 +1,87 @@
+import type FileStorageProvider from "@/common/domain/providers/FileStorageProvider";
+import LocalFileStorageProvider from "@/common/infrastructure/providers/fileStorageProviders/LocalFileStorageProvider";
+import type { FileStorageInput, FileStorageOutput } from "@/common/domain/providers/FileStorageProvider";
+import TestingMiscGenerator from "test/users/testingHelpers/authGenerators/TestingMiscGenerator";
+import fs from "fs/promises";
+import path from "path";
+
+async function exists(path: string): Promise<boolean> {
+    return fs.access(path).then(() => true).catch(() => false);
+}
+
+let sut: FileStorageProvider;
+
+let input: FileStorageInput;
+let result: FileStorageOutput;
+
+const relativeStorageDirPath: string = "testingUploads/user/avatar";
+const absoluteStorageDirPath: string = path.resolve(relativeStorageDirPath);
+
+describe ("LocalFileStorageProvider Test.", () => {
+    beforeEach (async () => {
+        sut = new LocalFileStorageProvider();
+
+        sut["relativeStorageDirPath"] = relativeStorageDirPath;
+        sut["absoluteStorageDirPath"] = absoluteStorageDirPath;
+
+        input = {
+            fileName: TestingMiscGenerator.fileName(),
+            content: TestingMiscGenerator.buffer(
+                TestingMiscGenerator.randomNumber(1, 1024 * 1024 * 3)
+            )
+        };
+    });
+
+    afterEach(async () => {
+        await fs.rm(absoluteStorageDirPath, { recursive: true });
+    });
+
+    it ("should create directory with file if it does not already exists.", async () => {
+        await sut.storage(input);
+        
+        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.fileName);
+        const fileWasCreated: boolean = await exists(absoluteFilePath);
+
+        expect (fileWasCreated).toBeTruthy();
+    });
+
+    it ("should create directory with file if it does not already exists.", async () => {
+        await sut.storage(input);
+        
+        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.fileName);
+        const fileWasCreated: boolean = await exists(absoluteFilePath);
+
+        expect (fileWasCreated).toBeTruthy();
+    });
+
+    it ("should overwrite a file if the new file has the same name.", async () => {
+        input = { fileName: "Example.pdf", content: TestingMiscGenerator.buffer(840) };
+        await sut.storage(input);
+
+        input = { fileName: "Example.pdf", content: TestingMiscGenerator.buffer(321) };
+        await sut.storage(input);
+        
+        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.fileName);
+
+        const fileSize: number = (await fs.stat(absoluteFilePath)).size;
+
+        expect (fileSize).toBe(321);
+    });
+
+    it ("should preserve the exact buffer size in file.", async () => {
+        result = await sut.storage(input);
+        
+        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.fileName);
+        const fileSize: number = (await fs.stat(absoluteFilePath)).size;
+
+        expect (fileSize).toBe(input.content.length);
+    });
+
+    it ("should return relative path of created file.", async () => {
+        result = await sut.storage(input);
+        
+        const relativeFilePath: string = path.join(relativeStorageDirPath, input.fileName);
+
+        expect (result).toEqual({ path: relativeFilePath });
+    });
+});

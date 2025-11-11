@@ -2,7 +2,7 @@ import AuthorizationMiddleware from "@/users/infrastructure/http/middlewares/Aut
 import { MockAuthenticationProvider } from "test/users/providers.mock";
 import type { NextFunction, Request, Response } from "express";
 import { UnauthorizedError } from "@/common/domain/errors/httpErrors";
-import TestingJwtGenerator from "test/users/testingHelpers/authGenerators/TestingJwtGenerator";
+import TestingMiscGenerator from "test/users/testingHelpers/authGenerators/TestingMiscGenerator";
 import { randomUUID } from "crypto";
 
 let res: Response;
@@ -40,7 +40,7 @@ describe ("AuthorizationMiddleware Test.", () => {
     });
 
     it ("should throw an UnauthorizedError when request token is expired", () => {
-        token = TestingJwtGenerator.generate();
+        token = TestingMiscGenerator.jwt();
 
         req.headers.authorization = `Bearer ${token}`;
 
@@ -54,7 +54,7 @@ describe ("AuthorizationMiddleware Test.", () => {
     });
 
     it ("should not throw error when request token is valid", () => {
-        token = TestingJwtGenerator.generate();
+        token = TestingMiscGenerator.jwt();
         
         req.headers.authorization = `Bearer ${token}`;
 
