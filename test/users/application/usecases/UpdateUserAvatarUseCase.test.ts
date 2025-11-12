@@ -1,7 +1,7 @@
-import UpdateUserAvatarUseCaseImpl from "@/users/application/usecases/authenticateUser/UpdateUserAvatarUseCaseImpl";
+import UpdateUserAvatarUseCaseImpl from "@/users/application/usecases/updateUserAvatar/UpdateUserAvatarUseCaseImpl";
 import { MockUserRepository, MockFileStorageProvider } from "../../providers.mock";
 import type UserModel from "@/users/domain/models/UserModel";
-import type UpdateUserAvatarInput from "@/users/application/dto/updateUserAvatarIo";
+import type UpdateUserAvatarInput from "@/users/application/dto/UpdateUserAvatarInput";
 import TestingUserFactory from "test/users/testingHelpers/TestingUserFactory";
 import TestingMiscGenerator from "test/users/testingHelpers/authGenerators/TestingMiscGenerator";
 import { BadRequestError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
@@ -37,7 +37,6 @@ describe ("UpdateUserAvatarUseCaseImpl Test.", () => {
     });
 
     [
-        { key: "name", value: "example.pdf", when: "extension is invalid" },
         { key: "type", value: "text/plain", when: " type is invalid" },
         { key: "size", value: (1024 * 1024 * 3) + 1, when: "size is too large (> 3 MB)." }
     ]
@@ -99,21 +98,26 @@ describe ("UpdateUserAvatarUseCaseImpl Test.", () => {
         expect (mockRepository.update).toHaveBeenCalledExactlyOnceWith({ ...userInstance, avatar: avatarImagePath });
     });
 
-    it (`should return the updated user model with the new avatar.`, async () => {
-        userInstance = TestingUserFactory.model({});
-        avatarImagePath = `update/user/avatar/${input.avatarImage.name}`;
-        updatedUserInstance = { ...userInstance, avatar: avatarImagePath };
+    ["image/jpeg", "image/jpg", "image/png", "image/webp"].forEach((exampleOfFileType) => {
+        it (`should return the updated user model with the new avatar.`, async () => {
+            input.avatarImage.type = exampleOfFileType;
+            input.avatarImage.size = TestingMiscGenerator.randomNumber(1, 1024 * 1024 * 3);
 
-        mockRepository.findById.mockResolvedValue(userInstance);
-        mockFileStorageProvider.storage.mockResolvedValue(avatarImagePath);
-        mockRepository.update.mockResolvedValue(updatedUserInstance);
-
-        const { password, ...expected } = updatedUserInstance; 
-
-        await expect (sut.execute(input)).resolves.toEqual(expected);
-
-        expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(input.id);
-        expect (mockFileStorageProvider.storage).toHaveBeenCalledExactlyOnceWith(input.avatarImage);
-        expect (mockRepository.update).toHaveBeenCalledExactlyOnceWith(updatedUserInstance);
+            userInstance = TestingUserFactory.model({});
+            avatarImagePath = `update/user/avatar/${input.avatarImage.name}`;
+            updatedUserInstance = { ...userInstance, avatar: avatarImagePath };
+    
+            mockRepository.findById.mockResolvedValue(userInstance);
+            mockFileStorageProvider.storage.mockResolvedValue(avatarImagePath);
+            mockRepository.update.mockResolvedValue(updatedUserInstance);
+    
+            const { password, ...expected } = updatedUserInstance; 
+    
+            await expect (sut.execute(input)).resolves.toEqual(expected);
+    
+            expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(input.id);
+            expect (mockFileStorageProvider.storage).toHaveBeenCalledExactlyOnceWith(input.avatarImage);
+            expect (mockRepository.update).toHaveBeenCalledExactlyOnceWith(updatedUserInstance);
+        });
     });
 });

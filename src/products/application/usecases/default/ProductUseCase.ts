@@ -12,7 +12,7 @@ export default abstract class ProductUseCase extends BaseUseCase {
         const product: ProductModel = await this.repo.findById(id);
 
         if (!product) {
-            throw new NotFoundError("Product not found by ID.");
+            throw new NotFoundError(`Product not found by ID: ${id}`);
         }
 
         return product;

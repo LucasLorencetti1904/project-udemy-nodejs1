@@ -1,6 +1,6 @@
 import type FileStorageProvider from "@/common/domain/providers/FileStorageProvider";
 import LocalFileStorageProvider from "@/common/infrastructure/providers/fileStorageProviders/LocalFileStorageProvider";
-import type { FileStorageInput, FileStorageOutput } from "@/common/domain/providers/FileStorageProvider";
+import type { StorageFileInput, FileStorageReference } from "@/common/domain/providers/FileStorageProvider";
 import TestingMiscGenerator from "test/users/testingHelpers/authGenerators/TestingMiscGenerator";
 import fs from "fs/promises";
 import path from "path";
@@ -11,8 +11,8 @@ async function exists(path: string): Promise<boolean> {
 
 let sut: FileStorageProvider;
 
-let input: FileStorageInput;
-let result: FileStorageOutput;
+let input: StorageFileInput;
+let result: FileStorageReference;
 
 const relativeStorageDirPath: string = "testingUploads/user/avatar";
 const absoluteStorageDirPath: string = path.resolve(relativeStorageDirPath);
@@ -27,9 +27,9 @@ describe ("LocalFileStorageProvider Test.", () => {
         const randomSize: number = TestingMiscGenerator.randomNumber(1, 1024 * 1024 * 3)
 
         input = {
-            fileName: TestingMiscGenerator.fileName(),
+            name: TestingMiscGenerator.fileName(),
             content: TestingMiscGenerator.buffer(randomSize)
-        } as FileStorageInput;
+        } as StorageFileInput;
     });
 
     afterEach(async () => {
@@ -39,7 +39,7 @@ describe ("LocalFileStorageProvider Test.", () => {
     });
 
     it ("should throw an error when file name is empty.", async () => {
-        input.fileName = "";
+        input.name = "";
 
         await expect (sut.storage(input)).rejects.toBeInstanceOf(Error);
     });
@@ -47,7 +47,7 @@ describe ("LocalFileStorageProvider Test.", () => {
     it ("should create directory with file if it does not already exists.", async () => {
         await sut.storage(input);
         
-        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.fileName);
+        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.name);
         const fileWasCreated: boolean = await exists(absoluteFilePath);
 
         expect (fileWasCreated).toBeTruthy();
@@ -56,7 +56,7 @@ describe ("LocalFileStorageProvider Test.", () => {
     it ("should create directory with file if it does not already exists.", async () => {
         await sut.storage(input);
         
-        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.fileName);
+        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.name);
         const fileWasCreated: boolean = await exists(absoluteFilePath);
 
         expect (fileWasCreated).toBeTruthy();
@@ -69,7 +69,7 @@ describe ("LocalFileStorageProvider Test.", () => {
         input.content = TestingMiscGenerator.buffer(321);
         await sut.storage(input);
         
-        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.fileName);
+        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.name);
 
         const fileSize: number = (await fs.stat(absoluteFilePath)).size;
 
@@ -79,7 +79,7 @@ describe ("LocalFileStorageProvider Test.", () => {
     it ("should preserve the exact buffer size in file.", async () => {
         result = await sut.storage(input);
         
-        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.fileName);
+        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.name);
         const fileSize: number = (await fs.stat(absoluteFilePath)).size;
 
         expect (fileSize).toBe(input.content.length);
@@ -88,8 +88,8 @@ describe ("LocalFileStorageProvider Test.", () => {
     it ("should return relative path of created file.", async () => {
         result = await sut.storage(input);
         
-        const relativeFilePath: string = path.join(relativeStorageDirPath, input.fileName);
+        const relativeFilePath: string = path.join(relativeStorageDirPath, input.name);
 
-        expect (result).toEqual({ path: relativeFilePath });
+        expect (result).toBe(relativeFilePath);
     });
 });

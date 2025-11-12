@@ -7,6 +7,7 @@ import CreateUserController from "@/users/infrastructure/http/controllers/Create
 import SearchUserController from "@/users/infrastructure/http/controllers/SearchUserController";
 import AuthenticateUserController from "@/users/infrastructure/http/controllers/AuthenticateUserController";
 import AuthorizationMiddleware from "@/users/infrastructure/http/middlewares/AuthorizationMiddleware";
+import UpdateUserAvatarUseCaseImpl from "@/users/application/usecases/updateUserAvatar/UpdateUserAvatarUseCaseImpl";
 import User from "@/users/infrastructure/typeorm/entities/User";
 import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
 
@@ -22,3 +23,5 @@ container.registerSingleton("SearchUserController", SearchUserController);
 container.registerSingleton("AuthenticateUserUseCase", AuthenticateUserUseCaseImpl);
 container.registerSingleton("AuthenticateUserController", AuthenticateUserController);
 container.registerSingleton("AuthenticationMiddleware", AuthorizationMiddleware);
+
+container.registerSingleton("UpdateUserAvatarUseCase", UpdateUserAvatarUseCaseImpl);

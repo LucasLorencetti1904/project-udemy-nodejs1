@@ -1,14 +1,12 @@
-export type FileStorageInput = {
-    fileName: string,
-    fileType: string,
-    fileSize: number,
+export type StorageFileInput = {
+    name: string,
+    type: string,
+    size: number,
     content: Buffer
 };
 
-export type FileStorageOutput =
-    | { path: string, url?: never }
-    | { url: string, path?: never }
+export type FileStorageReference = string
 
 export default interface FileStorageProvider {
-    storage(fileInput: FileStorageInput): Promise<FileStorageOutput>;
+    storage(fileInput: StorageFileInput): Promise<FileStorageReference>;
 }
