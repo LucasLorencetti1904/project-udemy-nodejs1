@@ -11,7 +11,7 @@ let mockUseCase: MockAuthenticateUserUseCase;
 let req: Partial<Request>;
 let res: Partial<Response>;
 
-describe ("CreateUserController Test.", () => {
+describe ("AuthenticateUserController Test.", () => {
     beforeEach (() => {
         mockUseCase = new MockAuthenticateUserUseCase();
         sut = new AuthenticateUserController(mockUseCase);

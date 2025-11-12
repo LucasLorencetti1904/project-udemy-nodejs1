@@ -1,9 +1,11 @@
 import { faker } from "@faker-js/faker";
 import { randomUUID } from "node:crypto";
 import type { AuthenticateUserInput } from "@/users/application/dto/authenticateUserIo";
+import type UpdateUserAvatarInput from "@/users/application/dto/UpdateUserAvatarInput";
 import type CreateUserInput from "@/users/application/dto/CreateUserInput";
 import type { UserInput, UserOutput } from "@/users/application/dto/userIo";
 import type UserModel from "@/users/domain/models/UserModel";
+import UserAvatarImageFile from "@/users/application/dto/UserAvatarImageFile";
 
 export default class TestingUserFactory {
     public static input(props: Partial<UserInput>): UserInput {
@@ -18,6 +20,25 @@ export default class TestingUserFactory {
         return {
             email: props.email ?? faker.internet.email(),
             password: props.password ?? faker.internet.password()     
+        };
+    }
+
+    public static avatarImage(props: Partial<Omit<UserAvatarImageFile, "content">>): UserAvatarImageFile {
+        const buffer = faker.string.binary({ length: props.size ?? faker.number.int({ min: 0, max: 1024 * 1024 * 3 }) });
+        const fileBuffer = Buffer.from(buffer, "binary");
+
+        return {
+            name: props.name ?? faker.system.fileName(),
+            type: props.type ?? faker.system.mimeType(),
+            size: fileBuffer.length,
+            content: fileBuffer,
+        };
+    }
+
+    public static updateAvatarInput(props: Partial<UpdateUserAvatarInput>): UpdateUserAvatarInput {
+        return {
+            id: props.id ?? randomUUID(),
+            avatarImage: this.avatarImage(props.avatarImage)
         };
     }
 

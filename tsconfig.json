@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "nodenext",
 
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals", "node", "express", "multer"],
 
     "moduleResolution": "nodenext",
 
