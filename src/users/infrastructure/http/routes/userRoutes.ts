@@ -2,14 +2,18 @@ import { container } from "tsyringe";
 import { Router } from "express";
 import CreateUserController from "@/users/infrastructure/http/controllers/CreateUserController";
 import SearchUserController from "@/users/infrastructure/http/controllers/SearchUserController";
+import UpdateUserAvatarController from "@/users/infrastructure/http/controllers/UpdateUserAvatarController";
 import AuthorizationMiddleware from "@/users/infrastructure/http/middlewares/AuthorizationMiddleware";
+import MulterAvatarUploadMiddleware from "@/users/infrastructure/http/middlewares/MulterAvatarUploadMiddleware";
 
 const userRouter: Router = Router();
 
 const authorizationMiddleware: AuthorizationMiddleware = container.resolve(AuthorizationMiddleware);
+const multerAvatarUploadMiddleware: MulterAvatarUploadMiddleware = container.resolve(MulterAvatarUploadMiddleware);
 
 const createUserController: CreateUserController = container.resolve(CreateUserController);
 const searchUserController: SearchUserController = container.resolve(SearchUserController);
+const updateUserAvatar: UpdateUserAvatarController = container.resolve(UpdateUserAvatarController);
 
 /**
  * @swagger
@@ -88,8 +92,6 @@ const searchUserController: SearchUserController = container.resolve(SearchUserC
  */
 userRouter.post("/", createUserController.handle);
 
-userRouter.use(authorizationMiddleware.handle);
-
 /**
  * @swagger
  * /users:
@@ -135,6 +137,8 @@ userRouter.use(authorizationMiddleware.handle);
  *             schema:
  *               $ref: '#/components/schemas/UserListResponse'
  */
-userRouter.get("/", searchUserController.handle);
+userRouter.get("/", authorizationMiddleware.handle, searchUserController.handle);
+
+userRouter.patch("/:id/avatar", authorizationMiddleware.handle, multerAvatarUploadMiddleware.handle, updateUserAvatar.handle );
 
 export default userRouter;

@@ -2,7 +2,6 @@ import type UserRepository from "@/users/domain/repositories/UserRepository";
 import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
 import type AuthenticationProvider from "@/common/domain/providers/AuthenticationProvider";
 import type FileStorageProvider from "@/common/domain/providers/FileStorageProvider";
-import { FileStorageInput, FileStorageOutput } from "@/common/domain/providers/FileStorageProvider";
 
 export class MockUserRepository implements UserRepository {
     public findById = vi.fn();

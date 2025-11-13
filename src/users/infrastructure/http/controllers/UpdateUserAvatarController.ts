@@ -11,7 +11,7 @@ import ApplicationError from "@/common/domain/errors/ApplicationError";
 import UserAvatarImageFile from "@/users/application/dto/UserAvatarImageFile";
 
 @injectable()
-export default class UpdaUserAvatarController extends Controller {
+export default class UpdateUserAvatarController extends Controller {
     constructor (
         @inject("UpdateUserAvatarUseCase") 
         private readonly useCase: UpdateUserAvatarUseCase
