@@ -1,6 +1,6 @@
 import type FileStorageProvider from "@/common/domain/providers/FileStorageProvider";
 import LocalFileStorageProvider from "@/common/infrastructure/providers/fileStorageProviders/LocalFileStorageProvider";
-import type { StorageFileInput, FileStorageReference } from "@/common/domain/providers/FileStorageProvider";
+import type { StorageFileInput, FileName } from "@/common/domain/providers/FileStorageProvider";
 import TestingMiscGenerator from "test/users/testingHelpers/authGenerators/TestingMiscGenerator";
 import fs from "fs/promises";
 import path from "path";
@@ -12,17 +12,15 @@ async function exists(path: string): Promise<boolean> {
 let sut: FileStorageProvider;
 
 let input: StorageFileInput;
-let result: FileStorageReference;
+let result: FileName;
 
-const relativeStorageDirPath: string = "testingUploads/user/avatar";
-const absoluteStorageDirPath: string = path.resolve(relativeStorageDirPath);
+const storageDirPath: string = path.resolve("testingUploads/user/avatar");
 
 describe ("LocalFileStorageProvider Test.", () => {
     beforeEach (async () => {
         sut = new LocalFileStorageProvider();
 
-        sut["relativeStorageDirPath"] = relativeStorageDirPath;
-        sut["absoluteStorageDirPath"] = absoluteStorageDirPath;
+        sut["storageDirPath"] = storageDirPath;
 
         const randomSize: number = TestingMiscGenerator.randomNumber(1, 1024 * 1024 * 3)
 
@@ -33,8 +31,8 @@ describe ("LocalFileStorageProvider Test.", () => {
     });
 
     afterEach(async () => {
-        if ( await exists(absoluteStorageDirPath)) {
-            await fs.rm(absoluteStorageDirPath, { recursive: true });
+        if ( await exists(storageDirPath)) {
+            await fs.rm(storageDirPath, { recursive: true });
         }
     });
 
@@ -47,17 +45,8 @@ describe ("LocalFileStorageProvider Test.", () => {
     it ("should create directory with file if it does not already exists.", async () => {
         await sut.storage(input);
         
-        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.name);
-        const fileWasCreated: boolean = await exists(absoluteFilePath);
-
-        expect (fileWasCreated).toBeTruthy();
-    });
-
-    it ("should create directory with file if it does not already exists.", async () => {
-        await sut.storage(input);
-        
-        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.name);
-        const fileWasCreated: boolean = await exists(absoluteFilePath);
+        const filePath: string = path.join(storageDirPath, input.name);
+        const fileWasCreated: boolean = await exists(filePath);
 
         expect (fileWasCreated).toBeTruthy();
     });
@@ -69,18 +58,18 @@ describe ("LocalFileStorageProvider Test.", () => {
         input.content = TestingMiscGenerator.buffer(321);
         await sut.storage(input);
         
-        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.name);
+        const filePath: string = path.join(storageDirPath, input.name);
 
-        const fileSize: number = (await fs.stat(absoluteFilePath)).size;
+        const fileSize: number = (await fs.stat(filePath)).size;
 
         expect (fileSize).toBe(321);
     });
 
     it ("should preserve the exact buffer size in file.", async () => {
-        result = await sut.storage(input);
+        await sut.storage(input);
         
-        const absoluteFilePath: string = path.join(absoluteStorageDirPath, input.name);
-        const fileSize: number = (await fs.stat(absoluteFilePath)).size;
+        const filePath: string = path.join(storageDirPath, input.name);
+        const fileSize: number = (await fs.stat(filePath)).size;
 
         expect (fileSize).toBe(input.content.length);
     });
@@ -88,8 +77,6 @@ describe ("LocalFileStorageProvider Test.", () => {
     it ("should return relative path of created file.", async () => {
         result = await sut.storage(input);
         
-        const relativeFilePath: string = path.join(relativeStorageDirPath, input.name);
-
-        expect (result).toBe(relativeFilePath);
+        expect (result).toBe(input.name);
     });
 });

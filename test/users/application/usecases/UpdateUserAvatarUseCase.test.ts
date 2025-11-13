@@ -15,7 +15,7 @@ let mockFileStorageProvider: MockFileStorageProvider;
 let input: UpdateUserAvatarInput;
 
 let userInstance: UserModel;
-let avatarImagePath: string;
+let avatarImageFileName: string;
 let updatedUserInstance: UserModel;
 
 describe ("UpdateUserAvatarUseCaseImpl Test.", () => {
@@ -85,17 +85,17 @@ describe ("UpdateUserAvatarUseCaseImpl Test.", () => {
 
     it (`should throw a InternalError when method 'update' of repository throws a unexpected error.`, async () => {
         userInstance = TestingUserFactory.model({});
-        avatarImagePath = `update/user/avatar/${input.avatarImage.name}`;
+        avatarImageFileName = `update/user/avatar/${input.avatarImage.name}`;
 
         mockRepository.findById.mockResolvedValue(userInstance);
-        mockFileStorageProvider.storage.mockResolvedValue(avatarImagePath);
+        mockFileStorageProvider.storage.mockResolvedValue(avatarImageFileName);
         mockRepository.update.mockRejectedValue(new Error("Example"));
 
         await expect (sut.execute(input)).rejects.toBeInstanceOf(InternalError);
 
         expect (mockRepository.findById).toHaveBeenCalledExactlyOnceWith(input.id);
         expect (mockFileStorageProvider.storage).toHaveBeenCalledExactlyOnceWith(input.avatarImage);
-        expect (mockRepository.update).toHaveBeenCalledExactlyOnceWith({ ...userInstance, avatar: avatarImagePath });
+        expect (mockRepository.update).toHaveBeenCalledExactlyOnceWith({ ...userInstance, avatar: avatarImageFileName });
     });
 
     ["image/jpeg", "image/jpg", "image/png", "image/webp"].forEach((exampleOfFileType) => {
@@ -104,11 +104,11 @@ describe ("UpdateUserAvatarUseCaseImpl Test.", () => {
             input.avatarImage.size = TestingMiscGenerator.randomNumber(1, 1024 * 1024 * 3);
 
             userInstance = TestingUserFactory.model({});
-            avatarImagePath = `update/user/avatar/${input.avatarImage.name}`;
-            updatedUserInstance = { ...userInstance, avatar: avatarImagePath };
+            avatarImageFileName = input.avatarImage.name;
+            updatedUserInstance = { ...userInstance, avatar: avatarImageFileName };
     
             mockRepository.findById.mockResolvedValue(userInstance);
-            mockFileStorageProvider.storage.mockResolvedValue(avatarImagePath);
+            mockFileStorageProvider.storage.mockResolvedValue(avatarImageFileName);
             mockRepository.update.mockResolvedValue(updatedUserInstance);
     
             const { password, ...expected } = updatedUserInstance; 

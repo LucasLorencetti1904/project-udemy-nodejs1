@@ -5,8 +5,8 @@ export type StorageFileInput = {
     content: Buffer
 };
 
-export type FileStorageReference = string
+export type FileName = string
 
 export default interface FileStorageProvider {
-    storage(fileInput: StorageFileInput): Promise<FileStorageReference>;
+    storage(fileInput: StorageFileInput): Promise<FileName>;
 }

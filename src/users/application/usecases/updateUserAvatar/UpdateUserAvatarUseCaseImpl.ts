@@ -37,9 +37,9 @@ export default class UpdateUserAvatarUseCaseImpl extends UserUseCase implements 
                 throw new NotFoundError(`User not found by ID: ${input.id}`);
             }
 
-            const avatarImageReference: string = await this.storageProvider.storage(input.avatarImage);
+            const storedFileName: string = await this.storageProvider.storage(input.avatarImage);
 
-            const updatedUser: UserModel = await this.repo.update({ ...user, avatar: avatarImageReference });
+            const updatedUser: UserModel = await this.repo.update({ ...user, avatar: storedFileName });
 
             return this.mapToUserOutput(updatedUser);
         }
