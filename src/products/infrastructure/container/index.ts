@@ -5,11 +5,11 @@ import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProduc
 import UpdateProductUseCaseImpl from "@/products/application/usecases/updateProduct/UpdateProductUseCaseImpl";
 import DeleteProductByIdUseCaseImpl from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCaseImpl";
 import SearchProductUseCaseImpl from "@/products/application/usecases/searchProduct/SeachProductUseCaseImpl";
-import CreateProductController from "@/products/infrastructure/http/controllers/CreateProductController";
-import GetProductByIdController from "@/products/infrastructure/http/controllers/GetProductByIdController";
-import UpdateProductController from "@/products/infrastructure/http/controllers/UpdateProductController";
-import DeleteProductByIdController from "@/products/infrastructure/http/controllers/DeleteProductByIdController";
-import SearchProductController from "@/products/infrastructure/http/controllers/SearchProductController";
+import CreateProductController from "@/products/adapters/controllers/CreateProductController";
+import GetProductByIdController from "@/products/adapters/controllers/GetProductByIdController";
+import UpdateProductController from "@/products/adapters/controllers/UpdateProductController";
+import DeleteProductByIdController from "@/products/adapters/controllers/DeleteProductByIdController";
+import SearchProductController from "@/products/adapters/controllers/SearchProductController";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
 
