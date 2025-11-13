@@ -5,6 +5,16 @@ export default class TestingMiscGenerator {
         return faker.internet.jwt();
     }
 
+    public static partialMulterFile(props: Partial<Omit<Express.Multer.File, "buffer">>): Partial<Express.Multer.File> {
+        const fileBuffer: Buffer = this.buffer(props.size ?? 10);
+        return {
+            originalname: props.originalname ?? faker.system.fileName(),
+            mimetype: props.mimetype ?? faker.system.mimeType(),
+            size: fileBuffer.length,
+            buffer: fileBuffer,
+        };
+    }
+
     public static buffer(len: number): Buffer {
         const bytes: Uint8Array = new Uint8Array(len);
         for (let i = 0; i < len; i++) {
