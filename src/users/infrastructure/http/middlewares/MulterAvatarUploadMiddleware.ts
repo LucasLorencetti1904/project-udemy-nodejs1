@@ -5,8 +5,10 @@ import { BadRequestError } from "@/common/domain/errors/httpErrors";
 
 @injectable()
 export default class MulterAvatarUploadMiddleware {
-    public handle(): RequestHandler {
-        return multer({
+    public readonly handle: RequestHandler;
+
+    constructor() {
+        this.handle = multer({
             storage: memoryStorage(),
             limits: {
                 fieldSize: 1024 * 1024 * 3
@@ -15,10 +17,9 @@ export default class MulterAvatarUploadMiddleware {
                 const allowedTypes: string[] = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
                 if (!allowedTypes.includes(file.mimetype)) {
-                    callback(new BadRequestError("Invalid file type. Only JPEG, JPG, PNG and WEBP are allowed."));
+                    return callback(new BadRequestError("Invalid file type. Only JPEG, JPG, PNG and WEBP are allowed."));
                 }
-
-                callback(null, true);
+                return callback(null, true);
             }
         }).single("avatar");
     };

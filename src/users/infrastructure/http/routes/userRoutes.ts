@@ -139,6 +139,41 @@ userRouter.post("/", createUserController.handle);
  */
 userRouter.get("/", authorizationMiddleware.handle, searchUserController.handle);
 
+/**
+ * @swagger
+ * /users/{id}/avatar:
+ *   patch:
+ *     summary: Upload an image for a user
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: The ID of the user whose avatar will be updated
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               avatar:
+ *                 type: string
+ *                 format: binary
+ *                 description: The image file to upload
+ *     responses:
+ *       200:
+ *         description: The image was successfully uploaded
+ *       400:
+ *         description: Bad request (invalid file type or data)
+ *       404:
+ *         description: The user was not found
+ *       500:
+ *         description: Internal server error
+ */
 userRouter.patch("/:id/avatar", authorizationMiddleware.handle, multerAvatarUploadMiddleware.handle, updateUserAvatar.handle );
 
 export default userRouter;
