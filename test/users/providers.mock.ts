@@ -1,4 +1,4 @@
-import type UserRepository from "@/users/domain/repositories/UserRepository";
+import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
 import type AuthenticationProvider from "@/common/domain/providers/AuthenticationProvider";
 import type FileStorageProvider from "@/common/domain/providers/FileStorageProvider";

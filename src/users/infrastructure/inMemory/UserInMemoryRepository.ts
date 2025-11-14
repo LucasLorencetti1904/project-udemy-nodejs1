@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import InMemoryRepository from "@/common/domain/repositories/InMemoryRepository";
-import type UserRepository from "@/users/domain/repositories/UserRepository";
+import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type UserModel from "@/users/domain/models/UserModel";
 
 @injectable()

@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import UserUseCase from "@/users/application/usecases/default/UserUseCase";
 import type CreateUserUseCase from "@/users/application/usecases/createUser/CreateUserUseCase";
-import type UserRepository from "@/users/domain/repositories/UserRepository";
+import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
 import type UserModel from "@/users/domain/models/UserModel";
 import type CreateUserInput from "@/users/application/dto/CreateUserInput";

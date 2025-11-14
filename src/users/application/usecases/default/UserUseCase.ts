@@ -1,5 +1,5 @@
 import BaseUseCase from "@/common/application/usecases/BaseUseCase";
-import type UserRepository from "@/users/domain/repositories/UserRepository";
+import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type UserModel from "@/users/domain/models/UserModel";
 import type { UserOutput } from "@/users/application/dto/userIo";
 

@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import type UpdateUserAvatarUseCase from "@/users/application/usecases/updateUserAvatar/UpdateUserAvatarUseCase";
 import UserUseCase from "@/users/application/usecases/default/UserUseCase";
-import type UserRepository from "@/users/domain/repositories/UserRepository";
+import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type FileStorageProvider from "@/common/domain/providers/FileStorageProvider";
 import type UserModel from "@/users/domain/models/UserModel";
 import type UpdateUserAvatarInput from "@/users/application/dto/UpdateUserAvatarInput";

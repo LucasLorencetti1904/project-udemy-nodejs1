@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepository";
-import type UserRepository from "@/users/domain/repositories/UserRepository"
+import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository"
 import type { Repository } from "typeorm";
 import type User from "@/users/infrastructure/typeorm/entities/User";
 import type UserModel from "@/users/domain/models/UserModel";
