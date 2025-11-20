@@ -1,7 +1,7 @@
 import CreateProductController from "@/products/adapters/controllers/CreateProductController";
 import { MockCreateProductUseCase } from "./ProductUseCase.mock";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
+import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
 import { Request, Response } from "express";
 import { ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 

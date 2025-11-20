@@ -1,8 +1,8 @@
 import CreateUserUseCaseImpl from "@/users/application/usecases/createUser/CreateUserUseCaseImpl";
-import { MockUserRepository, MockStringHashProvider } from "../../providers.mock";
+import { MockUserRepository, MockStringHashProvider } from "../../UserUseCase.mock";
 import type CreateUserInput from "@/users/application/dto/CreateUserInput";
 import type { UserOutput } from "@/users/application/dto/userIo";
-import TestingUserFactory from "test/users/testingHelpers/TestingUserFactory";
+import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
 import { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 
 let sut: CreateUserUseCaseImpl;

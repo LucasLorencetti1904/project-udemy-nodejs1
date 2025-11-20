@@ -1,9 +1,9 @@
 import UpdateUserAvatarUseCaseImpl from "@/users/application/usecases/updateUserAvatar/UpdateUserAvatarUseCaseImpl";
-import { MockUserRepository, MockFileStorageProvider } from "../../providers.mock";
+import { MockUserRepository, MockFileStorageProvider } from "../../UserUseCase.mock";
 import type UserModel from "@/users/domain/models/UserModel";
 import type UpdateUserAvatarInput from "@/users/application/dto/UpdateUserAvatarInput";
-import TestingUserFactory from "test/users/testingHelpers/TestingUserFactory";
-import TestingMiscGenerator from "test/users/testingHelpers/authGenerators/TestingMiscGenerator";
+import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
+import TestingMiscGenerator from "test/testingTools/testingFactories/TestingMiscGenerator";
 import { BadRequestError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import { randomUUID } from "crypto";
 

@@ -1,9 +1,9 @@
 import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProductById/GetProductByIdUseCaseImpl";
-import MockProductRepository from "./ProductRepository.mock";
+import MockProductRepository from "./ProductUseCase.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type GetProductByIdProductInput from "@/products/application/dto/GetProductByIdInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
+import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
 import { randomUUID } from "node:crypto";
 import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 

@@ -1,5 +1,10 @@
-import type Repository from "@/common/domain/repositories/Repository"
-import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
+import { injectable } from "tsyringe";
+import type RepositoryProvider from "@/common/domain/repositories/RepositoryProvider";
+import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
+import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type SearchQueryFormatter from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatter";
+import type RepositorySearcher from "@/common/domain/search/repositorySearcher/RepositorySearcher";
+import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
 import { randomUUID } from "node:crypto";
 
 type ModelProps = {
@@ -11,111 +16,85 @@ type CreateDataProps = {
     [key: string]: any;
 };
 
-export default abstract class InMemoryRepository<Model extends ModelProps>
-    implements Repository<Model, CreateDataProps> {
-        public items: Model[] = [];
-        public sortableFields: string[] = [];
+@injectable()
+export default class InMemoryRepository<TModel extends ModelProps> implements RepositoryProvider<TModel, CreateDataProps> {
+    private items: TModel[] = [];
 
-        public async findById(id: string): Promise<Model | null> {
-            return this._get(id);
+    constructor(
+        private readonly searchQueryFormatter: SearchQueryFormatter<TModel>,
+        private readonly searcher: RepositorySearcher<TModel>
+    ) {}
+
+    public async findById(id: string): Promise<TModel | null> {
+        return this._get(id);
+    }
+
+    public async findManyBy(field: keyof TModel, value: unknown): Promise<TModel[]> {
+        return this.items.filter((item) => item[field] === value);
+    }
+
+    public async findOneBy(field: keyof TModel, value: unknown): Promise<TModel | null> {
+        return this.items.find((item) => item[field] === value);
+    }    
+
+    public async findManyWhere(callback: (item: TModel) => boolean): Promise<TModel[]> {
+        return this.items.filter(callback);
+    }
+
+    public async create(data: CreateDataProps): Promise<TModel> {
+        const model: TModel = {
+            id: randomUUID(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            ...data
+        } as unknown as TModel;
+
+        this.items.push(model);
+
+        return model;
+    }
+
+    public async update(model: TModel): Promise<TModel | null> {
+        const index: number = await this.checkAndReturnIndexOf(model.id);
+
+        if (index < 0) {
+            return null;
         }
 
-        public create(data: CreateDataProps): Model {
-            return {
-                id: randomUUID(),
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                ...data
-            } as unknown as Model;
+        this.items[index] = model;
+        return this.items[index];
+    }
+
+    public async delete(id: string): Promise<TModel | null> {
+        const index: number = await this.checkAndReturnIndexOf(id);
+
+        if (index < 0) {
+            return null;
         }
 
-        public async insert(model: Model): Promise<Model> {
-            this.items.push(model);
-            return model;
+        const deleted: TModel = this.items[index];
+        this.items.splice(index, 1);
+        return deleted;
+    }
+
+    public async search(query: RepositorySearchinput<TModel>): Promise<RepositorySearchResult<TModel>> {
+        const dsl: RepositorySearchDSL<TModel> = this.searchQueryFormatter.formatInput(query);
+        return await this.searcher.search(this.items, dsl);
+    }
+
+    protected async _get(id: string): Promise<TModel | null> {
+        const result: TModel | undefined = this.items.find(item => item.id === id);
+
+        if (!result) {
+            return null;
         }
 
-        public async update(model: Model): Promise<Model | null> {
-            const index: number = await this.checkAndReturnIndexOf(model.id);
+        return result;
+    }
 
-            if (index < 0) {
-                return null;
-            }
+    protected async checkAndReturnIndexOf(id: string): Promise<number> {
+        await this._get(id);
 
-            this.items[index] = model;
-            return this.items[index];
-        }
-
-        public async delete(id: string): Promise<Model | null> {
-            const index: number = await this.checkAndReturnIndexOf(id);
-
-            if (index < 0) {
-                return null;
-            }
-
-            const deleted: Model = this.items[index];
-            this.items.splice(index, 1);
-            return deleted;
-        }
-
-        public async search(config: RepositorySearchInput<Model>): Promise<RepositorySearchOutput<Model>> {
-            const page: number = config.page ?? 1;
-            const perPage: number = config.perPage ?? 15;
-            const sort: keyof Model | null = config.sort ?? null;
-            const sortDir: "asc" | "desc" | null = config.sortDir ?? null;
-            const filter: string | null = config.filter ?? null;
-
-            const filteredItems: Model[] = await this.applyFilter(this.items, filter);
-            const orderedItems: Model[] = await this.applySort(filteredItems, sort, sortDir);
-            const paginatedItems: Model[] = await this.applyPaginate(orderedItems, page, perPage);
-
-            return {
-                items: paginatedItems,
-                filter,
-                total: filteredItems.length,
-                currentPage: page,
-                perPage,
-                sort,
-                sortDir
-            };
-        }
-
-        protected abstract applyFilter(items: Model[], filter?: string): Promise<Model[]>
-
-        protected async applySort(items: Model[], sort?: keyof Model, sortDir?: "asc" | "desc"): Promise<Model[]> {
-            if (!sort || !this.sortableFields.includes(sort as string)) {
-                return items;
-            }
-
-            return [...items].sort((a, b) => {
-                if (a[sort] < b[sort]) {
-                    return sortDir === "asc" ? -1 : 1;
-                }
-
-                if (a[sort] > b[sort]) {
-                    return sortDir === "asc" ? 1 : -1;
-                }
-            });
-        }
-
-        protected async applyPaginate(items: Model[], page: number, perPage: number): Promise<Model[]> {
-            const start: number = (page - 1) * perPage;
-            const end: number = start + perPage;
-            return items.slice(start, end);
-        }
-
-        protected async _get(id: string): Promise<Model | null> {
-            const result: Model | undefined = this.items.find(item => item.id === id);
-
-            if (!result) {
-                return null;
-            }
-
-            return result;
-        }
-
-        protected async checkAndReturnIndexOf(id: string): Promise<number> {
-            await this._get(id);
-
-            return this.items.findIndex(item => item.id === id);
-        }
+        return this.items.findIndex(item => item.id === id);
+    }
 };

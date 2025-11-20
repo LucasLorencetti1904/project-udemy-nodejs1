@@ -1,7 +1,7 @@
 import GetProductByIdController from "@/products/adapters/controllers/GetProductByIdController";
 import { MockGetProductByIdUseCase } from "./ProductUseCase.mock";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
+import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
 import { Request, Response } from "express";
 import { randomUUID } from "node:crypto";
 import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";

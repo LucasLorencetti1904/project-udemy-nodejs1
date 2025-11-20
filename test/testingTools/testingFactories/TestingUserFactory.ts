@@ -76,7 +76,7 @@ export default class TestingUserFactory {
 
     public static output(props: Partial<UserOutput>): UserOutput {
         return {
-            id: randomUUID(),
+            id: props.id ?? randomUUID(),
             name: props.name ?? faker.person.fullName(),
             email: props.email ?? faker.internet.email(),
             createdAt: props.createdAt ?? new Date(),

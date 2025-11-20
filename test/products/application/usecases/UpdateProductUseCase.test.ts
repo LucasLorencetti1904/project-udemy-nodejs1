@@ -1,10 +1,10 @@
 import UpdateProductUseCaseImpl from "@/products/application/usecases/updateProduct/UpdateProductUseCaseImpl";
-import MockProductRepository from "./ProductRepository.mock";
+import MockProductRepository from "./ProductUseCase.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
+import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
 import { randomUUID } from "node:crypto";
 import { BadRequestError, ConflictError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 

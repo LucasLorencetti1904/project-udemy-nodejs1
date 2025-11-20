@@ -5,7 +5,7 @@ import type UserRepository from "@/users/domain/repositories/userRepository/User
 import type UserModel from "@/users/domain/models/UserModel";
 import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
 import type { UserOutput } from "@/users/application/dto/userIo";
-import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
+import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
 
 @injectable()
 export default class SearchUserUseCaseImpl extends UserUseCase implements SearchUserUseCase {
@@ -16,7 +16,7 @@ export default class SearchUserUseCaseImpl extends UserUseCase implements Search
 
     public async execute(input: SearchUserInput): Promise<SearchUserOutput> {
         try {
-            const output: RepositorySearchOutput<UserModel> = await this.repo.search(input);
+            const output: RepositorySearchResult<UserModel> = await this.repo.search(input);
             return this.toUseCaseOutput(output);
         }
         catch (e: unknown) {
@@ -24,13 +24,15 @@ export default class SearchUserUseCaseImpl extends UserUseCase implements Search
         }
     }
 
-    private toUseCaseOutput(repoOutput: RepositorySearchOutput<UserModel>): SearchUserOutput {
+    private toUseCaseOutput(repoOutput: RepositorySearchResult<UserModel>): SearchUserOutput {
         return {
             items: this.mapSearchResultUsersToOutput(repoOutput.items),
             total: repoOutput.total,
-            perPage: repoOutput.perPage,
-            lastPage: this.calcLastPage(repoOutput.total, repoOutput.perPage),
-            currentPage: repoOutput.currentPage
+            pagination: {
+                currentPage: repoOutput.pagination.currentPage,
+                itemsPerPage: repoOutput.pagination.itemsPerPage,
+                lastPage: this.calcLastPage(repoOutput.total, repoOutput.pagination.itemsPerPage)
+            }
         };
     }
 

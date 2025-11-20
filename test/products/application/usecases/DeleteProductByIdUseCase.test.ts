@@ -1,10 +1,10 @@
 import DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
 import DeleteProductByIdUseCaseImpl from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCaseImpl";
-import MockProductRepository from "./ProductRepository.mock";
+import MockProductRepository from "./ProductUseCase.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type DeleteProductByIdInput from "@/products/application/dto/DeleteProductByIdInput";
 import type ProductModel from "@/products/domain/models/ProductModel";
-import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
+import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
 import { randomUUID } from "node:crypto";
 import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 

@@ -22,10 +22,7 @@ export default class CreateProductUseCaseImpl extends ProductUseCase implements 
         try {
             await this.checkIfNameAlreadyExists(input.name);
 
-            const product: ProductModel = this.repo.create(input);
-            await this.repo.insert(product);
-
-            return product;
+            return await this.repo.create(input);
         }
         catch (e: unknown) {
             this.handleApplicationErrors(e);

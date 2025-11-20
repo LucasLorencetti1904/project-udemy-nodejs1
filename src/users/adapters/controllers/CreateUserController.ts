@@ -27,13 +27,13 @@ export default class CreateUserController extends Controller {
         }
     }
 
-    protected validateRequest(data: unknown): CreateUserInput {
+    protected validateRequest(data: CreateUserInput): CreateUserInput {
         const schema: ZodType<CreateUserInput> = z.object({
             name: z.string().nonempty(),
             email: z.string().email(),
             password: z.string().nonempty()
         }).strict();
 
-        return ZodSchemaValidator.handleDataWithSchema({ data, schema });
+        return ZodSchemaValidator.validateDataWithSchema({ data, schema });
     }   
 }

@@ -1,6 +1,26 @@
 import { faker } from "@faker-js/faker";
+import type TestModel from "test/testingTools/testingTypes/TestModel";
+import { randomUUID } from "node:crypto";
+import TestProps from "test/testingTools/testingTypes/TestProps";
 
 export default class TestingMiscGenerator {
+    public static testingProps(props: Partial<TestProps>): TestProps {
+        return {
+            modelString: props.modelString ?? faker.string.alpha(),
+            modelNumber: props.modelNumber ?? faker.number.int(),
+            modelBoolean: props.modelBoolean ?? faker.datatype.boolean(),
+        };
+    }
+
+    public static testingModel(props: Partial<TestModel>): TestModel {
+        return {
+            id: props.id ?? randomUUID(),
+            ...this.testingProps(props),
+            createdAt: props.createdAt ?? new Date(),
+            updatedAt: props.updatedAt ?? new Date()            
+        };
+    }
+
     public static jwt(): string {
         return faker.internet.jwt();
     }

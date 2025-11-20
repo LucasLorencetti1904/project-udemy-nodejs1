@@ -26,9 +26,9 @@ export default class DeleteProductByIdController extends Controller {
         }
     }
 
-    protected validateRequest(data: unknown): DeleteProductByIdInput {
+    protected validateRequest(data: DeleteProductByIdInput): DeleteProductByIdInput {
         const idSchema = z.string().uuid();
 
-        return ZodSchemaValidator.handleDataWithSchema({ data, schema: idSchema });
+        return ZodSchemaValidator.validateDataWithSchema({ data, schema: idSchema });
     }   
 }

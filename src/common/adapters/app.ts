@@ -2,7 +2,7 @@ import "reflect-metadata";
 import "@/common/infrastructure/container";
 import express from "express";
 import cors from "cors";
-import routes from "@/common/adapters/routes";
+import routes from "@/common/adapters/routes/routes";
 import ErrorHandler from "@/common/adapters/middlewares/ErrorMiddleware";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";

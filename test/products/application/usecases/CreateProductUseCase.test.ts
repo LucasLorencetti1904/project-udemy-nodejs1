@@ -1,9 +1,9 @@
 import CreateProductUseCaseImpl from "@/products/application/usecases/createProduct/CreateProductUseCaseImpl";
-import MockProductRepository from "./ProductRepository.mock";
+import MockProductRepository from "./ProductUseCase.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type CreateProductInput from "@/products/application/dto/CreateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
+import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
 import { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 
 let sut: CreateProductUseCaseImpl;
@@ -28,7 +28,7 @@ describe ("CreateProductUseCaseImpl Test.", () => {
             productInputData = TestingProductFactory.createInput({ [field]: value });
             await expect (sut.execute(productInputData)).rejects.toBeInstanceOf(BadRequestError);
             
-            ["findByName", "create", "insert"].forEach((method) => {
+            ["findByName", "insert"].forEach((method) => {
                 expect (mockRepository[method]).not.toHaveBeenCalled();
             });
         });
@@ -41,13 +41,11 @@ describe ("CreateProductUseCaseImpl Test.", () => {
         
         expect (mockRepository.findByName).toHaveBeenCalledExactlyOnceWith(productInputData.name);
         expect (mockRepository.create).not.toHaveBeenCalled();
-        expect (mockRepository.insert).not.toHaveBeenCalled();
     });
 
     [
         { method: "findByName", mockResult: vi.fn().mockRejectedValue(new Error()) },
-        { method: "create", mockResult: vi.fn(() => { throw new Error() }) },
-        { method: "insert", mockResult: vi.fn().mockRejectedValue(new Error()) }
+        { method: "create", mockResult: vi.fn().mockRejectedValue(new Error()) }
     ]
     .forEach(({ method, mockResult }) => {
         it (`should throw an InternalError when method '${method}' of repository throws an unexpected error.`, async () => {
@@ -74,7 +72,6 @@ describe ("CreateProductUseCaseImpl Test.", () => {
             [
                 { method: "findByName", expectedValue: productInputData.name },
                 { method: "create", expectedValue: productInputData },
-                { method: "insert", expectedValue: productOutputData }
             ]
             .forEach(({method, expectedValue}) => {
                 expect (mockRepository[method as keyof MockProductRepository])

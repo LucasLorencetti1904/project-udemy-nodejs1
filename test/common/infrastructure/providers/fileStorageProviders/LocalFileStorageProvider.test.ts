@@ -1,7 +1,7 @@
 import type FileStorageProvider from "@/common/domain/providers/FileStorageProvider";
 import LocalFileStorageProvider from "@/common/infrastructure/providers/fileStorageProviders/LocalFileStorageProvider";
 import type { StorageFileInput, FileName } from "@/common/domain/providers/FileStorageProvider";
-import TestingMiscGenerator from "test/users/testingHelpers/authGenerators/TestingMiscGenerator";
+import TestingMiscGenerator from "test/testingTools/testingFactories/TestingMiscGenerator";
 import fs from "fs/promises";
 import path from "path";
 

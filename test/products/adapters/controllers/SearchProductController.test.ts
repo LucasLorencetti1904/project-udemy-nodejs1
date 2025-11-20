@@ -1,7 +1,8 @@
 import SearchProductController from "@/products/adapters/controllers/SearchProductController";
 import { MockSearchProductUseCase } from "./ProductUseCase.mock";
-import { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
-import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
+import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProductIo";
+import type SearchProductRequest from "@/products/adapters/dto/SearchProductRequest";
+import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
 import { Request, Response } from "express";
 import { InternalError } from "@/common/domain/errors/httpErrors";
 
@@ -26,17 +27,18 @@ describe ("SearchProductController Test.", () => {
         };
     });
 
-    const invalidSearchInput: SearchProductInput & Record<"unexpectedField", any> = {
-        page: "page" as any,
-        perPage: new Map() as any,
-        sort: 12 as any,
-        sortDir: true as any,
-        filter: -579 as any,
+    const invalidSearchInput: SearchProductRequest & Record<"unexpectedField", any> = {
+        pageNumber: "page" as any,
+        itemsPerPage: new Map() as any,
+        sortField: true as any,
+        sortDirection: 12 as any,
+        filterField: -579 as any,
+        filterValue: false as any,
         unexpectedField: "Unexpected Value"
     };
 
     for (let field in invalidSearchInput) {
-        it (`should return a response error with code 400 when search input is invalid.`, async () => {
+        it (`should return a response error with code 400 when search request '${field}' is invalid.`, async () => {
             req.query = { [field]: invalidSearchInput[field] };
 
             await sut.handle(req as Request, res as Response);
@@ -59,55 +61,67 @@ describe ("SearchProductController Test.", () => {
     });
 
     type Case = {
-        input: Partial<Record<keyof SearchProductInput, string>>,
+        request: Partial<Record<keyof SearchProductRequest, string>>,
+        expectedCall: SearchProductInput,
         output: SearchProductOutput
-        expectedCall: SearchProductInput 
     };
 
     const cases: Case[] = [
         {
-            input: {},
-            output: {     
-                currentPage: 1,
-                perPage: 15,
-                lastPage: 2,
+            request: {},
+            expectedCall: {},
+            output: {  
+                pagination: {
+                    currentPage: 1,
+                    itemsPerPage: 15,
+                    lastPage: 2,
+                },
                 total: 28,
                 items: Array(15).fill(TestingProductFactory.output({}))
-            },
-            expectedCall: {}
+            }
         },
         {
-            input: {
-                page: "3",
-                perPage: "12",
-                sort: "name",
-                sortDir: "asc",
-                filter: "example"
-            },
-            output: {     
-                currentPage: 3,
-                perPage: 12,
-                lastPage: 4,
-                total: 45,
-                items: Array(12).fill(TestingProductFactory.output({}))
+            request: {
+                pageNumber: "3",
+                itemsPerPage: "12",
+                sortField: "name",
+                sortDirection: "asc",
+                filterField: "name",
+                filterValue: "example"
             },
             expectedCall: {
-                page: 3,
-                perPage: 12,
-                sort: "name",
-                sortDir: "asc",
-                filter: "example"
+                pagination: {
+                    pageNumber: 3,
+                    itemsPerPage: 12,
+                },
+                sorting: {
+                    field: "name",
+                    direction: "asc"
+                },
+                filter: {
+                    field: "name",
+                    value: "example"
+                }
+            },
+            output: {   
+                pagination: {
+                    currentPage: 3,
+                    itemsPerPage: 12,
+                    lastPage: 4
+                },
+                total: 45,
+                items: Array(12).fill(TestingProductFactory.output({}))
             }
         }
     ];
 
-    cases.forEach(({ input, output, expectedCall }) => {
+    cases.forEach(({ request, output, expectedCall }) => {
         it (`should return a response search output json object with code 200 when search is successful.`, async () => {
             mockUseCase.execute.mockResolvedValue(output);
-            req.query = input;
-            
-            await sut.handle(req as Request, res as Response);
+            req.query = request;
 
+            await sut.handle(req as Request, res as Response);
+            
             expect (mockUseCase.execute).toHaveBeenCalledWith(expectedCall);
             expect (res.status).toHaveBeenCalledWith(200);
             expect (res.json).toHaveBeenCalledWith({

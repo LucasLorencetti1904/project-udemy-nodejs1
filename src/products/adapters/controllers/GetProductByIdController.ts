@@ -26,9 +26,9 @@ export default class GetProductByIdController extends Controller {
         }
     }
 
-    protected validateRequest(data: unknown): GetProductByIdInput {
+    protected validateRequest(data: GetProductByIdInput): GetProductByIdInput {
         const idSchema = z.string().uuid();
 
-        return ZodSchemaValidator.handleDataWithSchema({ data, schema: idSchema });
+        return ZodSchemaValidator.validateDataWithSchema({ data, schema: idSchema });
     }   
 }

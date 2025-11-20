@@ -1,13 +1,13 @@
 import ApplicationError from "@/common/domain/errors/ApplicationError";
-import { ZodType } from "zod";
+import type { ZodType } from "zod";
 
-type DataWithSchema = {
-    data: any,
-    schema: ZodType<any>;
+type DataWithSchema<TRequest> = {
+    data: TRequest,
+    schema: ZodType<TRequest>;
 };
 
 export default class ZodSchemaValidator {
-    public static handleDataWithSchema({ data, schema }: DataWithSchema): any {
+    public static validateDataWithSchema<TRequest>({ data, schema }: DataWithSchema<TRequest>): TRequest {
         const result = schema.safeParse(data);
 
         if (!result.success) {

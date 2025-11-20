@@ -1,7 +1,7 @@
 import DeleteProductByIdController from "@/products/adapters/controllers/DeleteProductByIdController";
 import { MockDeleteProductByIdUseCase, } from "./ProductUseCase.mock";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
+import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
 import { randomUUID } from "node:crypto";
 import { Request, Response } from "express";
 import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";

@@ -1,11 +1,13 @@
 import { inject, injectable } from "tsyringe";
 import Controller from "@/common/adapters/controllers/Controller";
 import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
-import { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
-import z from "zod";
+import type SearchProductRequest from "@/products/adapters/dto/SearchProductRequest";
+import { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProductIo";
+import z, { ZodType } from "zod";
 import ZodSchemaValidator from "@/common/adapters/helpers/ZodSchemaValidator";
 import type { Request, Response } from "express";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
+import DtoUtilities from "@/common/utils/filterToTruthyObject";
 
 @injectable()
 export default class SearchProductController extends Controller {
@@ -16,8 +18,11 @@ export default class SearchProductController extends Controller {
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const input: SearchProductInput = this.validateRequest(req.query);
+            const query: SearchProductRequest = this.validateRequest(req.query);
+            
+            const input: SearchProductInput = this.mapToUseCase(query);
             const searchResult: SearchProductOutput = await this.useCase.execute(input);
+
             return res.status(200).json({ message: "Successful search.", data: searchResult });
         }
         catch(e: unknown) {
@@ -25,15 +30,37 @@ export default class SearchProductController extends Controller {
         }
     }
 
-    protected validateRequest(data: unknown): SearchProductInput {
-        const schema = z.object({
-            page: z.coerce.number().optional(),
-            perPage: z.coerce.number().optional(),
-            sort: z.string().optional(),
-            sortDir: z.string().optional(),
-            filter: z.string().optional()
+    protected validateRequest(data: SearchProductRequest): SearchProductRequest {
+        const schema: ZodType<SearchProductRequest> = z.object({
+            pageNumber: z.coerce.number().optional(),
+            itemsPerPage: z.coerce.number().optional(),
+            sortField: z.string().optional(),
+            sortDirection: z.string().optional(),
+            filterField: z.string().optional(),
+            filterValue: z.string().optional()
         }).strict();
 
-        return ZodSchemaValidator.handleDataWithSchema({ data, schema });
-    }  
+        return ZodSchemaValidator.validateDataWithSchema({ data, schema });
+    }
+
+    private mapToUseCase(request: SearchProductRequest): SearchProductInput {
+        const pagination = {
+            pageNumber: request.pageNumber,
+            itemsPerPage: request.itemsPerPage
+        };
+        const sorting = {
+            field: request.sortField,
+            direction: request.sortDirection
+        };
+        const filter = {
+            field: request.filterField,
+            value: request.filterValue
+        };
+
+        return {
+            ...(DtoUtilities.hasSomeDefinedField(pagination) && { pagination }),
+            ...(DtoUtilities.hasSomeDefinedField(sorting) && { sorting }),
+            ...(DtoUtilities.hasSomeDefinedField(filter) && { filter })
+        }
+    };
 }

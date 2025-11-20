@@ -1,8 +1,8 @@
 import AuthorizationMiddleware from "@/users/adapters/middlewares/AuthorizationMiddleware";
-import { MockAuthenticationProvider } from "test/users/providers.mock";
+import { MockAuthenticationProvider } from "test/users/UserUseCase.mock";
 import type { NextFunction, Request, Response } from "express";
 import { UnauthorizedError } from "@/common/domain/errors/httpErrors";
-import TestingMiscGenerator from "test/users/testingHelpers/authGenerators/TestingMiscGenerator";
+import TestingMiscGenerator from "test/testingTools/testingFactories/TestingMiscGenerator";
 import { randomUUID } from "crypto";
 
 let res: Response;

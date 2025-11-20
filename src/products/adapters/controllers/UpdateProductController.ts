@@ -28,7 +28,7 @@ export default class UpdateProductController extends Controller {
         }
     }
 
-    protected validateRequest(data: unknown): UpdateProductInput {
+    protected validateRequest(data: UpdateProductInput): UpdateProductInput {
         const schema: ZodType<UpdateProductInput> = z.object({
             id: z.string().uuid(),
             name: z.string().optional(),
@@ -36,6 +36,6 @@ export default class UpdateProductController extends Controller {
             quantity: z.number().int().gt(0).optional()
         }).strict();
 
-        return ZodSchemaValidator.handleDataWithSchema({ data, schema });
+        return ZodSchemaValidator.validateDataWithSchema({ data, schema });
     }   
 }

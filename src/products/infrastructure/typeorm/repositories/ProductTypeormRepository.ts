@@ -1,34 +1,44 @@
 import { inject, injectable } from "tsyringe";
-import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepository";
-import type ProductRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository"
-import type { RepositorySearchInput } from "@/common/domain/repositories/repositorySearchIo";
-import type Product from "@/products/infrastructure/typeorm/entities/Product";
+import type ProductRepository from "@/products/domain/repositories/ProductRepository"
 import type ProductModel from "@/products/domain/models/ProductModel";
-import { In, Repository } from "typeorm";
+import type CreateProductProps from "@/products/domain/repositories/CreateProductProps";
+import type RepositoryProvider from "@/common/domain/repositories/RepositoryProvider";
+import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
 
 @injectable()
-export default class ProductTypeormRepository extends TypeormRepository<ProductModel>
-    implements ProductRepository {
-        protected readonly defaultSearchValues: RepositorySearchInput<ProductModel> = {
-            page: 1,
-            perPage: 15,
-            sort: "createdAt",
-            sortDir: "desc",
-            filter: ""
-        };
-
-        protected readonly sortableFields: string[] = ["name", "createdAt"]; 
-
-        constructor (
-            @inject("ProductDefaultTypeormRepository")
-            protected readonly productRepository: Repository<Product>
-        ) { super(productRepository); }
+export default class ProductTypeormRepository implements ProductRepository {
+    constructor (
+        @inject("RepositoryProvider<Product>")
+        private readonly repo: RepositoryProvider<ProductModel, CreateProductProps>
+    ){}
 
         public async findAllByIds(productIds: string[]): Promise<ProductModel[]> {
-            return await this.productRepository.find({ where: { id: In(productIds) } });
+        const products: ProductModel[] = await Promise.all(productIds.map((productId) => this.repo.findById(productId)));
+        return products.filter((product) => !!product);
+    }
+
+        public async findByName(value: string): Promise<ProductModel | null> {
+            return await this.repo.findOneBy("name", value);
         }
 
-        public async findByName(name: string): Promise<ProductModel | null> {
-            return await this.productRepository.findOneBy({ name });
+        public async create(data: CreateProductProps): Promise<ProductModel> {
+            return await this.repo.create(data);
+        }
+
+        public async findById(id: string): Promise<ProductModel> {
+            return await this.repo.findById(id);
+        }
+
+        public async update(model: ProductModel): Promise<ProductModel> {
+            return await this.repo.update(model);
+        }
+
+        public async delete(id: string): Promise<ProductModel> {
+            return await this.repo.delete(id);
+        }
+
+        public async search(query: RepositorySearchinput<ProductModel>): Promise<RepositorySearchResult<ProductModel>> {
+            return await this.repo.search(query);
         }
 }

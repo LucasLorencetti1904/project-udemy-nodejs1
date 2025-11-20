@@ -1,10 +1,10 @@
-import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
+import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
+import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
 
 export default interface Repository<TModel, CreateData> {
-    create(data: CreateData): TModel;
-    insert(model: TModel): Promise<TModel>;
+    create(data: CreateData): Promise<TModel>;
     findById(id: string): Promise<TModel | null>;
     update(model: TModel): Promise<TModel>;
     delete(id: string): Promise<TModel | null>;
-    search(config: RepositorySearchInput<TModel>): Promise<RepositorySearchOutput<TModel>>;
+    search(query: RepositorySearchinput<TModel>): Promise<RepositorySearchResult<TModel>>;
 }

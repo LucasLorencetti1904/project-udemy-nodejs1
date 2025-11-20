@@ -1,7 +1,7 @@
 import UpdateProductController from "@/products/adapters/controllers/UpdateProductController";
 import { MockUpdateProductUseCase } from "./ProductUseCase.mock";
 import type { ProductOutput } from "@/products/application/dto/productIo";
-import TestingProductFactory from "test/products/testingHelpers/TestingProductFactory";
+import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
 import { Request, Response } from "express";
 import { ConflictError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import { randomUUID } from "node:crypto";

@@ -6,7 +6,7 @@ import type ProductModel from "@/products/domain/models/ProductModel";
 import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
 import { BadRequestError } from "@/common/domain/errors/httpErrors";
-import filterToTruthyObject from "@/common/domain/helpers/filterToTruthyObject";
+import filterToTruthyObject from "@/common/utils/filterToTruthyObject";
 
 @injectable()
 export default class UpdateProductUseCaseImpl extends ProductUseCase implements UpdateProductUseCase {

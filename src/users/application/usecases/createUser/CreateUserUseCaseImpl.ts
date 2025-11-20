@@ -33,8 +33,7 @@ export default class CreateProductUseCaseImpl extends UserUseCase implements Cre
 
             const hashPassword: string = await this.hashProvider.hashString(input.password);
 
-            const user: UserModel = this.repo.create({ ...input, password: hashPassword });
-            await this.repo.insert(user);
+            const user: UserModel = await this.repo.create({ ...input, password: hashPassword });
 
             return this.mapToUserOutput(user);
         }

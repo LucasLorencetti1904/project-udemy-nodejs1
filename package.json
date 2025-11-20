@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "dotenv -e .env.test -- vitest",
-    "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules ./src/common/infrastructure/http/server.ts",
+    "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules ./src/common/adapters/server.ts",
     "lint": "eslint .",
     "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "typeorm:dev": "npm run typeorm -- -d ./src/common/infrastructure/typeorm/config/dataSource.ts",

@@ -27,13 +27,13 @@ export default class CreateProductController extends Controller {
         }
     }
 
-    protected validateRequest(data: unknown): CreateProductInput {
+    protected validateRequest(data: CreateProductInput): CreateProductInput {
         const schema: ZodType<CreateProductInput> = z.object({
             name: z.string().nonempty(),
             price: z.number().gt(0),
             quantity: z.number().int().gt(0)
         }).strict();
 
-        return ZodSchemaValidator.handleDataWithSchema({ data, schema });
+        return ZodSchemaValidator.validateDataWithSchema({ data, schema });
     }   
 }

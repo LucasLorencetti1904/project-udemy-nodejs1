@@ -1,34 +1,43 @@
 import { inject, injectable } from "tsyringe";
-import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepository";
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository"
-import type { Repository } from "typeorm";
-import type User from "@/users/infrastructure/typeorm/entities/User";
+import type RepositoryProvider from "@/common/domain/repositories/RepositoryProvider";
 import type UserModel from "@/users/domain/models/UserModel";
-import type { RepositorySearchInput } from "@/common/domain/repositories/repositorySearchIo";
+import type CreateUserProps from "@/users/domain/repositories/userRepository/CreateUserProps";
+import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
 
 @injectable()
-export default class UserTypeormRepository extends TypeormRepository<UserModel>
-    implements UserRepository {
-        protected readonly defaultSearchValues: RepositorySearchInput<UserModel> = {
-            page: 1,
-            perPage: 15,
-            sort: "createdAt",
-            sortDir: "desc",
-            filter: ""
-        };
+export default class UserTypeormRepository implements UserRepository {
+    constructor (
+        @inject("RepositoryProvider<User>")
+        private readonly repo: RepositoryProvider<UserModel, CreateUserProps>,
+    ){}
 
-        protected readonly sortableFields: string[] = ["name", "email", "createdAt"];
+    public async findByName(value: string): Promise<UserModel[]> {
+        return await this.repo.findManyBy("name", value);
+    }
 
-        constructor (
-            @inject("UserDefaultTypeormRepository")
-            protected readonly userRepository: Repository<User>
-        ) { super(userRepository); }
+    public async findByEmail(value: string): Promise<UserModel | null> {
+        return await this.repo.findOneBy("email", value);
+    }
 
-        public async findByName(name: string): Promise<UserModel[]> {
-            return await this.userRepository.findBy({ name });
-        }
+    public async create(data: CreateUserProps): Promise<UserModel> {
+        return await this.repo.create(data);
+    }
 
-        public async findByEmail(email: string): Promise<UserModel | null> {
-            return await this.userRepository.findOneBy({ email });
-        }
+    public async findById(id: string): Promise<UserModel> {
+        return await this.repo.findById(id);
+    }
+
+    public async update(model: UserModel): Promise<UserModel> {
+        return await this.repo.update(model);
+    }
+
+    public async delete(id: string): Promise<UserModel> {
+        return await this.repo.delete(id);
+    }
+
+    public async search(query: RepositorySearchinput<UserModel>): Promise<RepositorySearchResult<UserModel>> {
+        return await this.repo.search(query);
+    }
 }

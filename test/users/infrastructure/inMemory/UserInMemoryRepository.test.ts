@@ -1,155 +1,103 @@
-import type UserModel from "@/users/domain/models/UserModel";
+import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import UserInMemoryRepository from "@/users/infrastructure/inMemory/UserInMemoryRepository";
-import TestingUserFactory from "test/users/testingHelpers/TestingUserFactory";
+import UserTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTypeormRepository";
+import MockRepositoryProvider from "test/users/infrastructure/inMemory/UserRepository.mock";
+import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
+import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type UserModel from "@/users/domain/models/UserModel";
+import type CreateUserProps from "@/users/domain/repositories/userRepository/CreateUserProps";
+import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
+import { randomUUID } from "node:crypto";
 
-describe ("UserInMemoryRepository Test.", () => {
-    let sut: UserInMemoryRepository;
-    let result: UserModel | UserModel[];
+let sut: UserRepository;
+let mockRepoProvider: MockRepositoryProvider<UserModel, CreateUserProps>;
+
+const impls: (new (...args: any) => UserRepository)[] = [
+    UserInMemoryRepository,
+    UserTypeormRepository
+];
+
+impls.forEach((Impl) => {
+    describe (`${Impl.name} Test.`, () => {
     
-    beforeEach(() => {
-        sut = new UserInMemoryRepository();
-    });
-
-    describe ("findByName", () => {
-        it ("should return a empty array when user is not found by name.", async () => {
-            result = await sut.findByName("Fake Name");
-            expect (result).toEqual([]);
-        });
-
-        for (let i = 1; i <= 2; i++) {
-            it ("should return a array of users when found by name.", async () => {
-                const exampleOfUsers: UserModel[] = Array(i)
-                    .fill(TestingUserFactory.model({ name: "Valid Name Example" }));
-
-                sut.items.push(...exampleOfUsers);
-                result = await sut.findByName("Valid Name Example");
-
-                expect (result).toHaveLength(i);
-            });
-        }
-    });
-
-    describe ("findByEmail", () => {
-        it ("should return null when user is not found by email.", async () => {
-            result = await sut.findByEmail("Fake Name");
-            expect (result).toEqual(null);
-        });
-
-        it ("should return user when found by email.", async () => {
-            const exampleOfUser: UserModel = TestingUserFactory.model({ email: "testing@gmail.com" });
-            sut.items.push(exampleOfUser);
-            result = await sut.findByEmail("testing@gmail.com");
-
-            expect (result).toEqual(exampleOfUser);
-        });
-    });
-
+        let user: UserModel;
+        let users: UserModel[];
     
-    describe ("applySort", () => {
-        beforeEach (() => {    
-            sut.items = [
-                TestingUserFactory.model({
-                    name: "b", email: "userone@gmail.com", createdAt: new Date(2024, 8, 12)
-                }),
-                TestingUserFactory.model({
-                    name: "a", email: "usertwo@gmail.com", createdAt: new Date(2025, 10, 19)
-                }),
-                TestingUserFactory.model({
-                    name: "c", email: "userthree@gmail.com", createdAt: new Date(2025, 2, 29)
-                })
-            ];
-        });
-
-        let sortedModels: UserModel[];
-
-        type SortCase = {
-            description: string,
-            sortInput?: keyof UserModel,
-            sortDirInput?: "asc" | "desc", 
-            expected: () => UserModel[]
-        };
-
-        const sortCases: SortCase[] = [
-            {
-                description: "should sort items by createdAt using desc order when sort and sortDir params is undefined.",
-                sortInput: undefined,
-                sortDirInput: undefined,
-                expected: () => [sut.items[1], sut.items[2], sut.items[0]]
-            },
-            {
-                description: "should no sort items when sort param is not sortable field.",
-                sortInput: "id",
-                sortDirInput: "asc",
-                expected: () => sut.items
-            },
-            {
-                description: "should sort items by createdAt using asc order.",
-                sortInput: undefined,
-                sortDirInput: "asc",
-                expected: () => [sut.items[0], sut.items[2], sut.items[1]]
-            },
-            {
-                description: "should sort items by name using desc order.",
-                sortInput: "name",
-                sortDirInput: "desc",
-                expected: () => [sut.items[2], sut.items[0], sut.items[1]]
-            },
-            {
-                description: "should sort items by email using asc order.",
-                sortInput: "email",
-                sortDirInput: "asc",
-                expected: () => [sut.items[0], sut.items[2], sut.items[1]]
-            }
-        ];
-
-        sortCases.forEach(({ description, sortInput, sortDirInput, expected }) => {
-            it (description, async () => {
-                sortedModels = await sut['applySort'](sut.items, sortInput, sortDirInput);
-                expect (sortedModels).toEqual(expected());
-            });
-        });
-    });
-    
-    describe ("applyFilter", () => {
-        beforeEach (() => {
-            sut.items = [
-                TestingUserFactory.model({ name: "test name" }),
-                TestingUserFactory.model({ name: "TEST NAME" }),
-                TestingUserFactory.model({ name: "fake name"})
-            ];
-        });
+        let result: UserModel | UserModel[] | RepositorySearchResult<UserModel>;
         
-        type FilterCase = {
-            description: string,
-            filterInput?: string,
-            expected: () => UserModel[]
-        };
-
-        const filterCases: FilterCase[] = [
-            {
-                description: "should no filter items when filter param is undefined.",
-                filterInput: undefined,
-                expected: () => sut.items
-            },
-            {
-                description: "should filter items using filter param.",
-                filterInput: "TES",
-                expected: () => [sut.items[0], sut.items[1]]
-            },
-            {
-                description: "should return a empty array when filter does not matches.",
-                filterInput: "truthy name",
-                expected: () => []
-            }
-        ]
-
-        filterCases.forEach(({ description, filterInput, expected }) => {
-            it (description, async () => {
-                const filteredModels: UserModel[] = await sut['applyFilter'] ( 
-                    sut.items, filterInput
-                );
-                
-                expect (filteredModels).toEqual(expected());
+        beforeEach (() => {
+            mockRepoProvider = new MockRepositoryProvider();
+            sut = new Impl(mockRepoProvider);
+        });
+    
+        describe ("findByEmail", () => {
+            it ("should use composition method 'findOneBy' to find by email and return same value from it.", async () => {
+                user = TestingUserFactory.model({})
+        
+                mockRepoProvider.findOneBy.mockResolvedValue(user);
+                result = await sut.findByEmail("email@gmail.com");
+        
+                expect (result).toEqual(user);
+                expect (mockRepoProvider.findOneBy).toHaveBeenCalledExactlyOnceWith("email", "email@gmail.com");
+            });
+        });
+    
+        describe ("findByName", () => {
+            it ("should use composition method 'findManyBy' to find by name and return same values from it.", async () => {
+                user = TestingUserFactory.model({})
+        
+                mockRepoProvider.findManyBy.mockResolvedValue(user);
+                result = await sut.findByName("User name");
+        
+                expect (result).toEqual(user);
+                expect (mockRepoProvider.findManyBy).toHaveBeenCalledExactlyOnceWith("name", "User name");
+            });
+        });
+    
+        describe ("Compositions Test", () => {
+            it ("findById", async () => {           
+                const input: string = randomUUID();
+                const output: UserModel = TestingUserFactory.model({ id: input });         
+                mockRepoProvider.findById.mockResolvedValue(output);
+                result = await sut.findById(input);
+                expect (result).toEqual(output);
+                expect (mockRepoProvider.findById).toHaveBeenCalledWith(input);
+            });
+    
+            it ("create", async () => {           
+                const input: CreateUserProps = TestingUserFactory.createInput({});
+                const output: UserModel = TestingUserFactory.model(input);         
+                mockRepoProvider.create.mockResolvedValue(output);
+                result = await sut.create(input);
+                expect (result).toEqual(output);
+                expect (mockRepoProvider.create).toHaveBeenCalledWith(input);
+            });
+    
+            it ("update", async () => {           
+                const input: UserModel = TestingUserFactory.model({});
+                const output: UserModel = TestingUserFactory.model(input);         
+                mockRepoProvider.update.mockResolvedValue(output);
+                result = await sut.update(input);
+                expect (result).toEqual(output);
+                expect (mockRepoProvider.update).toHaveBeenCalledWith(input);
+            });
+    
+            it ("delete", async () => {           
+                const input: string = randomUUID();
+                const output: UserModel = TestingUserFactory.model({ id: input });         
+                mockRepoProvider.delete.mockResolvedValue(output);
+                result = await sut.delete(input);
+                expect (result).toEqual(output);
+                expect (mockRepoProvider.delete).toHaveBeenCalledWith(input);
+            });
+    
+            it ("search", async () => {           
+                const input: RepositorySearchinput<UserModel> = {};
+                const output: any = {};         
+                mockRepoProvider.search.mockResolvedValue(output);
+                result = await sut.search(input);
+                expect (result).toEqual(output);
+                expect (mockRepoProvider.search).toHaveBeenCalledWith(input);
             });
         });
     });

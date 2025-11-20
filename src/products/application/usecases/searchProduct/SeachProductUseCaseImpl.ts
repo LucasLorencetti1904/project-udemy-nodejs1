@@ -3,8 +3,8 @@ import ProductUseCase from "@/products/application/usecases/default/ProductUseCa
 import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type ProductModel from "@/products/domain/models/ProductModel";
-import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProdutIo";
-import type { RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
+import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProductIo";
+import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
 
 @injectable()
 export default class SearchProductUseCaseImpl extends ProductUseCase implements SearchProductUseCase {
@@ -15,7 +15,7 @@ export default class SearchProductUseCaseImpl extends ProductUseCase implements 
 
     public async execute(input: SearchProductInput): Promise<SearchProductOutput> {
         try {
-            const output: RepositorySearchOutput<ProductModel> = await this.repo.search(input);
+            const output: RepositorySearchResult<ProductModel> = await this.repo.search(input);
             return this.toUseCaseOutput(output);
         }
         catch (e: unknown) {
@@ -23,13 +23,15 @@ export default class SearchProductUseCaseImpl extends ProductUseCase implements 
         }
     }
 
-    private toUseCaseOutput(repoOutput: RepositorySearchOutput<ProductModel>): SearchProductOutput {
+    private toUseCaseOutput(repoOutput: RepositorySearchResult<ProductModel>): SearchProductOutput {
         return {
             items: repoOutput.items,
             total: repoOutput.total,
-            perPage: repoOutput.perPage,
-            lastPage: this.calcLastPage(repoOutput.total, repoOutput.perPage),
-            currentPage: repoOutput.currentPage
+            pagination: {
+                currentPage: repoOutput.pagination.currentPage,
+                itemsPerPage: repoOutput.pagination.itemsPerPage,
+                lastPage: this.calcLastPage(repoOutput.total, repoOutput.pagination.itemsPerPage)
+            }
         };
     }
 

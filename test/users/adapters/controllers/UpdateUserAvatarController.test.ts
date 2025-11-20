@@ -2,11 +2,11 @@ import UpdateUserAvatarController from "@/users/adapters/controllers/UpdateUserA
 import { MockAuthenticateUserUseCase } from "./UserUseCase.mock";
 import type UpdateUserAvatarInput from "@/users/application/dto/UpdateUserAvatarInput";
 import type { UserOutput } from "@/users/application/dto/userIo";
-import TestingUserFactory from "test/users/testingHelpers/TestingUserFactory";
+import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
 import type { Request, Response } from "express";
 import { randomUUID } from "node:crypto";
 import { BadRequestError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
-import TestingMiscGenerator from "test/users/testingHelpers/authGenerators/TestingMiscGenerator";
+import TestingMiscGenerator from "test/testingTools/testingFactories/TestingMiscGenerator";
 
 let sut: UpdateUserAvatarController;
 let mockUseCase: MockAuthenticateUserUseCase;

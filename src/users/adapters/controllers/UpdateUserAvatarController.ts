@@ -31,7 +31,7 @@ export default class UpdateUserAvatarController extends Controller {
         }
     }
 
-    protected validateRequest(data: unknown): UpdateUserAvatarInput {
+    protected validateRequest(data: UpdateUserAvatarInput): UpdateUserAvatarInput {
         const fileSchema: ZodType<UserAvatarImageFile> = z.object({
             name: z.string().nonempty(),
             type: z.string().nonempty(),
@@ -44,7 +44,7 @@ export default class UpdateUserAvatarController extends Controller {
             avatarImage: fileSchema
         }).strict();
 
-        return ZodSchemaValidator.handleDataWithSchema({ data, schema });
+        return ZodSchemaValidator.validateDataWithSchema({ data, schema });
     }
 
     private handleFileToInput(file: Express.Multer.File): UserAvatarImageFile {

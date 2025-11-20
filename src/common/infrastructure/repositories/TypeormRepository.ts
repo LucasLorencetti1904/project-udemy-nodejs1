@@ -1,58 +1,71 @@
-import type Repository from "@/common/domain/repositories/Repository";
-import type { RepositorySearchInput, RepositorySearchOutput } from "@/common/domain/repositories/repositorySearchIo";
-import { Repository as BaseTypeormRepository, DeepPartial, FindOptionsOrder, FindOptionsWhere, ILike } from "typeorm";
+import { injectable } from "tsyringe";
+import type RepositoryProvider from "@/common/domain/repositories/RepositoryProvider";
+import type { Repository as BaseTypeormRepository, DeepPartial, FindOptionsWhere } from "typeorm";
+import type RepositorySearcher from "@/common/domain/search/repositorySearcher/RepositorySearcher";
+import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type SearchQueryFormatter from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatter";
+import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
 
-type TEntityDefaultProps = {
+type TModelDefaultProps = {
     id: string,
-    name: string,
     createdAt: Date,
     updatedAt: Date
 };
 
-export default abstract class TypeormRepository<TEntity extends TEntityDefaultProps>
-    implements Repository<TEntity, DeepPartial<TEntity>> {
-        protected abstract defaultSearchValues: RepositorySearchInput<TEntity>;
-        protected abstract sortableFields: string[];
-
+@injectable()
+export default class TypeormRepository<TModel extends TModelDefaultProps> implements RepositoryProvider<TModel, DeepPartial<TModel>> {
         constructor (
-            protected readonly userRepository: BaseTypeormRepository<TEntity>
+            private readonly baseTypeormRepository: BaseTypeormRepository<TModel>,
+            private readonly searchQueryFormatter: SearchQueryFormatter<TModel>,
+            private readonly searcher: RepositorySearcher<TModel>
         ) {}
 
-        public async findById(id: string): Promise<TEntity | null> {
+        public async findById(id: string): Promise<TModel | null> {
             return await this._getById(id);
         }
 
-        public create(data: DeepPartial<TEntity>): TEntity {
-            return this.userRepository.create(data);
+        public async findOneBy(field: keyof TModel, value: unknown): Promise<TModel> {
+            return await this.baseTypeormRepository.findOne({ [field]: value })
         }
 
-        public async insert(model: TEntity): Promise<TEntity> {
-            return await this.userRepository.save(model);
+        public async findManyBy(field: keyof TModel, value: unknown): Promise<TModel[]> {
+            return await this.baseTypeormRepository.find({ [field]: value })
         }
 
-        public async update(model: TEntity): Promise<TEntity> {
-            const toUpdate: TEntity = await this._getById(model.id);
+        public async create(data: DeepPartial<TModel>): Promise<TModel> {
+            const model: TModel = this.baseTypeormRepository.create(data);
+            return await this.baseTypeormRepository.save(model);
+        }
+
+        public async update(model: TModel): Promise<TModel> {
+            const toUpdate: TModel = await this._getById(model.id);
 
             if (!toUpdate) {
                 return model;
             }
 
-            return await this.userRepository.save({ ...toUpdate, ...model });
+            return await this.baseTypeormRepository.save({ ...toUpdate, ...model });
         }
 
-        public async delete(id: string): Promise<TEntity | null> {
-            const toDelete: TEntity = await this._getById(id);
+        public async delete(id: string): Promise<TModel | null> {
+            const toDelete: TModel = await this._getById(id);
 
             if (!toDelete) {
                 return null;
             }
 
-            await this.userRepository.delete(toDelete.id);
+            await this.baseTypeormRepository.delete(toDelete.id);
             return toDelete;
         }
 
-        protected async _getById(id: string): Promise<TEntity | null> {
-            const model: TEntity = await this.userRepository.findOneBy({ id } as FindOptionsWhere<TEntity>);
+        public async search(query: RepositorySearchinput<TModel>): Promise<RepositorySearchResult<TModel>> {
+            const dsl: RepositorySearchDSL<TModel> = this.searchQueryFormatter.formatInput(query);
+            return await this.searcher.search(this.baseTypeormRepository, dsl);
+        }
+
+        private async _getById(id: string): Promise<TModel | null> {
+            const model: TModel = await this.baseTypeormRepository.findOneBy({ id } as FindOptionsWhere<TModel>);
 
             if (!model) {
                 return null;
@@ -60,77 +73,4 @@ export default abstract class TypeormRepository<TEntity extends TEntityDefaultPr
 
             return model;
         }
-
-        public async search(config: RepositorySearchInput<TEntity>): Promise<RepositorySearchOutput<TEntity>> {
-                const input = this.setDefaultValuesForInvalidSearchInputProps(config, this.defaultSearchValues);
-
-                const searchResult: [TEntity[], number] = await this.searchForResults(input);
-
-                return this.mapToSearchOutput(searchResult, input);
-        }
-        
-        protected async searchForResults(searchInput: RepositorySearchInput<TEntity>): Promise<[TEntity[], number]> {
-            return await this.userRepository.findAndCount({
-                ...(searchInput.filter && { where: { name: ILike(`%${searchInput.filter}%`) } as FindOptionsWhere<TEntity> }),
-                order: { [searchInput.sort]: searchInput.sortDir } as FindOptionsOrder<TEntity>,
-                skip: (searchInput.page - 1) * searchInput.perPage,
-                take: searchInput.perPage
-            });
-        }
-
-        protected setDefaultValuesForInvalidSearchInputProps (
-            originSearchInput: RepositorySearchInput<TEntity>,
-            defaultSearchInput: RepositorySearchInput<TEntity>
-        ): RepositorySearchInput<TEntity> {
-            ["page", "perPage"].forEach((paginationNumber) => {
-                if (this.isInvalidPaginationNumber(originSearchInput[paginationNumber])) {
-                    originSearchInput[paginationNumber] = defaultSearchInput[paginationNumber];
-                }
-            })
-
-            if (this.isInvalidSortField(originSearchInput.sort as string)) {
-                originSearchInput.sort = defaultSearchInput.sort;
-            }
-
-            if (this.isInvalidSortDir(originSearchInput.sortDir)) {
-                originSearchInput.sortDir = defaultSearchInput.sortDir;
-            }
-
-            if (this.isEmptyFilter(originSearchInput.filter)) {
-                originSearchInput.filter = defaultSearchInput.filter;
-            }
-                
-            return originSearchInput;
-        }
-
-        protected mapToSearchOutput (
-            searchResult: [TEntity[], number],
-            searchInput: RepositorySearchInput<TEntity>
-        ): RepositorySearchOutput<TEntity> {
-            return {
-                items: searchResult[0],
-                total: searchResult[1],
-                currentPage: searchInput.page,
-                perPage: searchInput.perPage,
-                sort: searchInput.sort,
-                sortDir: searchInput.sortDir,
-                filter: searchInput.filter
-            };
-        }
-
-        private isInvalidPaginationNumber(pageNumber?: number): boolean {
-            return !pageNumber || pageNumber < 1|| !Number.isInteger(pageNumber);
-        }
-
-        private isInvalidSortField(sortField?: string): boolean {
-            return !sortField || !this.sortableFields.includes(sortField);
-        }
-
-        private isInvalidSortDir(sortDir?: string): boolean {
-            return !sortDir || !["asc", "desc"].includes(sortDir);
-        }
-
-        private isEmptyFilter(filter?: string) {
-            return !filter;
-       }
 }

@@ -26,12 +26,12 @@ export default class AuthenticateUserController extends Controller {
         }
     }
 
-    protected validateRequest(data: unknown): AuthenticateUserInput {
+    protected validateRequest(data: AuthenticateUserInput): AuthenticateUserInput {
         const schema: ZodType<AuthenticateUserInput> = z.object({
             email: z.string().email(),
             password: z.string().nonempty()
         }).strict();
 
-        return ZodSchemaValidator.handleDataWithSchema({ data, schema });
+        return ZodSchemaValidator.validateDataWithSchema({ data, schema });
     }   
 }

@@ -1,11 +1,13 @@
 import { inject, injectable } from "tsyringe";
 import Controller from "@/common/adapters/controllers/Controller";
 import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
+import type SearchUserRequest from "@/users/adapters/dto/SearchUserRequest";
 import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
-import z from "zod";
+import z, { ZodType } from "zod";
 import ZodSchemaValidator from "@/common/adapters/helpers/ZodSchemaValidator";
 import type { Request, Response } from "express";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
+import DtoUtilities from "@/common/utils/filterToTruthyObject";
 
 @injectable()
 export default class SearchUserController extends Controller {
@@ -16,8 +18,11 @@ export default class SearchUserController extends Controller {
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const input: SearchUserInput = this.validateRequest(req.query);
+            const query: SearchUserRequest = this.validateRequest(req.query);
+            
+            const input: SearchUserInput = this.mapToUseCase(query);
             const searchResult: SearchUserOutput = await this.useCase.execute(input);
+
             return res.status(200).json({ message: "Successful search.", data: searchResult });
         }
         catch(e: unknown) {
@@ -25,15 +30,37 @@ export default class SearchUserController extends Controller {
         }
     }
 
-    protected validateRequest(data: unknown): SearchUserInput {
-        const schema = z.object({
-            page: z.coerce.number().optional(),
-            perPage: z.coerce.number().optional(),
-            sort: z.string().optional(),
-            sortDir: z.string().optional(),
-            filter: z.string().optional()
+    protected validateRequest(data: SearchUserRequest): SearchUserRequest {
+        const schema: ZodType<SearchUserRequest> = z.object({
+            pageNumber: z.coerce.number().optional(),
+            itemsPerPage: z.coerce.number().optional(),
+            sortField: z.string().optional(),
+            sortDirection: z.string().optional(),
+            filterField: z.string().optional(),
+            filterValue: z.string().optional()
         }).strict();
 
-        return ZodSchemaValidator.handleDataWithSchema({ data, schema });
-    }  
+        return ZodSchemaValidator.validateDataWithSchema({ data, schema });
+    }
+    
+    private mapToUseCase(request: SearchUserRequest): SearchUserInput {
+        const pagination = {
+            pageNumber: request.pageNumber,
+            itemsPerPage: request.itemsPerPage
+        };
+        const sorting = {
+            field: request.sortField,
+            direction: request.sortDirection
+        };
+        const filter = {
+            field: request.filterField,
+            value: request.filterValue
+        };
+
+        return {
+            ...(DtoUtilities.hasSomeDefinedField(pagination) && { pagination }),
+            ...(DtoUtilities.hasSomeDefinedField(sorting) && { sorting }),
+            ...(DtoUtilities.hasSomeDefinedField(filter) && { filter })
+        }
+    }
 }
