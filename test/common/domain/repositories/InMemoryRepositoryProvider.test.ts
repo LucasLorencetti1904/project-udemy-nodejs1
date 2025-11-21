@@ -5,7 +5,7 @@ import type RepositorySearchDSL from "@/common/domain/repositories/search/reposi
 import TestingMiscGenerator from "test/testingTools/testingFactories/TestingMiscGenerator";
 import { MockRepositorySearcher } from "./InMemoryRepositoryProvider.mock";
 
-describe ("InMemoryRepository Test.", () => {
+describe ("InMemoryRepositoryProvider Test.", () => {
     let sut: InMemoryRepositoryProvider<TestModel>;
 
     let mockSearcher: MockRepositorySearcher<TestModel>;

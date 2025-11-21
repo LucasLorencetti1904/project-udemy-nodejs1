@@ -5,11 +5,11 @@ import testingDataSource from "@/common/infrastructure/typeorm/config/testingDat
 import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
 import { randomUUID } from "node:crypto";
 import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepositoryProvider";
-import { MockRepositorySearcher, MockSearchQueryFormatter } from "./TypeormRepositoryProvider.mock";
+import { MockRepositorySearcher } from "./TypeormRepositoryProvider.mock";
 import RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 import RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 
-describe ("TypeormRepository Test.", () => {
+describe ("TypeormRepositoryProvider Test.", () => {
     let sut: TypeormRepository<ProductModel>;
     let mockSearcher: MockRepositorySearcher<ProductModel>;
 
@@ -35,7 +35,7 @@ describe ("TypeormRepository Test.", () => {
         await testingDataSource.manager.query("DELETE FROM products");
         mockSearcher = new MockRepositorySearcher();
         sut = new TypeormRepository(testingDataSource.getRepository(Product), mockSearcher);
-        exampleOfProduct = TestingProductFactory.output({});
+        exampleOfProduct = TestingProductFactory.model({});
     });
 
     describe ("findById", () => {

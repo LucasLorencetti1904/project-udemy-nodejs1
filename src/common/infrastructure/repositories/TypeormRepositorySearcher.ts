@@ -7,12 +7,12 @@ import { FindOptionsOrder, FindOptionsWhere, ILike, Repository } from "typeorm";
 @injectable()
 export default class TypeormRepositorySearcher<TModel> implements RepositorySearcher<TModel> {
         public async search(typeormRepo: Repository<TModel>, dsl: RepositorySearchDSL<TModel>): Promise<RepositorySearchResult<TModel>> {
-                const searchResult: [TModel[], number] = await this.searchForResults(dsl, typeormRepo);
+                const searchResult: [TModel[], number] = await this.searchForResults(typeormRepo, dsl);
 
                 return this.mapToSearchResult(searchResult, dsl);
         }
         
-        private async searchForResults(dsl: RepositorySearchDSL<TModel>, typeormRepo: Repository<TModel>): Promise<[TModel[], number]> {
+        private async searchForResults(typeormRepo: Repository<TModel>, dsl: RepositorySearchDSL<TModel>): Promise<[TModel[], number]> {
             return await typeormRepo.findAndCount({
                 where: { [dsl.filter.field]: ILike(`%${dsl.filter.value}%`) } as FindOptionsWhere<TModel>,
                 order: { [dsl.sorting.field]: dsl.sorting.direction } as FindOptionsOrder<TModel>,
