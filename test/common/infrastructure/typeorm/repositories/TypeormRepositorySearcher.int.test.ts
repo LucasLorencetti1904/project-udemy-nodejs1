@@ -1,11 +1,11 @@
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import type ProductModel from "@/products/domain/models/ProductModel";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
+import type { Repository } from "typeorm";
 import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
 import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
-import RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 import RepositorySearchDSL, { RepositorySearchDSLFilter, RepositorySearchDSLPagination, RepositorySearchDSLSorting } from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 import TypeormRepositorySearcher from "@/common/infrastructure/repositories/TypeormRepositorySearcher";
-import { Repository } from "typeorm";
 
     describe ("TypeormRepositorySearcher Test", () => {
         let sut: TypeormRepositorySearcher<ProductModel>;

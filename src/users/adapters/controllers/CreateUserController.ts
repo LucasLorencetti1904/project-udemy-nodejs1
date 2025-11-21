@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
-import Controller from "@/common/adapters/controllers/Controller";
+import ControllerHandler from "@/common/adapters/helpers/ControllerHandler";
+import type ExpressController from "@/common/adapters/controllers/ExpressController";
 import type CreateUserUseCase from "@/users/application/usecases/createUser/CreateUserUseCase";
 import type CreateUserInput from "@/users/application/dto/CreateUserInput";
 import type { UserOutput } from "@/users/application/dto/userIo";
@@ -10,11 +11,11 @@ import type { Request, Response } from "express";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
 
 @injectable()
-export default class CreateUserController extends Controller {
+export default class CreateUserController implements ExpressController {
     constructor (
         @inject("CreateUserUseCase") 
         private readonly useCase: CreateUserUseCase
-    ) { super (); }
+    ) {}
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
@@ -23,7 +24,7 @@ export default class CreateUserController extends Controller {
             return res.status(201).json({ message: "User registered successfully.", data: user });
         }
         catch(e: unknown) {
-            return this.handleResponseErr(res, e as ApplicationError);
+            return ControllerHandler.handleResponseError(res, e as ApplicationError);
         }
     }
 

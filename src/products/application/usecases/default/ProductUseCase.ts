@@ -1,12 +1,9 @@
-import BaseUseCase from "@/common/application/usecases/BaseUseCase";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import { ConflictError, NotFoundError } from "@/common/domain/errors/httpErrors";
 
-export default abstract class ProductUseCase extends BaseUseCase {
-    constructor(
-        protected readonly repo: ProductRepository
-    ) { super(); }    
+export default abstract class ProductUseCase {
+    constructor(protected readonly repo: ProductRepository) {}    
 
     protected async tryGetById(id: string): Promise<ProductModel> {
         const product: ProductModel = await this.repo.findById(id);
@@ -25,6 +22,6 @@ export default abstract class ProductUseCase extends BaseUseCase {
     }
 
     private async nameAlreadyExists(name: string): Promise<boolean> {
-        return !name || !!(await this.repo.findByName(name));
+        return name && !!(await this.repo.findByName(name));
     }
 }

@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import ProductUseCase from "@/products/application/usecases/default/ProductUseCase";
+import ApplicationHandler from "@/common/application/helpers/ApplicationHandler";
 import type DeleteProductByIdUseCase from "@/products/application/usecases/deleteProductById/DeleteProductByIdUseCase";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type ProductModel from "@/products/domain/models/ProductModel";
@@ -25,7 +26,7 @@ export default class DeleteProductByIdUseCaseImpl extends ProductUseCase impleme
             return toDelete;
         }
         catch (e: unknown) {
-            this.handleApplicationErrors(e);
+            ApplicationHandler.handleErrors(e);
         }
     }
 }

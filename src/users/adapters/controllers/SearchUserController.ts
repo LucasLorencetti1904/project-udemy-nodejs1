@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
-import Controller from "@/common/adapters/controllers/Controller";
+import ControllerHandler from "@/common/adapters/helpers/ControllerHandler";
+import type ExpressController from "@/common/adapters/controllers/ExpressController";
 import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
 import type SearchUserRequest from "@/users/adapters/dto/SearchUserRequest";
 import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
@@ -10,11 +11,11 @@ import ApplicationError from "@/common/domain/errors/ApplicationError";
 import DtoUtilities from "@/common/domain/utils/DtoUtilities";
 
 @injectable()
-export default class SearchUserController extends Controller {
+export default class SearchUserController implements ExpressController {
     constructor (
         @inject("SearchUserUseCase") 
         private readonly useCase: SearchUserUseCase
-    ) { super (); }
+    ) {}
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
@@ -26,7 +27,7 @@ export default class SearchUserController extends Controller {
             return res.status(200).json({ message: "Successful search.", data: searchResult });
         }
         catch(e: unknown) {
-            return this.handleResponseErr(res, e as ApplicationError);
+            return ControllerHandler.handleResponseError(res, e as ApplicationError);
         }
     }
 

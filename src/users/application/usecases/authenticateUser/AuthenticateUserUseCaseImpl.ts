@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import UserUseCase from "@/users/application/usecases/default/UserUseCase";
+import ApplicationHandler from "@/common/application/helpers/ApplicationHandler";
 import type AuthenticateUserUseCase from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCase";
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
@@ -12,14 +13,14 @@ import { UnauthorizedError } from "@/common/domain/errors/httpErrors";
 export default class AuthenticateUserUseCaseImpl extends UserUseCase implements AuthenticateUserUseCase {
     constructor(
         @inject("UserRepository")
-        protected readonly repo: UserRepository,
+        private readonly repo: UserRepository,
         
         @inject("StringHashProvider")
         private readonly hashProvider: StringHashProvider,
 
         @inject("AuthenticationProvider")
         private readonly authProvider: AuthenticationProvider
-    ) { super(repo); }
+    ) { super(); }
 
     public async execute(input: AuthenticateUserInput): Promise<AuthenticateUserOutput> {
         try {
@@ -42,7 +43,7 @@ export default class AuthenticateUserUseCaseImpl extends UserUseCase implements 
             return this.authProvider.generateToken(user.id);
         }
         catch (e: unknown) {
-            this.handleApplicationErrors(e);
+            ApplicationHandler.handleErrors(e);
         }
     }
 

@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import UserUseCase from "@/users/application/usecases/default/UserUseCase";
+import ApplicationHandler from "@/common/application/helpers/ApplicationHandler";
 import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type SearchQueryFormatterProvider from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterProvider";
@@ -13,9 +14,9 @@ import type RepositorySearchDSL from "@/common/domain/repositories/search/reposi
 export default class SearchUserUseCaseImpl extends UserUseCase implements SearchUserUseCase {
     constructor(
         @inject("UserRepository")
-        protected readonly repo: UserRepository,
+        private readonly repo: UserRepository,
         private readonly queryFormatter: SearchQueryFormatterProvider<UserModel>
-    ) { super(repo); }
+    ) { super(); }
 
     public async execute(input: SearchUserInput): Promise<SearchUserOutput> {
         try {
@@ -24,7 +25,7 @@ export default class SearchUserUseCaseImpl extends UserUseCase implements Search
             return this.toUseCaseOutput(result);
         }
         catch (e: unknown) {
-            this.handleApplicationErrors(e);
+            ApplicationHandler.handleErrors(e);
         }
     }
 
@@ -41,16 +42,7 @@ export default class SearchUserUseCaseImpl extends UserUseCase implements Search
     }
 
     private mapSearchResultUsersToOutput(users: UserModel[]): UserOutput[] {
-        return users.map((user) => {
-            return {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                createdAt: user.createdAt,
-                updatedAt: user.updatedAt,
-                avatar: user.avatar
-            };
-        });
+        return users.map((user) => this.mapToUserOutput(user));
     }
 
     private calcLastPage(total: number, perPage: number) {

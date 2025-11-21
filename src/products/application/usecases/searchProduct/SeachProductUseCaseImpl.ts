@@ -1,12 +1,13 @@
 import { inject, injectable } from "tsyringe";
 import ProductUseCase from "@/products/application/usecases/default/ProductUseCase";
+import ApplicationHandler from "@/common/application/helpers/ApplicationHandler";
 import type SearchProductUseCase from "@/products/application/usecases/searchProduct/SeachProductUseCase";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type SearchQueryFormatterProvider from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterProvider";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProductIo";
 import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
-import RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 
 @injectable()
 export default class SearchProductUseCaseImpl extends ProductUseCase implements SearchProductUseCase {
@@ -23,7 +24,7 @@ export default class SearchProductUseCaseImpl extends ProductUseCase implements 
             return this.toUseCaseOutput(result);
         }
         catch (e: unknown) {
-            this.handleApplicationErrors(e);
+            ApplicationHandler.handleErrors(e);
         }
     }
 

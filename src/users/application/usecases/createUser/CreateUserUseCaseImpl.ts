@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import UserUseCase from "@/users/application/usecases/default/UserUseCase";
+import ApplicationHandler from "@/common/application/helpers/ApplicationHandler";
 import type CreateUserUseCase from "@/users/application/usecases/createUser/CreateUserUseCase";
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
@@ -12,11 +13,11 @@ import { BadRequestError, ConflictError } from "@/common/domain/errors/httpError
 export default class CreateProductUseCaseImpl extends UserUseCase implements CreateUserUseCase {
     constructor(
         @inject("UserRepository")
-        protected readonly repo: UserRepository,
+        private readonly repo: UserRepository,
         
         @inject("StringHashProvider")
         protected readonly hashProvider: StringHashProvider
-    ) { super(repo); }
+    ) { super(); }
 
     public async execute(input: CreateUserInput): Promise<UserOutput> {
        
@@ -38,7 +39,7 @@ export default class CreateProductUseCaseImpl extends UserUseCase implements Cre
             return this.mapToUserOutput(user);
         }
         catch (e: unknown) {
-            this.handleApplicationErrors(e);
+            ApplicationHandler.handleErrors(e);
         }
     }
     

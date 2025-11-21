@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import ProductUseCase from "@/products/application/usecases/default/ProductUseCase";
+import ApplicationHandler from "@/common/application/helpers/ApplicationHandler";
 import type UpdateProductUseCase from "@/products/application/usecases/updateProduct/UpdateProductUseCase";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type ProductModel from "@/products/domain/models/ProductModel";
@@ -32,7 +33,7 @@ export default class UpdateProductUseCaseImpl extends ProductUseCase implements 
             return await this.repo.update(toUpdate);
         }
         catch (e: unknown) {
-            this.handleApplicationErrors(e);
+            ApplicationHandler.handleErrors(e);
         }
     }
 

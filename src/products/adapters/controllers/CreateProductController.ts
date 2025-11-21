@@ -1,6 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import z from "zod";
-import Controller from "@/common/adapters/controllers/Controller";
+import ControllerHandler from "@/common/adapters/helpers/ControllerHandler";
+import type ExpressController from "@/common/adapters/controllers/ExpressController";
 import type CreateProductUseCase from "@/products/application/usecases/createProduct/CreateProductUseCase";
 import type CreateProductInput from "@/products/application/dto/CreateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
@@ -10,11 +11,11 @@ import ZodSchemaValidator from "@/common/adapters/helpers/ZodSchemaValidator";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
 
 @injectable()
-export default class CreateProductController extends Controller {
+export default class CreateProductController implements ExpressController {
     constructor (
         @inject("CreateProductUseCase") 
         private readonly useCase: CreateProductUseCase
-    ) { super (); }
+    ) {}
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
@@ -23,7 +24,7 @@ export default class CreateProductController extends Controller {
             return res.status(201).json({ message: "Product registered successfully.", data: product });
         }
         catch(e: unknown) {
-            return this.handleResponseErr(res, e as ApplicationError);
+            return ControllerHandler.handleResponseError(res, e as ApplicationError);
         }
     }
 

@@ -1,13 +1,7 @@
-import BaseUseCase from "@/common/application/usecases/BaseUseCase";
-import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type UserModel from "@/users/domain/models/UserModel";
 import type { UserOutput } from "@/users/application/dto/userIo";
 
-export default abstract class UserUseCase extends BaseUseCase {
-    constructor(
-        protected readonly repo: UserRepository
-    ) { super(); }
-
+export default abstract class UserUseCase {
     protected mapToUserOutput(model: UserModel): UserOutput {
         return {
             id: model.id,

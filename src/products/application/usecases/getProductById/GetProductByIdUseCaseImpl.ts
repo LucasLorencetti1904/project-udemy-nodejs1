@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import ProductUseCase from "@/products/application/usecases/default/ProductUseCase";
+import ApplicationHandler from "@/common/application/helpers/ApplicationHandler";
 import type GetProductByIdUseCase from "@/products/application/usecases/getProductById/GetProductByIdUseCase";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type GetProductByIdInput from "@/products/application/dto/GetProductByIdInput";
@@ -17,7 +18,7 @@ export default class GetProductByIdUseCaseImpl extends ProductUseCase implements
             return await this.tryGetById(input);
         }
         catch (e: unknown) {
-            this.handleApplicationErrors(e);
+            ApplicationHandler.handleErrors(e);
         }
     }
 }

@@ -1,8 +1,8 @@
 import { inject, injectable } from "tsyringe";
 import ProductUseCase from "@/products/application/usecases/default/ProductUseCase";
+import ApplicationHandler from "@/common/application/helpers/ApplicationHandler";
 import type CreateProductUseCase from "@/products/application/usecases/createProduct/CreateProductUseCase";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
-import type ProductModel from "@/products/domain/models/ProductModel";
 import type CreateProductInput from "@/products/application/dto/CreateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
 import { BadRequestError } from "@/common/domain/errors/httpErrors";
@@ -25,7 +25,7 @@ export default class CreateProductUseCaseImpl extends ProductUseCase implements 
             return await this.repo.create(input);
         }
         catch (e: unknown) {
-            this.handleApplicationErrors(e);
+            ApplicationHandler.handleErrors(e);
         }
     }
 

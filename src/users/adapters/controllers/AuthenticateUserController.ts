@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
-import Controller from "@/common/adapters/controllers/Controller";
+import ControllerHandler from "@/common/adapters/helpers/ControllerHandler";
+import type ExpressController from "@/common/adapters/controllers/ExpressController";
 import type AuthenticateUserUseCase from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCase";
 import type { AuthenticateUserInput, AuthenticateUserOutput } from "@/users/application/dto/authenticateUserIo";
 import z from "zod";
@@ -9,11 +10,11 @@ import type { Request, Response } from "express";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
 
 @injectable()
-export default class AuthenticateUserController extends Controller {
+export default class AuthenticateUserController implements ExpressController {
     constructor (
         @inject("AuthenticateUserUseCase") 
         private readonly useCase: AuthenticateUserUseCase
-    ) { super (); }
+    ) {}
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
@@ -22,7 +23,7 @@ export default class AuthenticateUserController extends Controller {
             return res.status(201).json({ message: "User authenticated successfully.", data: authOutput });
         }
         catch(e: unknown) {
-            return this.handleResponseErr(res, e as ApplicationError);
+            return ControllerHandler.handleResponseError(res, e as ApplicationError);
         }
     }
 

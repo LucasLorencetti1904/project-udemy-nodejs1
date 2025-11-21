@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
-import Controller from "@/common/adapters/controllers/Controller";
+import ControllerHandler from "@/common/adapters/helpers/ControllerHandler";
+import type ExpressController from "@/common/adapters/controllers/ExpressController";
 import type UpdateUserAvatarUseCase from "@/users/application/usecases/updateUserAvatar/UpdateUserAvatarUseCase";
 import type UpdateUserAvatarInput from "@/users/application/dto/UpdateUserAvatarInput";
 import type { UserOutput } from "@/users/application/dto/userIo";
@@ -11,11 +12,11 @@ import ApplicationError from "@/common/domain/errors/ApplicationError";
 import UserAvatarImageFile from "@/users/application/dto/UserAvatarImageFile";
 
 @injectable()
-export default class UpdateUserAvatarController extends Controller {
+export default class UpdateUserAvatarController implements ExpressController {
     constructor (
         @inject("UpdateUserAvatarUseCase") 
         private readonly useCase: UpdateUserAvatarUseCase
-    ) { super (); }
+    ) {}
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
@@ -27,7 +28,7 @@ export default class UpdateUserAvatarController extends Controller {
             return res.status(200).json({ message: "User avatar updated successfully.", data: user });
         }
         catch(e: unknown) {
-            return this.handleResponseErr(res, e as ApplicationError);
+            return ControllerHandler.handleResponseError(res, e as ApplicationError);
         }
     }
 

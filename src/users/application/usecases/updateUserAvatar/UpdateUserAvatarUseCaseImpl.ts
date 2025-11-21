@@ -1,6 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import type UpdateUserAvatarUseCase from "@/users/application/usecases/updateUserAvatar/UpdateUserAvatarUseCase";
 import UserUseCase from "@/users/application/usecases/default/UserUseCase";
+import ApplicationHandler from "@/common/application/helpers/ApplicationHandler";
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type FileStorageProvider from "@/common/domain/providers/FileStorageProvider";
 import type UserModel from "@/users/domain/models/UserModel";
@@ -21,11 +22,11 @@ export default class UpdateUserAvatarUseCaseImpl extends UserUseCase implements 
     
     constructor(
         @inject("UserRepository")
-        protected readonly repo: UserRepository,
+        private readonly repo: UserRepository,
         
         @inject("FileStorageProvider")
         private readonly storageProvider: FileStorageProvider
-    ) { super(repo); }
+    ) { super(); }
 
     public async execute(input: UpdateUserAvatarInput): Promise<UserOutput> {
         try {
@@ -44,7 +45,7 @@ export default class UpdateUserAvatarUseCaseImpl extends UserUseCase implements 
             return this.mapToUserOutput(updatedUser);
         }
         catch (e: unknown) {
-            this.handleApplicationErrors(e);
+            ApplicationHandler.handleErrors(e);
         }
     }
 
