@@ -2,7 +2,7 @@ import type UserRepository from "@/users/domain/repositories/userRepository/User
 import UserInMemoryRepository from "@/users/infrastructure/inMemory/UserInMemoryRepository";
 import UserTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTypeormRepository";
 import MockRepositoryProvider from "test/users/infrastructure/inMemory/UserRepository.mock";
-import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
+import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
 import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
 import type UserModel from "@/users/domain/models/UserModel";
 import type CreateUserProps from "@/users/domain/repositories/userRepository/CreateUserProps";
@@ -21,7 +21,6 @@ impls.forEach((Impl) => {
     describe (`${Impl.name} Test.`, () => {
     
         let user: UserModel;
-        let users: UserModel[];
     
         let result: UserModel | UserModel[] | RepositorySearchResult<UserModel>;
         
@@ -92,7 +91,7 @@ impls.forEach((Impl) => {
             });
     
             it ("search", async () => {           
-                const input: RepositorySearchinput<UserModel> = {};
+                const input: RepositorySearchDSL<UserModel> = {};
                 const output: any = {};         
                 mockRepoProvider.search.mockResolvedValue(output);
                 result = await sut.search(input);

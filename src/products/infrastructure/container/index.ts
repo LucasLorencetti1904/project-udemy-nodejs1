@@ -2,8 +2,8 @@ import { container } from "tsyringe";
 import type { Repository as baseTypeormRepository } from "typeorm";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import type SearchQueryFormatterConfig from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterConfig";
-import type SearchQueryFormatter from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatter";
-import SearchQueryFormatterImpl from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterImpl";
+import type SearchQueryFormatter from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProvider";
+import SearchQueryFormatterImpl from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProviderImpl";
 import ProductTypeormRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository";
 import CreateProductUseCaseImpl from "@/products/application/usecases/createProduct/CreateProductUseCaseImpl";
 import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProductById/GetProductByIdUseCaseImpl";
@@ -17,7 +17,7 @@ import DeleteProductByIdController from "@/products/adapters/controllers/DeleteP
 import SearchProductController from "@/products/adapters/controllers/SearchProductController";
 import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
 import TypeormRepositorySearcher from "@/common/infrastructure/repositories/TypeormRepositorySearcher";
-import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepository";
+import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepositoryProvider";
 import type RepositoryProvider from "@/common/domain/repositories/RepositoryProvider";
 import type CreateProductProps from "@/products/domain/repositories/CreateProductProps";
 

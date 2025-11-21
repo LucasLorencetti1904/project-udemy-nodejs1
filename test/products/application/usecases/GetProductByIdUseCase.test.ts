@@ -1,5 +1,5 @@
 import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProductById/GetProductByIdUseCaseImpl";
-import MockProductRepository from "./ProductUseCase.mock";
+import { MockProductRepository } from "./ProductUseCase.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type GetProductByIdProductInput from "@/products/application/dto/GetProductByIdInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";

@@ -3,8 +3,8 @@ import type { Repository as BaseTypeormRepository } from "typeorm";
 import type RepositoryProvider from "@/common/domain/repositories/RepositoryProvider";
 import User from "@/users/infrastructure/typeorm/entities/User";
 import type SearchQueryFormatterConfig from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterConfig";
-import type SearchQueryFormatter from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatter";
-import SearchQueryFormatterImpl from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterImpl";
+import type SearchQueryFormatter from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProvider";
+import SearchQueryFormatterImpl from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProviderImpl";
 import UserTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTypeormRepository";
 import CreateUserUseCaseImpl from "@/users/application/usecases/createUser/CreateUserUseCaseImpl";
 import SearchUserUseCaseImpl from "@/users/application/usecases/searchUser/SearchUserUseCaseImpl";
@@ -19,7 +19,7 @@ import MulterAvatarUploadMiddleware from "@/users/adapters/middlewares/MulterAva
 import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
 import TypeormRepositorySearcher from "@/common/infrastructure/repositories/TypeormRepositorySearcher";
 import type CreateUserProps from "@/users/domain/repositories/userRepository/CreateUserProps";
-import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepository";
+import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepositoryProvider";
 
 container.registerInstance<SearchQueryFormatterConfig<User>>(
     "SearchQueryFormatterConfig<User>",

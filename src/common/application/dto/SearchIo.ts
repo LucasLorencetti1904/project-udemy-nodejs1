@@ -3,13 +3,13 @@ export type SearchInputPagination = {
     itemsPerPage?: number
 };
 
-export type SearchInputSorting<TModel> = {
-    field?: keyof TModel,
-    direction?: "asc" | "desc"
+export type SearchInputSorting = {
+    field?: string,
+    direction?: string
 };
 
-export type SearchInputFilter<TModel> = {
-    field?: keyof TModel,
+export type SearchInputFilter = {
+    field?: string,
     value?: string
 };
 
@@ -19,10 +19,10 @@ export type SearchOutputPagination = {
     itemsPerPage: number
 };
 
-export type SearchInput<TModel> = {
+export type SearchInput = {
     pagination?: SearchInputPagination,
-    sorting?: SearchInputSorting<TModel>,
-    filter?: SearchInputFilter<TModel>
+    sorting?: SearchInputSorting,
+    filter?: SearchInputFilter
 };
 
 export type SearchOutput<TModel> = {

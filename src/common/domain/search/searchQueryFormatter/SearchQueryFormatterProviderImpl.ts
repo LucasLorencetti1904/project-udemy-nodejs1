@@ -1,18 +1,18 @@
-import { inject, injectable } from "tsyringe";
-import type SearchQueryFormatter from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatter";
+import { injectable } from "tsyringe";
+import type SearchQueryFormatterProvider from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProvider";
 import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
 import type SearchQueryFormatterConfig from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterConfig";
 import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
 
 @injectable()
-export default class SearchQueryFormatterImpl<TModel> implements SearchQueryFormatter<TModel> {
+export default class SearchQueryFormatterProviderImpl<TModel> implements SearchQueryFormatterProvider <TModel> {
     private finalSearchDSL: RepositorySearchDSL<TModel>;
 
     constructor(
         private readonly config: SearchQueryFormatterConfig<TModel>
     ) {}
 
-    public formatInput(queryInput: RepositorySearchinput<TModel>): RepositorySearchDSL<TModel> {
+    public formatInput(queryInput: RepositorySearchinput): RepositorySearchDSL<TModel> {
         this.finalSearchDSL = {
             pagination: {
                 pageNumber: this.setPageNumber(queryInput.pagination?.pageNumber),
@@ -43,21 +43,21 @@ export default class SearchQueryFormatterImpl<TModel> implements SearchQueryForm
             : this.config.defaultProperties.pagination.itemsPerPage;
     }
 
-    private setSortField(field?: keyof TModel): keyof TModel {
-        return field && this.config.sortableFields.has(field)
-            ? field
+    private setSortField(field?: string): keyof TModel {
+        return field && this.config.sortableFields.has(field as keyof TModel)
+            ? field as keyof TModel
             : this.config.defaultProperties.sorting.field;
     }
 
-    private setSortDirection(direction?: "asc" | "desc"): "asc" | "desc" {
-        return direction
-            ? direction
+    private setSortDirection(direction?: string): "asc" | "desc" {
+        return direction && ["asc", "desc"].includes(direction)
+            ? direction as "asc" | "desc"
             : this.config.defaultProperties.sorting.direction;
     }
 
-    private setFilterField(field?: keyof TModel): keyof TModel {
-        return field && this.config.filterableFields.has(field)
-            ? field
+    private setFilterField(field?: string): keyof TModel {
+        return field && this.config.filterableFields.has(field as keyof TModel)
+            ? field as keyof TModel
             : this.config.defaultProperties.filter.field;
     }
     

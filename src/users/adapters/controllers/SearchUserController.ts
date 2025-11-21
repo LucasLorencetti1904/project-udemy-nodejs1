@@ -7,7 +7,7 @@ import z, { ZodType } from "zod";
 import ZodSchemaValidator from "@/common/adapters/helpers/ZodSchemaValidator";
 import type { Request, Response } from "express";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
-import DtoUtilities from "@/common/utils/filterToTruthyObject";
+import DtoUtilities from "@/common/utils/DtoUtilities";
 
 @injectable()
 export default class SearchUserController extends Controller {

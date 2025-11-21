@@ -1,10 +1,8 @@
 import { injectable } from "tsyringe";
 import type RepositoryProvider from "@/common/domain/repositories/RepositoryProvider";
-import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
-import type SearchQueryFormatter from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatter";
-import type RepositorySearcher from "@/common/domain/search/repositorySearcher/RepositorySearcher";
 import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearcher from "@/common/domain/search/repositorySearcher/RepositorySearcher";
 import { randomUUID } from "node:crypto";
 
 type ModelProps = {
@@ -17,11 +15,10 @@ type CreateDataProps = {
 };
 
 @injectable()
-export default class InMemoryRepository<TModel extends ModelProps> implements RepositoryProvider<TModel, CreateDataProps> {
+export default class InMemoryRepositoryProvider<TModel extends ModelProps> implements RepositoryProvider<TModel, CreateDataProps> {
     private items: TModel[] = [];
 
     constructor(
-        private readonly searchQueryFormatter: SearchQueryFormatter<TModel>,
         private readonly searcher: RepositorySearcher<TModel>
     ) {}
 
@@ -77,9 +74,8 @@ export default class InMemoryRepository<TModel extends ModelProps> implements Re
         return deleted;
     }
 
-    public async search(query: RepositorySearchinput<TModel>): Promise<RepositorySearchResult<TModel>> {
-        const dsl: RepositorySearchDSL<TModel> = this.searchQueryFormatter.formatInput(query);
-        return await this.searcher.search(this.items, dsl);
+    public async search(searchDsl: RepositorySearchDSL<TModel>): Promise<RepositorySearchResult<TModel>> {
+        return await this.searcher.search(this.items, searchDsl);
     }
 
     protected async _get(id: string): Promise<TModel | null> {

@@ -1,25 +1,22 @@
+import InMemoryRepositoryProvider from "@/common/domain/repositories/InMemoryRepositoryProvider";
 import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
 import type TestModel from "test/testingTools/testingTypes/TestModel";
-import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
 import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
-import InMemoryRepository from "@/common/domain/repositories/InMemoryRepository";
 import TestingMiscGenerator from "test/testingTools/testingFactories/TestingMiscGenerator";
-import { MockRepositorySearcher, MockSearchQueryFormatter } from "./InMemoryRepository.mock";
+import { MockRepositorySearcher } from "./InMemoryRepositoryProvider.mock";
 
 describe ("InMemoryRepository Test.", () => {
-    let sut: InMemoryRepository<TestModel>;
+    let sut: InMemoryRepositoryProvider<TestModel>;
 
-    let mockQueryFormatter: MockSearchQueryFormatter<TestModel>;
     let mockSearcher: MockRepositorySearcher<TestModel>;
 
     let model: TestModel;
     let result: TestModel;
 
     beforeEach(() => {
-        mockQueryFormatter = new MockSearchQueryFormatter();
         mockSearcher = new MockRepositorySearcher();
 
-        sut = new InMemoryRepository(mockQueryFormatter, mockSearcher);
+        sut = new InMemoryRepositoryProvider(mockSearcher);
 
         model = TestingMiscGenerator.testingModel({});
     });
@@ -87,7 +84,7 @@ describe ("InMemoryRepository Test.", () => {
 
 
     describe ("search", () => {
-        it ("should use composition methods 'formatInput' and 'search' to apply search query and return a search result.", async () => {
+        it ("should use composition method 'search' to apply search query and return a search result.", async () => {
             const dsl: RepositorySearchDSL<TestModel> = {
                 pagination: {
                     pageNumber: 1,
@@ -102,9 +99,7 @@ describe ("InMemoryRepository Test.", () => {
                     value: ""
                 }       
             };
-
-            mockQueryFormatter.formatInput.mockReturnValue(dsl);
-
+            
             const searcherOutput: RepositorySearchResult<TestModel> = {
                 items: Array.from({ length: 15 }),
                 total: 50,
@@ -124,11 +119,10 @@ describe ("InMemoryRepository Test.", () => {
             
             mockSearcher.search.mockResolvedValue(searcherOutput);
 
-            const result: RepositorySearchResult<TestModel> = await sut.search({});
+            const result: RepositorySearchResult<TestModel> = await sut.search(dsl);
 
             expect (result).toEqual(searcherOutput);
 
-            expect (mockQueryFormatter.formatInput).toHaveBeenCalledExactlyOnceWith({});
             expect (mockSearcher.search).toHaveBeenCalledExactlyOnceWith(sut["items"], dsl);
         });
     });

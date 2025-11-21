@@ -2,7 +2,7 @@ import type ProductRepository from "@/products/domain/repositories/ProductReposi
 import ProductInMemoryRepository from "@/products/infrastructure/inMemory/ProductInMemoryRepository";
 import ProductTypeormRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository";
 import MockRepositoryProvider from "test/products/infrastructure/repositories/ProductRepository.mock";
-import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
+import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
 import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type CreateProductProps from "@/products/domain/repositories/CreateProductProps";
@@ -96,7 +96,7 @@ impls.forEach((Impl) => {
             });
     
             it ("search", async () => {           
-                const input: RepositorySearchinput<ProductModel> = {};
+                const input: RepositorySearchDSL<ProductModel> = {};
                 const output: any = {};         
                 mockRepoProvider.search.mockResolvedValue(output);
                 result = await sut.search(input);

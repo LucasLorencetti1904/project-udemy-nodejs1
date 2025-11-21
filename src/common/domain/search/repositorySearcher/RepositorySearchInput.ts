@@ -1,16 +1,22 @@
-import type RepositorySearchParams from "@/common/domain/search/repositorySearcher/RepositorySearchParams";
-import type { RepositorySearchFilter, RepositorySearchPagination, RepositorySearchSorting } from "@/common/domain/search/repositorySearcher/RepositorySearchParams";
+export type RepositorySearchInputPagination = {
+    pageNumber?: number,
+    itemsPerPage?: number
+};
 
-type RepositorySearchInputPagination = Partial<RepositorySearchPagination>;
+export type RepositorySearchInputSorting = {
+    field?: string,
+    direction?: string
+};
 
-type RepositorySearchInputSorting<TModel> = Partial<RepositorySearchSorting<TModel>>;
+export type RepositorySearchInputFilter = {
+    field?: string,
+    value?: string
+};
 
-type RepositorySearchInputFilter<TModel> = Partial<RepositorySearchFilter<TModel>>;
-
-type RepositorySearchinput<TModel> = {
+type RepositorySearchinput = {
     pagination?: RepositorySearchInputPagination,
-    sorting?: RepositorySearchInputSorting<TModel>,
-    filter?: RepositorySearchInputFilter<TModel>
+    sorting?: RepositorySearchInputSorting,
+    filter?: RepositorySearchInputFilter
 };
 
 export default RepositorySearchinput;

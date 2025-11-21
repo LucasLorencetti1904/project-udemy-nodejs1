@@ -2,22 +2,26 @@ import { inject, injectable } from "tsyringe";
 import UserUseCase from "@/users/application/usecases/default/UserUseCase";
 import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
+import type SearchQueryFormatterProvider from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProvider";
 import type UserModel from "@/users/domain/models/UserModel";
 import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
 import type { UserOutput } from "@/users/application/dto/userIo";
 import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
 
 @injectable()
 export default class SearchUserUseCaseImpl extends UserUseCase implements SearchUserUseCase {
     constructor(
         @inject("UserRepository")
-        protected readonly repo: UserRepository
+        protected readonly repo: UserRepository,
+        private readonly queryFormatter: SearchQueryFormatterProvider<UserModel>
     ) { super(repo); }
 
     public async execute(input: SearchUserInput): Promise<SearchUserOutput> {
         try {
-            const output: RepositorySearchResult<UserModel> = await this.repo.search(input);
-            return this.toUseCaseOutput(output);
+            const dsl: RepositorySearchDSL<UserModel> = this.queryFormatter.formatInput(input);
+            const result: RepositorySearchResult<UserModel> = await this.repo.search(dsl);
+            return this.toUseCaseOutput(result);
         }
         catch (e: unknown) {
             this.handleApplicationErrors(e);

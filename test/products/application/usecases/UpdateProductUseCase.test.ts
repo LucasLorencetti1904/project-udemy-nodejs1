@@ -1,5 +1,5 @@
 import UpdateProductUseCaseImpl from "@/products/application/usecases/updateProduct/UpdateProductUseCaseImpl";
-import MockProductRepository from "./ProductUseCase.mock";
+import { MockProductRepository } from "./ProductUseCase.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";

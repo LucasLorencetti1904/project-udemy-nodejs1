@@ -4,7 +4,6 @@ import type { Repository as BaseTypeormRepository, DeepPartial, FindOptionsWhere
 import type RepositorySearcher from "@/common/domain/search/repositorySearcher/RepositorySearcher";
 import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
 import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
-import type SearchQueryFormatter from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatter";
 import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
 
 type TModelDefaultProps = {
@@ -14,10 +13,9 @@ type TModelDefaultProps = {
 };
 
 @injectable()
-export default class TypeormRepository<TModel extends TModelDefaultProps> implements RepositoryProvider<TModel, DeepPartial<TModel>> {
+export default class TypeormRepositoryProvider<TModel extends TModelDefaultProps> implements RepositoryProvider<TModel, DeepPartial<TModel>> {
         constructor (
             private readonly baseTypeormRepository: BaseTypeormRepository<TModel>,
-            private readonly searchQueryFormatter: SearchQueryFormatter<TModel>,
             private readonly searcher: RepositorySearcher<TModel>
         ) {}
 
@@ -59,9 +57,8 @@ export default class TypeormRepository<TModel extends TModelDefaultProps> implem
             return toDelete;
         }
 
-        public async search(query: RepositorySearchinput<TModel>): Promise<RepositorySearchResult<TModel>> {
-            const dsl: RepositorySearchDSL<TModel> = this.searchQueryFormatter.formatInput(query);
-            return await this.searcher.search(this.baseTypeormRepository, dsl);
+        public async search(dslQuery: RepositorySearchDSL<TModel>): Promise<RepositorySearchResult<TModel>> {
+            return await this.searcher.search(this.baseTypeormRepository, dslQuery);
         }
 
         private async _getById(id: string): Promise<TModel | null> {

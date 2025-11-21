@@ -4,7 +4,7 @@ import type ProductModel from "@/products/domain/models/ProductModel";
 import type CreateProductProps from "@/products/domain/repositories/CreateProductProps";
 import type RepositoryProvider from "@/common/domain/repositories/RepositoryProvider";
 import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
-import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
+import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
 
 @injectable()
 export default class ProductTypeormRepository implements ProductRepository {
@@ -38,7 +38,7 @@ export default class ProductTypeormRepository implements ProductRepository {
             return await this.repo.delete(id);
         }
 
-        public async search(query: RepositorySearchinput<ProductModel>): Promise<RepositorySearchResult<ProductModel>> {
-            return await this.repo.search(query);
+        public async search(dslQuery: RepositorySearchDSL<ProductModel>): Promise<RepositorySearchResult<ProductModel>> {
+            return await this.repo.search(dslQuery);
         }
 }

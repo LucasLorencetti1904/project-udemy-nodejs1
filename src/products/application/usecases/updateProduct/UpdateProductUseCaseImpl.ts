@@ -6,7 +6,7 @@ import type ProductModel from "@/products/domain/models/ProductModel";
 import type UpdateProductInput from "@/products/application/dto/UpdateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";
 import { BadRequestError } from "@/common/domain/errors/httpErrors";
-import filterToTruthyObject from "@/common/utils/filterToTruthyObject";
+import DtoUtilities from "@/common/utils/DtoUtilities";
 
 @injectable()
 export default class UpdateProductUseCaseImpl extends ProductUseCase implements UpdateProductUseCase {
@@ -25,7 +25,7 @@ export default class UpdateProductUseCaseImpl extends ProductUseCase implements 
 
             const oldProduct: ProductModel = await this.tryGetById(input.id);
 
-            input = filterToTruthyObject(input);
+            input = DtoUtilities.filterToTruthyDto(input);
 
             const toUpdate: ProductModel = { ...oldProduct, ...input };
 

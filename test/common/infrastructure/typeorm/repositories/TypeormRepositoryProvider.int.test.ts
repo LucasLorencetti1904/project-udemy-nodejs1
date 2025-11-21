@@ -4,16 +4,14 @@ import type UpdateProductInput from "@/products/application/dto/UpdateProductInp
 import testingDataSource from "@/common/infrastructure/typeorm/config/testingDataSource";
 import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
 import { randomUUID } from "node:crypto";
-import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepository";
-import { MockRepositorySearcher, MockSearchQueryFormatter } from "./TypeormRepository.mock";
+import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepositoryProvider";
+import { MockRepositorySearcher, MockSearchQueryFormatter } from "./TypeormRepositoryProvider.mock";
 import RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
-import RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
 import RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
 
 describe ("TypeormRepository Test.", () => {
     let sut: TypeormRepository<ProductModel>;
     let mockSearcher: MockRepositorySearcher<ProductModel>;
-    let mockQueryFormatter: MockSearchQueryFormatter<ProductModel>;
 
     let exampleOfProduct: ProductModel;
     let result: ProductModel | ProductModel[] | RepositorySearchResult<ProductModel>;
@@ -35,9 +33,8 @@ describe ("TypeormRepository Test.", () => {
 
     beforeEach(async () => {
         await testingDataSource.manager.query("DELETE FROM products");
-        mockQueryFormatter = new MockSearchQueryFormatter();
         mockSearcher = new MockRepositorySearcher();
-        sut = new TypeormRepository(testingDataSource.getRepository(Product), mockQueryFormatter, mockSearcher);
+        sut = new TypeormRepository(testingDataSource.getRepository(Product), mockSearcher);
         exampleOfProduct = TestingProductFactory.output({});
     });
 
@@ -94,7 +91,7 @@ describe ("TypeormRepository Test.", () => {
     });
 
     describe ("search", () => {
-        it ("should use composition methods 'formatInput' and 'search' to apply search query and return a search result.", async () => {
+        it ("should use composition method 'search' to apply search query and return a search result.", async () => {
             const dsl: RepositorySearchDSL<ProductModel> = {
                 pagination: {
                     pageNumber: 1,
@@ -109,8 +106,6 @@ describe ("TypeormRepository Test.", () => {
                     value: ""
                 }       
             };
-
-            mockQueryFormatter.formatInput.mockReturnValue(dsl);
 
             const searcherOutput: RepositorySearchResult<ProductModel> = {
                 items: Array.from({ length: 15 }),
@@ -131,11 +126,10 @@ describe ("TypeormRepository Test.", () => {
             
             mockSearcher.search.mockResolvedValue(searcherOutput);
 
-            const result: RepositorySearchResult<ProductModel> = await sut.search({});
+            const result: RepositorySearchResult<ProductModel> = await sut.search(dsl);
 
             expect (result).toEqual(searcherOutput);
 
-            expect (mockQueryFormatter.formatInput).toHaveBeenCalledExactlyOnceWith({});
             expect (mockSearcher.search).toHaveBeenCalledExactlyOnceWith(sut["baseTypeormRepository"], dsl);
         });
     });

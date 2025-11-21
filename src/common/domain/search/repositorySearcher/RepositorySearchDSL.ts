@@ -1,5 +1,21 @@
-import type RepositorySearchParams from "@/common/domain/search/repositorySearcher/RepositorySearchParams";
+export type RepositorySearchDSLPagination = {
+    pageNumber: number,
+    itemsPerPage: number
+};
 
-type RepositorySearchDSL<TModel> = RepositorySearchParams<TModel>;
+export type RepositorySearchDSLSorting<TModel> = {
+    field: keyof TModel,
+    direction: "asc" | "desc"
+};
 
+export type RepositorySearchDSLFilter<TModel> = {
+    field: keyof TModel,
+    value: string
+};
+
+type RepositorySearchDSL<TModel> = {
+    pagination?: RepositorySearchDSLPagination,
+    sorting?: RepositorySearchDSLSorting<TModel>,
+    filter?: RepositorySearchDSLFilter<TModel>
+};
 export default RepositorySearchDSL;

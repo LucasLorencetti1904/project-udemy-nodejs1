@@ -3,7 +3,7 @@ import type RepositoryProvider from "@/common/domain/repositories/RepositoryProv
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type UserModel from "@/users/domain/models/UserModel";
 import type CreateUserProps from "@/users/domain/repositories/userRepository/CreateUserProps";
-import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
+import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
 import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
 
 @injectable()
@@ -37,7 +37,7 @@ export default class UserInMemoryRepository implements UserRepository {
         return await this.repo.delete(id);
     }
 
-    public async search(query: RepositorySearchinput<UserModel>): Promise<RepositorySearchResult<UserModel>> {
+    public async search(query: RepositorySearchDSL<UserModel>): Promise<RepositorySearchResult<UserModel>> {
         return await this.repo.search(query);
     }
 }

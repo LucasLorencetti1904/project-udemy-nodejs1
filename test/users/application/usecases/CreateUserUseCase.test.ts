@@ -1,5 +1,5 @@
 import CreateUserUseCaseImpl from "@/users/application/usecases/createUser/CreateUserUseCaseImpl";
-import { MockUserRepository, MockStringHashProvider } from "../../UserUseCase.mock";
+import { MockUserRepository, MockStringHashProvider } from "./UserUseCase.mock";
 import type CreateUserInput from "@/users/application/dto/CreateUserInput";
 import type { UserOutput } from "@/users/application/dto/userIo";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
@@ -30,7 +30,7 @@ describe ("CreateUserUseCaseImpl Test.", () => {
 
             await expect (sut.execute(userInputData)).rejects.toBeInstanceOf(BadRequestError);
             
-            ["findByEmail", "create", "insert"].forEach((repoMethod) => {
+            ["findByEmail", "create"].forEach((repoMethod) => {
                 expect (mockHashProvider.hashString).not.toHaveBeenCalled();
                 expect (mockRepository[repoMethod]).not.toHaveBeenCalled();
             })
@@ -46,7 +46,7 @@ describe ("CreateUserUseCaseImpl Test.", () => {
         
         expect (mockRepository.findByEmail).toHaveBeenCalledExactlyOnceWith(userInputData.email);
 
-        [mockHashProvider.hashString, mockRepository.create, mockRepository.insert].forEach((method) => {
+        [mockHashProvider.hashString, mockRepository.create].forEach((method) => {
             expect (method).not.toHaveBeenCalled();
         })
     });
@@ -54,7 +54,6 @@ describe ("CreateUserUseCaseImpl Test.", () => {
     [
         { repoMethod: "findByEmail", mockResult: vi.fn().mockRejectedValue(new Error()) },
         { repoMethod: "create", mockResult: vi.fn(() => { throw new Error() }) },
-        { repoMethod: "insert", mockResult: vi.fn().mockRejectedValue(new Error()) }
     ]
     .forEach(({ repoMethod, mockResult }) => {
         it (`should throw an InternalError when method '${repoMethod}' of repository throws an unexpected error.`, async () => {
@@ -92,7 +91,6 @@ describe ("CreateUserUseCaseImpl Test.", () => {
             [
                 { repoMethod: "findByEmail", expectedValue: userInputData.email },
                 { repoMethod: "create", expectedValue: userInputDataWithHashPassword },
-                { repoMethod: "insert", expectedValue: userOutputData }
             ]
             .forEach(({repoMethod, expectedValue}) => {
                 expect (mockRepository[repoMethod as keyof MockUserRepository])

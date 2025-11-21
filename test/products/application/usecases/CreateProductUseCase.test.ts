@@ -1,5 +1,5 @@
 import CreateProductUseCaseImpl from "@/products/application/usecases/createProduct/CreateProductUseCaseImpl";
-import MockProductRepository from "./ProductUseCase.mock";
+import { MockProductRepository } from "./ProductUseCase.mock";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type CreateProductInput from "@/products/application/dto/CreateProductInput";
 import type { ProductOutput } from "@/products/application/dto/productIo";

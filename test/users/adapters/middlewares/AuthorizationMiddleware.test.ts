@@ -1,5 +1,5 @@
 import AuthorizationMiddleware from "@/users/adapters/middlewares/AuthorizationMiddleware";
-import { MockAuthenticationProvider } from "test/users/UserUseCase.mock";
+import { MockAuthenticationProvider } from "test/users/application/usecases/UserUseCase.mock";
 import type { NextFunction, Request, Response } from "express";
 import { UnauthorizedError } from "@/common/domain/errors/httpErrors";
 import TestingMiscGenerator from "test/testingTools/testingFactories/TestingMiscGenerator";

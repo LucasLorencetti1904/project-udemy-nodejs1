@@ -1,11 +1,27 @@
 import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
 import SearchUserUseCaseImpl from "@/users/application/usecases/searchUser/SearchUserUseCaseImpl";
-import { MockUserRepository } from "test/users/UserUseCase.mock";
+import { MockUserRepository, MockQuerySearchFormatter } from "test/users/application/usecases/UserUseCase.mock";
 import type UserModel from "@/users/domain/models/UserModel";
 import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
 import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
 import { InternalError } from "@/common/domain/errors/httpErrors";
+import RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
+
+const defaultFormattedDSL: RepositorySearchDSL<UserModel> = {
+    pagination: {
+        pageNumber: 1,
+        itemsPerPage: 15
+    },
+    sorting: {
+        field: "createdAt",
+        direction: "desc"
+    },
+    filter: {
+        field: "name",
+        value: ""
+    }
+};
 
 const defaultRepoOutput: RepositorySearchResult<UserModel> = {
     items: Array.from({ length: 15 }, () => TestingUserFactory.model({})),
@@ -25,7 +41,10 @@ const defaultRepoOutput: RepositorySearchResult<UserModel> = {
 };
 
 const defaultUseCaseOutput: SearchUserOutput = {
-    items: defaultRepoOutput.items.map((item) => TestingUserFactory.output(item)),
+    items: defaultRepoOutput.items.map((item) => {
+        const { password, ...rest } = item;
+        return rest;
+    }),
     total: 50,
     pagination: {
         currentPage: 1,
@@ -37,18 +56,21 @@ const defaultUseCaseOutput: SearchUserOutput = {
 describe ("SearchUserUseCase Test", () => {  
     let sut: SearchUserUseCase;
     let mockRepository: MockUserRepository;
+    let mockQueryFormatter: MockQuerySearchFormatter<UserModel>;
 
     let result: SearchUserOutput;
 
     beforeEach (() => {
         mockRepository = new MockUserRepository();
-        sut = new SearchUserUseCaseImpl(mockRepository);        
+        mockQueryFormatter = new MockQuerySearchFormatter();        
+        sut = new SearchUserUseCaseImpl(mockRepository, mockQueryFormatter);
     });
 
     type Case = {
         description: string,
         input: SearchUserInput,
-        output: RepositorySearchResult<UserModel>,
+        queryFormatterOutput: RepositorySearchDSL<UserModel>,
+        repoOutput: RepositorySearchResult<UserModel>,
         expected: SearchUserOutput
     };
 
@@ -56,7 +78,8 @@ describe ("SearchUserUseCase Test", () => {
         {
             description: "should return default search result when input is empty",
             input: {},
-            output: { ...defaultRepoOutput },
+            queryFormatterOutput: { ...defaultFormattedDSL },
+            repoOutput: { ...defaultRepoOutput },
             expected: { ...defaultUseCaseOutput }
         },
         {
@@ -67,15 +90,16 @@ describe ("SearchUserUseCase Test", () => {
                     itemsPerPage: 2.7
                 },
                 sorting: {
-                    field: "password",
+                    field: "quantity",
                     direction: "desc"
                 },
                 filter: {
-                    field: "password",
+                    field: "id",
                     value: ""
                 }
             },
-            output: { ...defaultRepoOutput },
+            queryFormatterOutput: { ...defaultFormattedDSL },
+            repoOutput: { ...defaultRepoOutput },
             expected: { ...defaultUseCaseOutput }
         },
         {
@@ -94,7 +118,21 @@ describe ("SearchUserUseCase Test", () => {
                     value: "exmpl"
                 }
             },
-            output: {
+            queryFormatterOutput: {
+                pagination: {
+                    pageNumber: 3,
+                    itemsPerPage: 9
+                },
+                sorting: {
+                    field: "name",
+                    direction: "asc"
+                },
+                filter: {
+                    field: "name",
+                    value: "exmpl"
+                }
+            },
+            repoOutput: {
                 total: 50,
                 items: [ ...defaultRepoOutput.items.slice(18, 27) ],
                 pagination: {
@@ -102,7 +140,7 @@ describe ("SearchUserUseCase Test", () => {
                     itemsPerPage: 9
                 },
                 sorting: {
-                    field: "email",
+                    field: "name",
                     direction: "asc"
                 },
                 filter: {
@@ -122,19 +160,34 @@ describe ("SearchUserUseCase Test", () => {
         }
     ];
 
-    specificCases.forEach(({ description, input, output, expected }) => {
+    specificCases.forEach(({ description, input, queryFormatterOutput, repoOutput, expected }) => {
         it (description, async () => {        
-            mockRepository.search.mockResolvedValue(output);
+            mockQueryFormatter.formatInput.mockReturnValue(queryFormatterOutput)
+            mockRepository.search.mockResolvedValue(repoOutput);
 
             result = await sut.execute(input);
             
             expect (result).toEqual(expect.objectContaining(expected));
-            expect (mockRepository.search).toHaveBeenCalledExactlyOnceWith(input);
+            expect (mockQueryFormatter.formatInput).toHaveBeenCalledExactlyOnceWith(input)
+            expect (mockRepository.search).toHaveBeenCalledExactlyOnceWith(queryFormatterOutput);
         });
     });
 
-    it ("should throw an InternalError repository throws an unexpected error.", async () => {
+    it ("should throw an InternalError when query formatter throws an unexpected error.", async () => {
+        mockQueryFormatter.formatInput.mockImplementation(() => { throw new Error("Example") });
+
         await expect (sut.execute({})).rejects.toBeInstanceOf(InternalError);
-        expect (mockRepository.search).toHaveBeenCalledExactlyOnceWith({});
+
+        expect (mockQueryFormatter.formatInput).toHaveBeenCalledExactlyOnceWith({});
+        expect (mockRepository.search).not.toHaveBeenCalled();
+    });
+
+    it ("should throw an InternalError when repository throws an unexpected error.", async () => {
+        mockQueryFormatter.formatInput.mockReturnValue(defaultFormattedDSL);
+
+        await expect (sut.execute({})).rejects.toBeInstanceOf(InternalError);
+
+        expect (mockQueryFormatter.formatInput).toHaveBeenCalledExactlyOnceWith({});
+        expect (mockRepository.search).toHaveBeenCalledExactlyOnceWith(defaultFormattedDSL);
     });
 });
