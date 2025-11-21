@@ -2,12 +2,12 @@ import { inject, injectable } from "tsyringe";
 import UserUseCase from "@/users/application/usecases/default/UserUseCase";
 import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
-import type SearchQueryFormatterProvider from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProvider";
+import type SearchQueryFormatterProvider from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterProvider";
 import type UserModel from "@/users/domain/models/UserModel";
 import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
 import type { UserOutput } from "@/users/application/dto/userIo";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
-import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 
 @injectable()
 export default class SearchUserUseCaseImpl extends UserUseCase implements SearchUserUseCase {

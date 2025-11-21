@@ -3,8 +3,8 @@ import type RepositoryProvider from "@/common/domain/repositories/RepositoryProv
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type UserModel from "@/users/domain/models/UserModel";
 import type CreateUserProps from "@/users/domain/repositories/userRepository/CreateUserProps";
-import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 
 @injectable()
 export default class UserInMemoryRepository implements UserRepository {

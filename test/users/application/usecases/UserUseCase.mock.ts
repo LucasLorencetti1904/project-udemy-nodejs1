@@ -1,5 +1,5 @@
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
-import type SearchQueryFormatterProvider from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProvider";
+import type SearchQueryFormatterProvider from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterProvider";
 import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
 import type AuthenticationProvider from "@/common/domain/providers/AuthenticationProvider";
 import type FileStorageProvider from "@/common/domain/providers/FileStorageProvider";

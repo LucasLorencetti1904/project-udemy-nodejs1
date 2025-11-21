@@ -1,9 +1,9 @@
 import { container } from "tsyringe";
 import type { Repository as baseTypeormRepository } from "typeorm";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
-import type SearchQueryFormatterConfig from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterConfig";
-import type SearchQueryFormatter from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProvider";
-import SearchQueryFormatterImpl from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProviderImpl";
+import type SearchQueryFormatterConfig from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterConfig";
+import type SearchQueryFormatter from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterProvider";
+import SearchQueryFormatterImpl from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterProviderImpl";
 import ProductTypeormRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository";
 import CreateProductUseCaseImpl from "@/products/application/usecases/createProduct/CreateProductUseCaseImpl";
 import GetProductByIdUseCaseImpl from "@/products/application/usecases/getProductById/GetProductByIdUseCaseImpl";

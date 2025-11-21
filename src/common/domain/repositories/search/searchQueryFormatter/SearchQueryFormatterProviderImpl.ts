@@ -1,8 +1,8 @@
 import { injectable } from "tsyringe";
-import type SearchQueryFormatterProvider from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProvider";
-import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
-import type SearchQueryFormatterConfig from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterConfig";
-import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
+import type SearchQueryFormatterProvider from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterProvider";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
+import type SearchQueryFormatterConfig from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterConfig";
+import type RepositorySearchinput from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchInput";
 
 @injectable()
 export default class SearchQueryFormatterProviderImpl<TModel> implements SearchQueryFormatterProvider <TModel> {

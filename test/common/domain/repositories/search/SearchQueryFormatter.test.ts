@@ -1,8 +1,8 @@
-import RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
-import RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
-import type SearchQueryFormatter from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProvider";
-import SearchQueryFormatterConfig from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterConfig";
-import SearchQueryFormatterImpl from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProviderImpl";
+import RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
+import RepositorySearchinput from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchInput";
+import type SearchQueryFormatter from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterProvider";
+import SearchQueryFormatterConfig from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterConfig";
+import SearchQueryFormatterImpl from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterProviderImpl";
 import type TestModel from "test/testingTools/testingTypes/TestModel";
 
 const formatterConfig: SearchQueryFormatterConfig<TestModel> = {

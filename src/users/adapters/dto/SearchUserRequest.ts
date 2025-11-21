@@ -1,5 +1,10 @@
-import type SearchRequest from "@/common/adapters/dto/SearchRequest";
-
-type SearchUserRequest = SearchRequest;
+type SearchUserRequest = {
+    pageNumber?: number;
+    itemsPerPage?: number;
+    sortField?: string;
+    sortDirection?: string;
+    filterField?: string;
+    filterValue?: string;
+};
 
 export default SearchUserRequest;

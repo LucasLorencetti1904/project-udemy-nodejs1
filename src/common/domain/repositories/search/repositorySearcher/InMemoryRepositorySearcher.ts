@@ -1,8 +1,8 @@
 import { injectable } from "tsyringe";
-import type RepositorySearcher from "@/common/domain/search/repositorySearcher/RepositorySearcher";
-import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
-import type { RepositorySearchDSLFilter, RepositorySearchDSLPagination, RepositorySearchDSLSorting } from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearcher from "@/common/domain/repositories/search/repositorySearcher/RepositorySearcher";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
+import type { RepositorySearchDSLFilter, RepositorySearchDSLPagination, RepositorySearchDSLSorting } from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 
 @injectable()
 export default class InMemoryRepositoryRepositorySearcher<TModel> implements RepositorySearcher<TModel> {

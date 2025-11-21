@@ -1,5 +1,5 @@
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
-import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 
 export default interface Repository<TModel, CreateData> {
     create(data: CreateData): Promise<TModel>;

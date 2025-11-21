@@ -1,7 +1,7 @@
-import InMemoryRepositoryRepositorySearcher from "@/common/domain/search/repositorySearcher/InMemoryRepositorySearcher";
+import InMemoryRepositoryRepositorySearcher from "@/common/domain/repositories/search/repositorySearcher/InMemoryRepositorySearcher";
 import type TestModel from "test/testingTools/testingTypes/TestModel";
-import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 import TestingMiscGenerator from "test/testingTools/testingFactories/TestingMiscGenerator";
 
 let sut: InMemoryRepositoryRepositorySearcher<TestModel>;

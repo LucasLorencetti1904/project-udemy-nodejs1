@@ -1,10 +1,9 @@
 import { injectable } from "tsyringe";
 import type RepositoryProvider from "@/common/domain/repositories/RepositoryProvider";
 import type { Repository as BaseTypeormRepository, DeepPartial, FindOptionsWhere } from "typeorm";
-import type RepositorySearcher from "@/common/domain/search/repositorySearcher/RepositorySearcher";
-import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
-import type RepositorySearchinput from "@/common/domain/search/repositorySearcher/RepositorySearchInput";
+import type RepositorySearcher from "@/common/domain/repositories/search/repositorySearcher/RepositorySearcher";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 
 type TModelDefaultProps = {
     id: string,

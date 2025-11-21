@@ -3,8 +3,8 @@ import type ProductRepository from "@/products/domain/repositories/ProductReposi
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type CreateProductProps from "@/products/domain/repositories/CreateProductProps";
 import type RepositoryProvider from "@/common/domain/repositories/RepositoryProvider";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
-import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 
 @injectable()
 export default class ProductTypeormRepository implements ProductRepository {

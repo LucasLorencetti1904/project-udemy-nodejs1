@@ -1,9 +1,9 @@
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
-import UserInMemoryRepository from "@/users/infrastructure/inMemory/UserInMemoryRepository";
+import UserInMemoryRepository from "@/users/domain/repositories/userRepository/inMemory/UserInMemoryRepository";
 import UserTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTypeormRepository";
-import MockRepositoryProvider from "test/users/infrastructure/inMemory/UserRepository.mock";
-import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import MockRepositoryProvider from "test/users/adapters/domain/repositories/inMemory/UserRepository.mock";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 import type UserModel from "@/users/domain/models/UserModel";
 import type CreateUserProps from "@/users/domain/repositories/userRepository/CreateUserProps";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";

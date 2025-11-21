@@ -3,10 +3,10 @@ import SearchUserUseCaseImpl from "@/users/application/usecases/searchUser/Searc
 import { MockUserRepository, MockQuerySearchFormatter } from "test/users/application/usecases/UserUseCase.mock";
 import type UserModel from "@/users/domain/models/UserModel";
 import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
 import { InternalError } from "@/common/domain/errors/httpErrors";
-import RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
+import RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 
 const defaultFormattedDSL: RepositorySearchDSL<UserModel> = {
     pagination: {

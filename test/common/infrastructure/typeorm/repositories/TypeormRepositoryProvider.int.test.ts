@@ -6,8 +6,8 @@ import TestingProductFactory from "test/testingTools/testingFactories/TestingPro
 import { randomUUID } from "node:crypto";
 import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepositoryProvider";
 import { MockRepositorySearcher, MockSearchQueryFormatter } from "./TypeormRepositoryProvider.mock";
-import RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
-import RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
+import RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
+import RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 
 describe ("TypeormRepository Test.", () => {
     let sut: TypeormRepository<ProductModel>;

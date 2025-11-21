@@ -1,9 +1,9 @@
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
-import ProductInMemoryRepository from "@/products/infrastructure/inMemory/ProductInMemoryRepository";
+import ProductInMemoryRepository from "@/products/domain/inMemory/ProductInMemoryRepository";
 import ProductTypeormRepository from "@/products/infrastructure/typeorm/repositories/ProductTypeormRepository";
-import MockRepositoryProvider from "test/products/infrastructure/repositories/ProductRepository.mock";
-import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import MockRepositoryProvider from "test/products/domain/repositories/ProductRepository.mock";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type CreateProductProps from "@/products/domain/repositories/CreateProductProps";
 import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";

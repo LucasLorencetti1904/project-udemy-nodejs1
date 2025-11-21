@@ -2,8 +2,8 @@ import { inject, injectable } from "tsyringe";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
 import type RepositoryProvider from "@/common/domain/repositories/RepositoryProvider";
-import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 import type CreateProductProps from "@/products/domain/repositories/CreateProductProps";
 
 @injectable()

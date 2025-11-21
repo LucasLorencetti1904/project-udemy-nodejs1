@@ -3,10 +3,10 @@ import SearchProductUseCaseImpl from "@/products/application/usecases/searchProd
 import { MockProductRepository, MockSearchQueryFormatter } from "./ProductUseCase.mock";
 import type ProductModel from "@/products/domain/models/ProductModel";
 import type { SearchProductInput, SearchProductOutput } from "@/products/application/dto/searchProductIo";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 import TestingProductFactory from "test/testingTools/testingFactories/TestingProductFactory";
 import { InternalError } from "@/common/domain/errors/httpErrors";
-import RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
+import RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 
 const defaultFormattedDSL: RepositorySearchDSL<ProductModel> = {
     pagination: {

@@ -1,5 +1,5 @@
 import type ProductRepository from "@/products/domain/repositories/ProductRepository";
-import type SearchQueryFormatterProvider from "@/common/domain/search/searchQueryFormatter/SearchQueryFormatterProvider";
+import type SearchQueryFormatterProvider from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterProvider";
 
 export class MockProductRepository implements ProductRepository {
     public findById = vi.fn();

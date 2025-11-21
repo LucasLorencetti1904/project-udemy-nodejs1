@@ -1,7 +1,7 @@
 import InMemoryRepositoryProvider from "@/common/domain/repositories/InMemoryRepositoryProvider";
-import type RepositorySearchResult from "@/common/domain/search/repositorySearcher/RepositorySearchResult";
+import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 import type TestModel from "test/testingTools/testingTypes/TestModel";
-import type RepositorySearchDSL from "@/common/domain/search/repositorySearcher/RepositorySearchDSL";
+import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 import TestingMiscGenerator from "test/testingTools/testingFactories/TestingMiscGenerator";
 import { MockRepositorySearcher } from "./InMemoryRepositoryProvider.mock";
 

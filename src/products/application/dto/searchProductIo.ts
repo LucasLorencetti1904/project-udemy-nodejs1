@@ -1,6 +1,5 @@
 import type { ProductOutput } from "@/products/application/dto/productIo";
 
-
 export type SearchProductInput = {
     pagination?: {
         pageNumber?: number,
