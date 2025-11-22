@@ -7,7 +7,7 @@ import type CreateUserTokenProps from "@/users/domain/repositories/userTokenRepo
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
 import { randomUUID } from "node:crypto";
 import UserTokenTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTokenTypeormRepository";
-import { MockUserRepository, MockRepositoryProvider } from "test/users/adapters/domain/repositories/inMemory/UserTokenRepository.mock";
+import { MockUserRepository, MockRepositoryProvider } from "test/users/domain/repositories/inMemory/UserTokenRepository.mock";
 import TestingUserTokenFactory from "test/testingTools/testingFactories/TestingUserTokenFactory";
 
 let sut: UserTokenRepository;

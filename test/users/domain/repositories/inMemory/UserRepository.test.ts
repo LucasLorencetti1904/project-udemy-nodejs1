@@ -1,7 +1,7 @@
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import UserInMemoryRepository from "@/users/domain/repositories/userRepository/inMemory/UserInMemoryRepository";
 import UserTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTypeormRepository";
-import MockRepositoryProvider from "test/users/adapters/domain/repositories/inMemory/UserRepository.mock";
+import MockRepositoryProvider from "test/users/domain/repositories/inMemory/UserRepository.mock";
 import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 import type UserModel from "@/users/domain/models/UserModel";
