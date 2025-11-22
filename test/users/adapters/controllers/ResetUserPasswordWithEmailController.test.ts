@@ -1,3 +1,4 @@
+import ResetUserPasswordWithEmailController from "@/users/adapters/controllers/ResetUserPasswordWithEmailController";
 import { MockResetUserPasswordWithEmailUseCase } from "./UserUseCase.mock";
 import type { ResetUserPasswordWithEmailOutput } from "@/users/application/dto/ResetUserPasswordWithEmailIo";
 import type { Request, Response } from "express";
@@ -50,7 +51,7 @@ describe ("ResetUserPasswordWithEmailController Test.", () => {
 
     [
         { useCaseError: new InternalError("Example"), statusCode: 500, occasion: "usecase throws an unexpected error" },
-        { useCaseError: new NotFoundError("Example"), statusCode: 409, occasion: "user is not found by email" }
+        { useCaseError: new NotFoundError("Example"), statusCode: 404, occasion: "user is not found by email" }
     ].forEach(({ useCaseError, statusCode, occasion }) => {
         it (`should return a response error with code ${statusCode} when ${occasion}.`, async () => {
             req.body = { email: "example@gmail.com" };
