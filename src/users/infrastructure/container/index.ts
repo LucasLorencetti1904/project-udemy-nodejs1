@@ -19,8 +19,9 @@ import MulterAvatarUploadMiddleware from "@/users/adapters/middlewares/MulterAva
 import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
 import TypeormRepositorySearcher from "@/common/infrastructure/repositories/TypeormRepositorySearcher";
 import type CreateUserProps from "@/users/domain/repositories/userRepository/CreateUserProps";
-import UserTokenTypeormRepository from "../typeorm/repositories/UserTokenTypeormRepository";
+import UserTokenTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTokenTypeormRepository";
 import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepositoryProvider";
+import ResetUserPasswordWithEmailUseCaseImpl from "@/users/application/usecases/resetUserPasswordWithEmail/ResetUserPasswordWithEmailUseCaseImpl";
 
 container.registerInstance<SearchQueryFormatterConfig<User>>(
     "SearchQueryFormatterConfig<User>", {
@@ -83,3 +84,5 @@ container.registerSingleton("AuthenticationMiddleware", AuthorizationMiddleware)
 container.registerSingleton("UpdateUserAvatarUseCase", UpdateUserAvatarUseCaseImpl);
 container.registerSingleton("UpdateUserAvatarController", UpdateUserAvatarController);
 container.registerSingleton("MulterAvatarUploadMiddleware", MulterAvatarUploadMiddleware);
+
+container.registerSingleton("ResetUserPasswordWithEmailUseCase", ResetUserPasswordWithEmailUseCaseImpl);
