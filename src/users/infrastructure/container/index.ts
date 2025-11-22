@@ -19,6 +19,7 @@ import MulterAvatarUploadMiddleware from "@/users/adapters/middlewares/MulterAva
 import dataSource from "@/common/infrastructure/typeorm/config/dataSource";
 import TypeormRepositorySearcher from "@/common/infrastructure/repositories/TypeormRepositorySearcher";
 import type CreateUserProps from "@/users/domain/repositories/userRepository/CreateUserProps";
+import UserTokenTypeormRepository from "../typeorm/repositories/UserTokenTypeormRepository";
 import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepositoryProvider";
 
 container.registerInstance<SearchQueryFormatterConfig<User>>(
@@ -67,6 +68,7 @@ container.registerInstance<RepositoryProvider<User, CreateUserProps>>(
 );
 
 container.registerSingleton("UserRepository", UserTypeormRepository);
+container.registerSingleton("UserTokenRepository", UserTokenTypeormRepository);
 
 container.registerSingleton("CreateUserUseCase", CreateUserUseCaseImpl);
 container.registerSingleton("CreateUserController", CreateUserController);
