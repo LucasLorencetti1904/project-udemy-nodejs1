@@ -32,7 +32,7 @@ describe ("ResetUserPasswordWithEmailUseCase Test", () => {
         input = { email: "example@gmail.com" };
         await expect (sut.execute(input)).rejects.toBeInstanceOf(NotFoundError);
 
-        expect (mockUserRepo.findByEmail).toHaveBeenCalledExactlyOnceWith(input);
+        expect (mockUserRepo.findByEmail).toHaveBeenCalledExactlyOnceWith(input.email);
         expect (mockUserTokenRepo.generateToken).not.toHaveBeenCalled();
     });
 
@@ -42,7 +42,7 @@ describe ("ResetUserPasswordWithEmailUseCase Test", () => {
         input = { email: "example@gmail.com" };
         await expect (sut.execute(input)).rejects.toBeInstanceOf(InternalError);
 
-        expect (mockUserRepo.findByEmail).toHaveBeenCalledExactlyOnceWith(input);
+        expect (mockUserRepo.findByEmail).toHaveBeenCalledExactlyOnceWith(input.email);
         expect (mockUserTokenRepo.generateToken).not.toHaveBeenCalled();
     });
 
@@ -55,7 +55,7 @@ describe ("ResetUserPasswordWithEmailUseCase Test", () => {
         input = { email: user.email };
         await expect (sut.execute(input)).rejects.toBeInstanceOf(InternalError);
 
-        expect (mockUserRepo.findByEmail).toHaveBeenCalledExactlyOnceWith(input);
+        expect (mockUserRepo.findByEmail).toHaveBeenCalledExactlyOnceWith(input.email);
         expect (mockUserTokenRepo.generateToken).toHaveBeenCalledExactlyOnceWith(user.id);
     });
 
@@ -69,9 +69,9 @@ describe ("ResetUserPasswordWithEmailUseCase Test", () => {
         input = { email: user.email };
 
         result = await sut.execute(input);
-        expect (result).toBe(tokenModel.token);
+        expect (result).toEqual({ token: tokenModel.token, user });
 
-        expect (mockUserRepo.findByEmail).toHaveBeenCalledExactlyOnceWith(input);
+        expect (mockUserRepo.findByEmail).toHaveBeenCalledExactlyOnceWith(input.email);
         expect (mockUserTokenRepo.generateToken).toHaveBeenCalledExactlyOnceWith(user.id);
     });
 });
