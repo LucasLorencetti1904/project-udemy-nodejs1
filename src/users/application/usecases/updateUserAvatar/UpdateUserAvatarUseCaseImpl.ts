@@ -5,9 +5,9 @@ import ApplicationHandler from "@/common/application/helpers/ApplicationHandler"
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type FileStorageProvider from "@/common/domain/providers/FileStorageProvider";
 import type UserModel from "@/users/domain/models/UserModel";
-import type UpdateUserAvatarInput from "@/users/application/dto/userDto/UpdateUserAvatarInput";
-import type { UserOutput } from "@/users/application/dto/userDto/userIo";
-import type UserAvatarImageFile from "@/users/application/dto/userDto/UserAvatarImageFile";
+import type UpdateUserAvatarInput from "@/users/application/dto/UpdateUserAvatarInput";
+import type { UserOutput } from "@/users/application/dto/userIo";
+import type UserAvatarImageFile from "@/users/application/dto/UserAvatarImageFile";
 import { BadRequestError, NotFoundError } from "@/common/domain/errors/httpErrors";
 
 @injectable()

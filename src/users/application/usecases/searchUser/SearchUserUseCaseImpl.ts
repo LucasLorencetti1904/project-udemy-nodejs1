@@ -5,8 +5,8 @@ import type SearchUserUseCase from "@/users/application/usecases/searchUser/Sear
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type SearchQueryFormatterProvider from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterProvider";
 import type UserModel from "@/users/domain/models/UserModel";
-import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/userDto/searchUserIo";
-import type { UserOutput } from "@/users/application/dto/userDto/userIo";
+import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
+import type { UserOutput } from "@/users/application/dto/userIo";
 import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
 

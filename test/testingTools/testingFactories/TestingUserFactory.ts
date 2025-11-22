@@ -1,11 +1,11 @@
 import { faker } from "@faker-js/faker";
 import { randomUUID } from "node:crypto";
-import type { AuthenticateUserInput } from "@/users/application/dto/userDto/authenticateUserIo";
-import type UpdateUserInput from "@/users/application/dto/userDto/UpdateUserInput";
-import type UpdateUserAvatarInput from "@/users/application/dto/userDto/UpdateUserAvatarInput";
-import type UserAvatarImageFile from "@/users/application/dto/userDto/UserAvatarImageFile";
-import type CreateUserInput from "@/users/application/dto/userDto/CreateUserInput";
-import type { UserInput, UserOutput } from "@/users/application/dto/userDto/userIo";
+import type { AuthenticateUserInput } from "@/users/application/dto/authenticateUserIo";
+import type UpdateUserInput from "@/users/application/dto/UpdateUserInput";
+import type UpdateUserAvatarInput from "@/users/application/dto/UpdateUserAvatarInput";
+import type UserAvatarImageFile from "@/users/application/dto/UserAvatarImageFile";
+import type CreateUserInput from "@/users/application/dto/CreateUserInput";
+import type { UserInput, UserOutput } from "@/users/application/dto/userIo";
 import type UserModel from "@/users/domain/models/UserModel";
 
 export default class TestingUserFactory {

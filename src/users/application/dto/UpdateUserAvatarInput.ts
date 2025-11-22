@@ -1,4 +1,4 @@
-import type UserAvatarImageFile from "@/users/application/dto/userDto/UserAvatarImageFile";
+import type UserAvatarImageFile from "@/users/application/dto/UserAvatarImageFile";
 
 type UpdateUserAvatarInput = {
     id: string,

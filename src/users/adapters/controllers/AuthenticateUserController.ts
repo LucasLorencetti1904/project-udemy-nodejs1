@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import ControllerHandler from "@/common/adapters/helpers/ControllerHandler";
 import type ExpressController from "@/common/adapters/controllers/ExpressController";
 import type AuthenticateUserUseCase from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCase";
-import type { AuthenticateUserInput, AuthenticateUserOutput } from "@/users/application/dto/userDto/authenticateUserIo";
+import type { AuthenticateUserInput, AuthenticateUserOutput } from "@/users/application/dto/authenticateUserIo";
 import z from "zod";
 import type { ZodType } from "zod";
 import ZodSchemaValidator from "@/common/adapters/helpers/ZodSchemaValidator";
