@@ -2,7 +2,7 @@ import type SearchUserUseCase from "@/users/application/usecases/searchUser/Sear
 import SearchUserUseCaseImpl from "@/users/application/usecases/searchUser/SearchUserUseCaseImpl";
 import { MockUserRepository, MockQuerySearchFormatter } from "test/users/application/usecases/UserUseCase.mock";
 import type UserModel from "@/users/domain/models/UserModel";
-import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
+import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/userDto/searchUserIo";
 import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
 import { InternalError } from "@/common/domain/errors/httpErrors";

@@ -3,7 +3,7 @@ import ControllerHandler from "@/common/adapters/helpers/ControllerHandler";
 import type ExpressController from "@/common/adapters/controllers/ExpressController";
 import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
 import type SearchUserRequest from "@/users/adapters/dto/SearchUserRequest";
-import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
+import type { SearchUserInput, SearchUserOutput } from "@/users/application/dto/userDto/searchUserIo";
 import z, { ZodType } from "zod";
 import ZodSchemaValidator from "@/common/adapters/helpers/ZodSchemaValidator";
 import type { Request, Response } from "express";

@@ -1,6 +1,6 @@
 import CreateUserController from "@/users/adapters/controllers/CreateUserController";
 import { MockCreateUserUseCase } from "./UserUseCase.mock";
-import type { UserOutput } from "@/users/application/dto/userIo";
+import type { UserOutput } from "@/users/application/dto/userDto/userIo";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
 import type { Request, Response } from "express";
 import { ConflictError, InternalError } from "@/common/domain/errors/httpErrors";

@@ -1,6 +1,6 @@
 import SearchUserController from "@/users/adapters/controllers/SearchUserController";
 import { MockSearchUserUseCase } from "./UserUseCase.mock";
-import type  { SearchUserInput, SearchUserOutput } from "@/users/application/dto/searchUserIo";
+import type  { SearchUserInput, SearchUserOutput } from "@/users/application/dto/userDto/searchUserIo";
 import type SearchUserRequest from "@/users/adapters/dto/SearchUserRequest";
 import type { Request, Response } from "express";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";

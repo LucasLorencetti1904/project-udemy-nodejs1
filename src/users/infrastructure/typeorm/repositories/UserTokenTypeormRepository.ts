@@ -18,7 +18,7 @@ export default class UserTokenTypeormRepository implements UserTokenRepository {
         private readonly userRepo: UserRepository
     ) {}
 
-    public async generate(userId: string): Promise<null | UserTokenModel> {
+    public async generateToken(userId: string): Promise<null | UserTokenModel> {
         const user: UserModel = await this.userRepo.findById(userId);
 
         if (!user) {

@@ -1,4 +1,4 @@
-import type { UserOutput } from "@/users/application/dto/userIo";
+import type { UserOutput } from "@/users/application/dto/userDto/userIo";
 
 
 export type SearchUserInput = {

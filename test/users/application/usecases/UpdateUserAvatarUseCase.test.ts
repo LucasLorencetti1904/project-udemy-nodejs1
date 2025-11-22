@@ -1,7 +1,7 @@
 import UpdateUserAvatarUseCaseImpl from "@/users/application/usecases/updateUserAvatar/UpdateUserAvatarUseCaseImpl";
 import { MockUserRepository, MockFileStorageProvider } from "./UserUseCase.mock";
 import type UserModel from "@/users/domain/models/UserModel";
-import type UpdateUserAvatarInput from "@/users/application/dto/UpdateUserAvatarInput";
+import type UpdateUserAvatarInput from "@/users/application/dto/userDto/UpdateUserAvatarInput";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
 import TestingMiscGenerator from "test/testingTools/testingFactories/TestingMiscGenerator";
 import { BadRequestError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";

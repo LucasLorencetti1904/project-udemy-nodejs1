@@ -2,14 +2,14 @@ import { inject, injectable } from "tsyringe";
 import ControllerHandler from "@/common/adapters/helpers/ControllerHandler";
 import type ExpressController from "@/common/adapters/controllers/ExpressController";
 import type UpdateUserAvatarUseCase from "@/users/application/usecases/updateUserAvatar/UpdateUserAvatarUseCase";
-import type UpdateUserAvatarInput from "@/users/application/dto/UpdateUserAvatarInput";
-import type { UserOutput } from "@/users/application/dto/userIo";
+import type UpdateUserAvatarInput from "@/users/application/dto/userDto/UpdateUserAvatarInput";
+import type { UserOutput } from "@/users/application/dto/userDto/userIo";
 import z from "zod";
 import type { ZodType } from "zod";
 import ZodSchemaValidator from "@/common/adapters/helpers/ZodSchemaValidator";
 import type { Request, Response } from "express";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
-import UserAvatarImageFile from "@/users/application/dto/UserAvatarImageFile";
+import UserAvatarImageFile from "@/users/application/dto/userDto/UserAvatarImageFile";
 
 @injectable()
 export default class UpdateUserAvatarController implements ExpressController {

@@ -1,5 +1,5 @@
 import type UserModel from "@/users/domain/models/UserModel";
-import type { UserOutput } from "@/users/application/dto/userIo";
+import type { UserOutput } from "@/users/application/dto/userDto/userIo";
 
 export default abstract class UserUseCase {
     protected mapToUserOutput(model: UserModel): UserOutput {

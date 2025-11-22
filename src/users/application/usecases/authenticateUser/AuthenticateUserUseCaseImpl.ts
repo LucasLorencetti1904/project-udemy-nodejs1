@@ -6,7 +6,7 @@ import type UserRepository from "@/users/domain/repositories/userRepository/User
 import type StringHashProvider from "@/common/domain/providers/StringHashProvider";
 import type AuthenticationProvider from "@/common/domain/providers/AuthenticationProvider";
 import type UserModel from "@/users/domain/models/UserModel";
-import type { AuthenticateUserInput, AuthenticateUserOutput } from "@/users/application/dto/authenticateUserIo";
+import type { AuthenticateUserInput, AuthenticateUserOutput } from "@/users/application/dto/userDto/authenticateUserIo";
 import { UnauthorizedError } from "@/common/domain/errors/httpErrors";
 
 @injectable()

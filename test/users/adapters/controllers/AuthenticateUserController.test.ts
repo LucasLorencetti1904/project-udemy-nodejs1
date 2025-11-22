@@ -1,7 +1,7 @@
 import AuthenticateUserController from "@/users/adapters/controllers/AuthenticateUserController";
 import { MockAuthenticateUserUseCase } from "./UserUseCase.mock";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
-import type { AuthenticateUserOutput } from "@/users/application/dto/authenticateUserIo";
+import type { AuthenticateUserOutput } from "@/users/application/dto/userDto/authenticateUserIo";
 import type { Request, Response } from "express";
 import { BadRequestError, ConflictError, InternalError } from "@/common/domain/errors/httpErrors";
 
