@@ -23,7 +23,7 @@ export default class TypeormRepositoryProvider<TModel extends TModelDefaultProps
         }
 
         public async findOneBy(field: keyof TModel, value: unknown): Promise<TModel> {
-            return await this.baseTypeormRepository.findOne({ [field]: value })
+            return await this.baseTypeormRepository.findOneBy({ [field]: value } as FindOptionsWhere<TModel>)
         }
 
         public async findManyBy(field: keyof TModel, value: unknown): Promise<TModel[]> {

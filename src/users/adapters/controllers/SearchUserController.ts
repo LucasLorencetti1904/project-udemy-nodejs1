@@ -33,12 +33,12 @@ export default class SearchUserController implements ExpressController {
 
     protected validateRequest(data: SearchUserRequest): SearchUserRequest {
         const schema: ZodType<SearchUserRequest> = z.object({
-            pageNumber: z.coerce.number().optional(),
-            itemsPerPage: z.coerce.number().optional(),
-            sortField: z.string().optional(),
-            sortDirection: z.string().optional(),
-            filterField: z.string().optional(),
-            filterValue: z.string().optional()
+            pagenumber: z.coerce.number().optional(),
+            itemsperpage: z.coerce.number().optional(),
+            sortfield: z.string().optional(),
+            sortdirection: z.string().optional(),
+            filterfield: z.string().optional(),
+            filtervalue: z.string().optional()
         }).strict();
 
         return ZodSchemaValidator.validateDataWithSchema({ data, schema });
@@ -46,16 +46,16 @@ export default class SearchUserController implements ExpressController {
     
     private mapToUseCase(request: SearchUserRequest): SearchUserInput {
         const pagination = {
-            pageNumber: request.pageNumber,
-            itemsPerPage: request.itemsPerPage
+            pageNumber: request.pagenumber,
+            itemsPerPage: request.itemsperpage
         };
         const sorting = {
-            field: request.sortField,
-            direction: request.sortDirection
+            field: request.sortfield,
+            direction: request.sortdirection
         };
         const filter = {
-            field: request.filterField,
-            value: request.filterValue
+            field: request.filterfield,
+            value: request.filtervalue
         };
 
         return {

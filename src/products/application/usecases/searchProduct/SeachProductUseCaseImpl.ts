@@ -14,6 +14,8 @@ export default class SearchProductUseCaseImpl extends ProductUseCase implements 
     constructor(
         @inject("ProductRepository")
         protected readonly repo: ProductRepository,
+        
+        @inject("SearchQueryFormatter<Product>")
         private readonly queryFormatter: SearchQueryFormatterProvider<ProductModel>
     ) { super(repo); }
 

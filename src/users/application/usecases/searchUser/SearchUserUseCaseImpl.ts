@@ -15,6 +15,8 @@ export default class SearchUserUseCaseImpl extends UserUseCase implements Search
     constructor(
         @inject("UserRepository")
         private readonly repo: UserRepository,
+        
+        @inject("SearchQueryFormatter<User>")
         private readonly queryFormatter: SearchQueryFormatterProvider<UserModel>
     ) { super(); }
 

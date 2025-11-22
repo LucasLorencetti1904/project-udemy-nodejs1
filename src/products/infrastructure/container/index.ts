@@ -1,5 +1,5 @@
 import { container } from "tsyringe";
-import type { Repository as baseTypeormRepository } from "typeorm";
+import type { Repository as BaseTypeormRepository } from "typeorm";
 import Product from "@/products/infrastructure/typeorm/entities/Product";
 import type SearchQueryFormatterConfig from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterConfig";
 import type SearchQueryFormatter from "@/common/domain/repositories/search/searchQueryFormatter/SearchQueryFormatterProvider";
@@ -22,7 +22,7 @@ import type RepositoryProvider from "@/common/domain/repositories/RepositoryProv
 import type CreateProductProps from "@/products/domain/repositories/CreateProductProps";
 
 container.registerInstance<SearchQueryFormatterConfig<Product>>(
-    "SearchQueryFormatterConfig<Product>",{
+    "SearchQueryFormatterConfig<Product>", {
     sortableFields: new Set(["createdAt", "name"]),
     filterableFields: new Set(["name"]),
     defaultProperties: {
@@ -48,22 +48,21 @@ container.registerInstance<SearchQueryFormatter<Product>>(
     )
 );
 
-container.registerInstance<baseTypeormRepository<Product>>(
+container.registerInstance<BaseTypeormRepository<Product>>(
     "DefaultTypeormRepository<Product>",
     dataSource.getRepository(Product)
 );
 
-container.registerSingleton<TypeormRepositorySearcher<Product>>(
-    "Searcher<Product>",
-    TypeormRepositorySearcher<Product>
+container.registerInstance<TypeormRepositorySearcher<Product>>(
+    "RepositorySearcher<Product>",
+    new TypeormRepositorySearcher<Product>()
 )
 
 container.registerInstance<RepositoryProvider<Product, CreateProductProps>>(
     "RepositoryProvider<Product>",
     new TypeormRepository<Product>(
         container.resolve("DefaultTypeormRepository<Product>"),
-        container.resolve("SearchQueryFormatter<Product>"),
-        container.resolve("TypeormRepositorySearcher<Product>")
+        container.resolve("RepositorySearcher<Product>")
     )
 );
 

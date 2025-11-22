@@ -1,10 +1,10 @@
 type SearchUserRequest = {
-    pageNumber?: number;
-    itemsPerPage?: number;
-    sortField?: string;
-    sortDirection?: string;
-    filterField?: string;
-    filterValue?: string;
+    pagenumber?: number;
+    itemsperpage?: number;
+    sortfield?: string;
+    sortdirection?: string;
+    filterfield?: string;
+    filtervalue?: string;
 };
 
 export default SearchUserRequest;

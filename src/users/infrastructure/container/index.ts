@@ -22,26 +22,24 @@ import type CreateUserProps from "@/users/domain/repositories/userRepository/Cre
 import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepositoryProvider";
 
 container.registerInstance<SearchQueryFormatterConfig<User>>(
-    "SearchQueryFormatterConfig<User>",
-    {
-        sortableFields: new Set(["createdAt", "name", "email"]),
-        filterableFields: new Set(["name"]),
-        defaultProperties: {
-            pagination: {
-                pageNumber: 1,
-                itemsPerPage: 15
-            },
-            sorting: {
-                field: "createdAt",
-                direction: "desc"
-            },
-            filter: {
-                field: "name",
-                value: ""
-            }
+    "SearchQueryFormatterConfig<User>", {
+    sortableFields: new Set(["createdAt", "name"]),
+    filterableFields: new Set(["name"]),
+    defaultProperties: {
+        pagination: {
+            pageNumber: 1,
+            itemsPerPage: 15
+        },
+        sorting: {
+            field: "createdAt",
+            direction: "desc"
+        },
+        filter: {
+            field: "name",
+            value: ""
         }
     }
-);
+});
 
 container.registerInstance<SearchQueryFormatter<User>>(
     "SearchQueryFormatter<User>",
@@ -55,17 +53,16 @@ container.registerInstance<BaseTypeormRepository<User>>(
     dataSource.getRepository(User)
 );
 
-container.registerSingleton<TypeormRepositorySearcher<User>>(
+container.registerInstance<TypeormRepositorySearcher<User>>(
     "RepositorySearcher<User>",
-    TypeormRepositorySearcher<User>
+    new TypeormRepositorySearcher<User>()
 )
 
 container.registerInstance<RepositoryProvider<User, CreateUserProps>>(
     "RepositoryProvider<User>",
     new TypeormRepository<User>(
         container.resolve("DefaultTypeormRepository<User>"),
-        container.resolve("SearchQueryFormatter<User>"),
-        container.resolve("TypeormRepositorySearcher<User>")
+        container.resolve("RepositorySearcher<User>")
     )
 );
 

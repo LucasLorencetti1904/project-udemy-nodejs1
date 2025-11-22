@@ -28,12 +28,12 @@ describe ("SearchProductController Test.", () => {
     });
 
     const invalidSearchInput: SearchProductRequest & Record<"unexpectedField", any> = {
-        pageNumber: "page" as any,
-        itemsPerPage: new Map() as any,
-        sortField: true as any,
-        sortDirection: 12 as any,
-        filterField: -579 as any,
-        filterValue: false as any,
+        pagenumber: "page" as any,
+        itemsperpage: new Map() as any,
+        sortfield: true as any,
+        sortdirection: 12 as any,
+        filterfield: -579 as any,
+        filtervalue: false as any,
         unexpectedField: "Unexpected Value"
     };
 
@@ -82,12 +82,12 @@ describe ("SearchProductController Test.", () => {
         },
         {
             request: {
-                pageNumber: "3",
-                itemsPerPage: "12",
-                sortField: "name",
-                sortDirection: "asc",
-                filterField: "name",
-                filterValue: "example"
+                pagenumber: "3",
+                itemsperpage: "12",
+                sortfield: "name",
+                sortdirection: "asc",
+                filterfield: "name",
+                filtervalue: "example"
             },
             expectedCall: {
                 pagination: {
