@@ -7,7 +7,7 @@ import RepositoryProvider from "@/common/domain/repositories/RepositoryProvider"
 import UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 
 @injectable()
-export default class UserTokenTypeormRepository implements UserTokenRepository {
+export default class UserTokenInMemoryRepository implements UserTokenRepository {
     constructor (
         @inject("RepositoryProvider<UserToken>")
         private readonly repo: RepositoryProvider<UserTokenModel, CreateUserTokenProps>,

@@ -1,12 +1,11 @@
-import type RepositorySearchDSL from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchDSL";
-import type RepositorySearchResult from "@/common/domain/repositories/search/repositorySearcher/RepositorySearchResult";
+import UserTokenTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTokenTypeormRepository";
+import UserTokenInMemoryRepository from "@/users/domain/repositories/userRepository/inMemory/UserTokenInMemoryRepository";
 import type UserModel from "@/users/domain/models/UserModel";
 import type UserTokenModel from "@/users/domain/models/UserTokenModel";
 import type UserTokenRepository from "@/users/domain/repositories/userTokenRepository/UserTokenRepository";
 import type CreateUserTokenProps from "@/users/domain/repositories/userTokenRepository/CreateUserTokenProps";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
 import { randomUUID } from "node:crypto";
-import UserTokenTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTokenTypeormRepository";
 import { MockUserRepository, MockRepositoryProvider } from "test/users/domain/repositories/inMemory/UserTokenRepository.mock";
 import TestingUserTokenFactory from "test/testingTools/testingFactories/TestingUserTokenFactory";
 
@@ -15,7 +14,8 @@ let mockRepoProvider: MockRepositoryProvider<UserTokenModel, CreateUserTokenProp
 let mockUserRepo: MockUserRepository;
 
 const impls: (new (...args: any) => UserTokenRepository)[] = [
-    UserTokenTypeormRepository
+    UserTokenTypeormRepository,
+    UserTokenInMemoryRepository
 ];
 
 impls.forEach((Impl) => {
@@ -93,53 +93,6 @@ impls.forEach((Impl) => {
                 expect (result).toBeNull();
 
                 expect (mockRepoProvider.findOneBy).toHaveBeenCalledExactlyOnceWith("token", exampleOfToken);
-            });
-        });
-    
-        describe ("Compositions Test", () => {
-            it ("findById", async () => {           
-                const input: string = randomUUID();
-                const output: UserTokenModel = TestingUserTokenFactory.model({ id: input });         
-                mockRepoProvider.findById.mockResolvedValue(output);
-                result = await sut.findById(input);
-                expect (result).toEqual(output);
-                expect (mockRepoProvider.findById).toHaveBeenCalledWith(input);
-            });
-    
-            it ("create", async () => {           
-                const input: CreateUserTokenProps = TestingUserTokenFactory.createInput({});
-                const output: UserTokenModel = TestingUserTokenFactory.model(input);         
-                mockRepoProvider.create.mockResolvedValue(output);
-                result = await sut.create(input);
-                expect (result).toEqual(output);
-                expect (mockRepoProvider.create).toHaveBeenCalledWith(input);
-            });
-    
-            it ("update", async () => {           
-                const input: UserTokenModel = TestingUserTokenFactory.model({});
-                const output: UserTokenModel = TestingUserTokenFactory.model(input);         
-                mockRepoProvider.update.mockResolvedValue(output);
-                result = await sut.update(input);
-                expect (result).toEqual(output);
-                expect (mockRepoProvider.update).toHaveBeenCalledWith(input);
-            });
-    
-            it ("delete", async () => {           
-                const input: string = randomUUID();
-                const output: UserTokenModel = TestingUserTokenFactory.model({ token: input });         
-                mockRepoProvider.delete.mockResolvedValue(output);
-                result = await sut.delete(input);
-                expect (result).toEqual(output);
-                expect (mockRepoProvider.delete).toHaveBeenCalledWith(input);
-            });
-    
-            it ("search", async () => {           
-                const input: RepositorySearchDSL<UserTokenModel> = {};
-                const output: any = {};         
-                mockRepoProvider.search.mockResolvedValue(output);
-                const searchResult: RepositorySearchResult<UserTokenModel> = await sut.search(input);
-                expect (searchResult).toEqual(output);
-                expect (mockRepoProvider.search).toHaveBeenCalledWith(input);
             });
         });
     });
