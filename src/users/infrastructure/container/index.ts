@@ -21,7 +21,7 @@ import TypeormRepositorySearcher from "@/common/infrastructure/repositories/Type
 import type CreateUserProps from "@/users/domain/repositories/userRepository/CreateUserProps";
 import UserTokenTypeormRepository from "@/users/infrastructure/typeorm/repositories/UserTokenTypeormRepository";
 import TypeormRepository from "@/common/infrastructure/repositories/TypeormRepositoryProvider";
-import ResetUserPasswordWithEmailUseCaseImpl from "@/users/application/usecases/resetUserPasswordWithEmail/ResetUserPasswordWithEmailUseCaseImpl";
+import ResetUserPasswordWithEmailUseCaseImpl from "@/users/application/usecases/requestUserPasswordReset/RequestUserPasswordResetUseCaseImpl";
 
 container.registerInstance<SearchQueryFormatterConfig<User>>(
     "SearchQueryFormatterConfig<User>", {

@@ -1,11 +1,11 @@
 import { container } from "tsyringe";
 import { Router } from "express";
-import ResetUserPasswordWithEmailController from "@/users/adapters/controllers/ResetUserPasswordWithEmailController";
+import RequestUserPasswordResetController from "@/users/adapters/controllers/RequestUserPasswordResetController";
 
 const passwordRouter: Router = Router();
 
-const resetUserPasswordWithEmailController: ResetUserPasswordWithEmailController = container.resolve(ResetUserPasswordWithEmailController);
+const requestUserPasswordResetController: RequestUserPasswordResetController = container.resolve(RequestUserPasswordResetController);
 
-passwordRouter.post("/forgot", resetUserPasswordWithEmailController.handle );
+passwordRouter.post("/forgot", requestUserPasswordResetController.handle );
 
 export default passwordRouter;

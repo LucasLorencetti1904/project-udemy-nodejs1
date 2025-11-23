@@ -1,12 +1,12 @@
-import ResetUserPasswordWithEmailController from "@/users/adapters/controllers/ResetUserPasswordWithEmailController";
+import RequestUserPasswordResetController from "@/users/adapters/controllers/RequestUserPasswordResetController";
 import { MockResetUserPasswordWithEmailUseCase } from "./UserUseCase.mock";
-import type { ResetUserPasswordWithEmailOutput } from "@/users/application/dto/ResetUserPasswordWithEmailIo";
+import type { RequestUserPasswordResetOutput } from "@/users/application/dto/RequestUserPasswordReset";
 import type { Request, Response } from "express";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
 import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import { randomUUID } from "node:crypto";
 
-let sut: ResetUserPasswordWithEmailController;
+let sut: RequestUserPasswordResetController;
 let mockUseCase: MockResetUserPasswordWithEmailUseCase;
 
 let req: Partial<Request>;
@@ -15,7 +15,7 @@ let res: Partial<Response>;
 describe ("ResetUserPasswordWithEmailController Test.", () => {
     beforeEach (() => {
         mockUseCase = new MockResetUserPasswordWithEmailUseCase();
-        sut = new ResetUserPasswordWithEmailController(mockUseCase);
+        sut = new RequestUserPasswordResetController(mockUseCase);
 
         req = {
             body: undefined
@@ -69,7 +69,7 @@ describe ("ResetUserPasswordWithEmailController Test.", () => {
     ["emailexample@gmail.com", "exampleofemail@hotmail.com"].forEach((email) => {
         it (`should return a response user and token json object with code 201 when token is generated successful.`, async () => {
             req.body = { email };
-            const useCaseOutput: ResetUserPasswordWithEmailOutput = {
+            const useCaseOutput: RequestUserPasswordResetOutput = {
                 user: TestingUserFactory.model({ email }),
                 token: randomUUID()
             };

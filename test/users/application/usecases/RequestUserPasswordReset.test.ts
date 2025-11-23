@@ -1,13 +1,13 @@
-import ResetUserPasswordWithEmailUseCaseImpl from "@/users/application/usecases/resetUserPasswordWithEmail/ResetUserPasswordWithEmailUseCaseImpl";
+import RequestUserPasswordResetUseCaseImpl from "@/users/application/usecases/requestUserPasswordReset/RequestUserPasswordResetUseCaseImpl";
 import { MockUserRepository, MockUserTokenRepository } from "./UserUseCase.mock";
-import { ResetUserPasswordWithEmailInput, ResetUserPasswordWithEmailOutput } from "@/users/application/dto/ResetUserPasswordWithEmailIo";
+import { RequestUserPasswordResetInput, RequestUserPasswordResetOutput } from "@/users/application/dto/RequestUserPasswordReset";
 import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import UserModel from "@/users/domain/models/UserModel";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
 import UserTokenModel from "@/users/domain/models/UserTokenModel";
 import TestingUserTokenFactory from "test/testingTools/testingFactories/TestingUserTokenFactory";
 
-let sut: ResetUserPasswordWithEmailUseCaseImpl; 
+let sut: RequestUserPasswordResetUseCaseImpl; 
 
 let mockUserRepo: MockUserRepository;
 let mockUserTokenRepo: MockUserTokenRepository;
@@ -15,15 +15,15 @@ let mockUserTokenRepo: MockUserTokenRepository;
 let user: UserModel;
 let tokenModel: UserTokenModel;
 
-let input: ResetUserPasswordWithEmailInput;
-let result: ResetUserPasswordWithEmailOutput;
+let input: RequestUserPasswordResetInput;
+let result: RequestUserPasswordResetOutput;
 
-describe ("ResetUserPasswordWithEmailUseCase Test", () => {
+describe ("RequestUserPasswordResetUseCase Test", () => {
     beforeEach (() => {
         mockUserRepo = new MockUserRepository();
         mockUserTokenRepo = new MockUserTokenRepository();
 
-        sut = new ResetUserPasswordWithEmailUseCaseImpl(mockUserRepo, mockUserTokenRepo);
+        sut = new RequestUserPasswordResetUseCaseImpl(mockUserRepo, mockUserTokenRepo);
     });
 
     it ("it should throw an NotFoundError when user is not found by email.", async () => {

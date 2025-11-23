@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
-import type { ResetUserPasswordWithEmailInput, ResetUserPasswordWithEmailOutput } from "@/users/application/dto/ResetUserPasswordWithEmailIo";
+import type RequestUserPasswordResetUseCase from "@/users/application/usecases/requestUserPasswordReset/RequestUserPasswordResetUseCase";
+import type { RequestUserPasswordResetInput, RequestUserPasswordResetOutput } from "@/users/application/dto/RequestUserPasswordReset";
 import type UserModel from "@/users/domain/models/UserModel";
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type UserTokenRepository from "@/users/domain/repositories/userTokenRepository/UserTokenRepository";
@@ -7,7 +8,7 @@ import { NotFoundError } from "@/common/domain/errors/httpErrors";
 import ApplicationHandler from "@/common/application/helpers/ApplicationHandler";
 
 @injectable()
-export default class ResetUserPasswordWithEmailUseCaseImpl {
+export default class RequestUserPasswordResetUseCaseImpl implements RequestUserPasswordResetUseCase {
     constructor(
         @inject("UserRepository")
         private readonly userRepo: UserRepository,
@@ -16,7 +17,7 @@ export default class ResetUserPasswordWithEmailUseCaseImpl {
         private readonly userTokenRepo: UserTokenRepository
     ) {}
 
-    public async execute(input: ResetUserPasswordWithEmailInput): Promise<ResetUserPasswordWithEmailOutput> {
+    public async execute(input: RequestUserPasswordResetInput): Promise<RequestUserPasswordResetOutput> {
         try {
             const user: UserModel = await this.userRepo.findByEmail(input.email);
 

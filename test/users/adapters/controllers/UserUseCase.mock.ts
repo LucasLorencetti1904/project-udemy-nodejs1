@@ -1,6 +1,6 @@
 import type AuthenticateUserUseCase from "@/users/application/usecases/authenticateUser/AuthenticateUserUseCase";
 import type CreateUserUseCase from "@/users/application/usecases/createUser/CreateUserUseCase";
-import ResetUserPasswordWithEmailUseCase from "@/users/application/usecases/resetUserPasswordWithEmail/ResetUserPasswordWithEmailUseCase";
+import ResetUserPasswordWithEmailUseCase from "@/users/application/usecases/requestUserPasswordReset/RequestUserPasswordResetUseCase";
 import type SearchUserUseCase from "@/users/application/usecases/searchUser/SearchUserUseCase";
 import type UpdateUserAvatarUseCase from "@/users/application/usecases/updateUserAvatar/UpdateUserAvatarUseCase";
 

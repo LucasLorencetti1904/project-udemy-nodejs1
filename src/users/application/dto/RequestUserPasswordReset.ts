@@ -1,10 +1,10 @@
 import type UserModel from "@/users/domain/models/UserModel";
 
-export type ResetUserPasswordWithEmailInput = {
+export type RequestUserPasswordResetInput = {
     email: string
 };
 
-export type ResetUserPasswordWithEmailOutput = {
+export type RequestUserPasswordResetOutput = {
     user: UserModel,
     token: string
 };

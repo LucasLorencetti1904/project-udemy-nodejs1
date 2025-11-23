@@ -1,8 +1,8 @@
 import { inject, injectable } from "tsyringe";
 import ControllerHandler from "@/common/adapters/helpers/ControllerHandler";
 import type ExpressController from "@/common/adapters/controllers/ExpressController";
-import type ResetUserPasswordWithEmailUseCase from "@/users/application/usecases/resetUserPasswordWithEmail/ResetUserPasswordWithEmailUseCase";
-import type { ResetUserPasswordWithEmailInput, ResetUserPasswordWithEmailOutput } from "@/users/application/dto/ResetUserPasswordWithEmailIo";
+import type ResetUserPasswordWithEmailUseCase from "@/users/application/usecases/requestUserPasswordReset/RequestUserPasswordResetUseCase";
+import type { RequestUserPasswordResetInput, RequestUserPasswordResetOutput } from "@/users/application/dto/RequestUserPasswordReset";
 import z from "zod";
 import type { ZodType } from "zod";
 import ZodSchemaValidator from "@/common/adapters/helpers/ZodSchemaValidator";
@@ -18,8 +18,8 @@ export default class ResetUserPasswordWithEmailController implements ExpressCont
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const input: ResetUserPasswordWithEmailInput = this.validateRequest(req.body);
-            const output: ResetUserPasswordWithEmailOutput = await this.useCase.execute(input);
+            const input: RequestUserPasswordResetInput = this.validateRequest(req.body);
+            const output: RequestUserPasswordResetOutput = await this.useCase.execute(input);
             return res.status(201).json({ message: "Token generated successfully.", data: output });
         }
         catch(e: unknown) {
@@ -27,8 +27,8 @@ export default class ResetUserPasswordWithEmailController implements ExpressCont
         }
     }
 
-    protected validateRequest(data: ResetUserPasswordWithEmailInput): ResetUserPasswordWithEmailInput {
-        const schema: ZodType<ResetUserPasswordWithEmailInput> = z.object({
+    protected validateRequest(data: RequestUserPasswordResetInput): RequestUserPasswordResetInput {
+        const schema: ZodType<RequestUserPasswordResetInput> = z.object({
             email: z.string().email()
         }).strict();
 
