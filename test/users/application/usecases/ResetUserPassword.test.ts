@@ -1,15 +1,12 @@
-import UpdateUserAvatarUseCaseImpl from "@/users/application/usecases/updateUserAvatar/UpdateUserAvatarUseCaseImpl";
-import { MockUserRepository, MockFileStorageProvider, MockUserTokenRepository, MockStringHashProvider } from "./UserUseCase.mock";
+import ResetUserPasswordUseCaseImpl from "@/users/application/usecases/resetUserPassword/ResetUserPasswordUseCaseImpl";
+import { MockUserRepository, MockUserTokenRepository, MockStringHashProvider } from "./UserUseCase.mock";
 import type UserModel from "@/users/domain/models/UserModel";
-import type UpdateUserAvatarInput from "@/users/application/dto/UpdateUserAvatarInput";
+import type UserTokenModel from "@/users/domain/models/UserTokenModel";
+import type ResetUserPasswordInput from "@/users/application/dto/ResetUserPasswordInput";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
-import TestingMiscGenerator from "test/testingTools/testingFactories/TestingMiscGenerator";
+import TestingUserTokenFactory from "test/testingTools/testingFactories/TestingUserTokenFactory";
 import { BadRequestError, InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import { randomUUID } from "crypto";
-import ResetUserPasswordUseCaseImpl from "@/users/application/usecases/resetUserPassword/ResetUserPasswordUseCaseImpl";
-import ResetUserPasswordInput from "@/users/application/dto/ResetUserPasswordInput";
-import UserTokenModel from "@/users/domain/models/UserTokenModel";
-import TestingUserTokenFactory from "test/testingTools/testingFactories/TestingUserTokenFactory";
 
 let sut: ResetUserPasswordUseCaseImpl;
 
@@ -57,7 +54,7 @@ describe ("ResetUserPasswordUseCaseImpl Test.", () => {
 
         tokenModel = TestingUserTokenFactory.model({
             token: input.token,
-            createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000)
+            createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000 - 1)
         });
 
         mockUserTokenRepo.findByToken.mockResolvedValue(tokenModel);
