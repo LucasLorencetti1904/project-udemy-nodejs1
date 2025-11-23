@@ -1,5 +1,5 @@
 import RequestUserPasswordResetController from "@/users/adapters/controllers/RequestUserPasswordResetController";
-import { MockResetUserPasswordWithEmailUseCase } from "./UserUseCase.mock";
+import { MockRequestUserPasswordResetUseCase } from "./UserUseCase.mock";
 import type { RequestUserPasswordResetOutput } from "@/users/application/dto/requestUserPasswordResetIo";
 import type { Request, Response } from "express";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
@@ -7,14 +7,14 @@ import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors"
 import { randomUUID } from "node:crypto";
 
 let sut: RequestUserPasswordResetController;
-let mockUseCase: MockResetUserPasswordWithEmailUseCase;
+let mockUseCase: MockRequestUserPasswordResetUseCase;
 
 let req: Partial<Request>;
 let res: Partial<Response>;
 
 describe ("ResetUserPasswordWithEmailController Test.", () => {
     beforeEach (() => {
-        mockUseCase = new MockResetUserPasswordWithEmailUseCase();
+        mockUseCase = new MockRequestUserPasswordResetUseCase();
         sut = new RequestUserPasswordResetController(mockUseCase);
 
         req = {

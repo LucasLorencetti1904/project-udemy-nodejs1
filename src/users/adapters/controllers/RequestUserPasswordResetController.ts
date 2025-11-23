@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import ControllerHandler from "@/common/adapters/helpers/ControllerHandler";
 import type ExpressController from "@/common/adapters/controllers/ExpressController";
-import type ResetUserPasswordWithEmailUseCase from "@/users/application/usecases/requestUserPasswordReset/RequestUserPasswordResetUseCase";
+import type RequestUserPasswordResetCUseCase from "@/users/application/usecases/requestUserPasswordReset/RequestUserPasswordResetUseCase";
 import type { RequestUserPasswordResetInput, RequestUserPasswordResetOutput } from "@/users/application/dto/requestUserPasswordResetIo";
 import z from "zod";
 import type { ZodType } from "zod";
@@ -10,10 +10,10 @@ import type { Request, Response } from "express";
 import ApplicationError from "@/common/domain/errors/ApplicationError";
 
 @injectable()
-export default class ResetUserPasswordWithEmailController implements ExpressController {
+export default class RequestUserPasswordWithEmailController implements ExpressController {
     constructor (
-        @inject("ResetUserPasswordWithEmailUseCase") 
-        private readonly useCase: ResetUserPasswordWithEmailUseCase
+        @inject("RequestUserPasswordWithEmailUseCase") 
+        private readonly useCase: RequestUserPasswordResetCUseCase
     ) {}
 
     public handle = async (req: Request, res: Response): Promise<Response> => {
