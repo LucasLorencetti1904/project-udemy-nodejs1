@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import type RequestUserPasswordResetUseCase from "@/users/application/usecases/requestUserPasswordReset/RequestUserPasswordResetUseCase";
-import type { RequestUserPasswordResetInput, RequestUserPasswordResetOutput } from "@/users/application/dto/RequestUserPasswordReset";
+import type { RequestUserPasswordResetInput, RequestUserPasswordResetOutput } from "@/users/application/dto/requestUserPasswordResetIo";
 import type UserModel from "@/users/domain/models/UserModel";
 import type UserRepository from "@/users/domain/repositories/userRepository/UserRepository";
 import type UserTokenRepository from "@/users/domain/repositories/userTokenRepository/UserTokenRepository";

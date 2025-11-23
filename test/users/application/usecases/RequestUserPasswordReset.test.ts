@@ -1,6 +1,6 @@
 import RequestUserPasswordResetUseCaseImpl from "@/users/application/usecases/requestUserPasswordReset/RequestUserPasswordResetUseCaseImpl";
 import { MockUserRepository, MockUserTokenRepository } from "./UserUseCase.mock";
-import { RequestUserPasswordResetInput, RequestUserPasswordResetOutput } from "@/users/application/dto/RequestUserPasswordReset";
+import { RequestUserPasswordResetInput, RequestUserPasswordResetOutput } from "@/users/application/dto/requestUserPasswordResetIo";
 import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
 import UserModel from "@/users/domain/models/UserModel";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";

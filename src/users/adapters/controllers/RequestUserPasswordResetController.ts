@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import ControllerHandler from "@/common/adapters/helpers/ControllerHandler";
 import type ExpressController from "@/common/adapters/controllers/ExpressController";
 import type ResetUserPasswordWithEmailUseCase from "@/users/application/usecases/requestUserPasswordReset/RequestUserPasswordResetUseCase";
-import type { RequestUserPasswordResetInput, RequestUserPasswordResetOutput } from "@/users/application/dto/RequestUserPasswordReset";
+import type { RequestUserPasswordResetInput, RequestUserPasswordResetOutput } from "@/users/application/dto/requestUserPasswordResetIo";
 import z from "zod";
 import type { ZodType } from "zod";
 import ZodSchemaValidator from "@/common/adapters/helpers/ZodSchemaValidator";

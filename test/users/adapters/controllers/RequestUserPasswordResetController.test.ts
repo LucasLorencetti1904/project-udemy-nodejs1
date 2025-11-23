@@ -1,6 +1,6 @@
 import RequestUserPasswordResetController from "@/users/adapters/controllers/RequestUserPasswordResetController";
 import { MockResetUserPasswordWithEmailUseCase } from "./UserUseCase.mock";
-import type { RequestUserPasswordResetOutput } from "@/users/application/dto/RequestUserPasswordReset";
+import type { RequestUserPasswordResetOutput } from "@/users/application/dto/requestUserPasswordResetIo";
 import type { Request, Response } from "express";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
 import { InternalError, NotFoundError } from "@/common/domain/errors/httpErrors";
