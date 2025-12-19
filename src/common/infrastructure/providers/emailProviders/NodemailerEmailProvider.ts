@@ -1,9 +1,9 @@
 import EmailProvider, { EmailInput } from "@/common/domain/providers/SendEmailProvider";
-import { createTransport } from "nodemailer";
+import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 
 export default class NodemailerEmailProvider implements EmailProvider {
-    private readonly transport: Mail = createTransport({ jsonTransport: true });
+    private readonly transport: Mail = nodemailer.createTransport({ jsonTransport: true });
 
     public async sendEmail(emailInput: EmailInput): Promise<void> {
         const info = await this.transport.sendMail({
