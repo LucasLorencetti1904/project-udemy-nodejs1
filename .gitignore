@@ -43,4 +43,5 @@ tsconfig.tsbuildinfo
 uploads/
 testingUploads/
 
+.favorites.json
 todo.md
