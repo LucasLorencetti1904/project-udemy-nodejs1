@@ -6,6 +6,13 @@ export default class HandlebarsTemplateParserProvider implements TemplateParserP
     public async parseWithValues(templateInput: TemplateParserInput): Promise<string> {
         try {    
             const template: string = await fs.readFile(templateInput.file, { encoding: "utf-8" });
+            
+            const fileExtension: string = templateInput.file.split(".").at(-1);
+
+            if (fileExtension != "hbs") {
+                throw new Error("Invalid file extension");
+            }
+
             if (!this.templateMatch(template, templateInput.values)) {
                 throw new Error("Template does not match.");
             }

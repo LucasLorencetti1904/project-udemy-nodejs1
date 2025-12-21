@@ -1,4 +1,4 @@
-import EmailProvider, { EmailInput } from "@/common/domain/providers/SendEmailProvider";
+import EmailProvider, { EmailInput } from "@/common/domain/providers/EmailProvider";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 
