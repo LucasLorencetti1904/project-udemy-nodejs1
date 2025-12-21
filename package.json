@@ -35,6 +35,7 @@
     "swagger-ui-express": "^5.0.1",
     "tsyringe": "^4.10.0",
     "typeorm": "^0.3.26",
+    "vite": "^7.3.0",
     "zod": "^4.1.5"
   },
   "devDependencies": {
