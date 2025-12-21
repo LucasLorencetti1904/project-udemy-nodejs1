@@ -1,3 +1,4 @@
+import ResetUserPasswordController from "@/users/adapters/controllers/ResetUserPasswordController";
 import { MockAuthenticateUserUseCase, MockResetUserPasswordUseCase } from "./UserUseCase.mock";
 import type { Request, Response } from "express";
 import TestingUserFactory from "test/testingTools/testingFactories/TestingUserFactory";
@@ -82,7 +83,7 @@ describe ("ResetUserPasswordController Test.", () => {
         await sut.handle(req as Request, res as Response);
 
         expect (mockUseCase.execute).toHaveBeenCalledExactlyOnceWith(req.body);
-        expect (res.status).toHaveBeenCalledExactlyOnceWith(200);
+        expect (res.status).toHaveBeenCalledExactlyOnceWith(204);
         expect (res.json).toHaveBeenCalledExactlyOnceWith({
             message: expect.stringContaining("")
         });
